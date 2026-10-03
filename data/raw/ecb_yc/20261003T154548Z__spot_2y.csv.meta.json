@@ -1,0 +1,14 @@
+{
+  "card_id": "ecb_yc",
+  "label": "spot_2y",
+  "url": "https://data-api.ecb.europa.eu/service/data/YC/B.U2.EUR.4F.G_N_A.SV_C_YM.SR_2Y?format=csvdata",
+  "retrieved_at_utc": "2026-10-03T15:45:48.777012+00:00",
+  "http_status": 200,
+  "bytes": 3145804,
+  "sha256": "562f2faba6790c459a25b082c0dad52deb2f0576a5db7ee1fc75b9881e23cf73",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:45:49 GMT",
+    "Content-Type": "text/csv",
+    "Last-Modified": "Fri, 02 Oct 2026 10:00:00 GMT"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "card_id": "eurostat_une_rt_m",
+  "label": "ea21_sa_total_pc_act",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/une_rt_m?geo=EA21&s_adj=SA&age=TOTAL&unit=PC_ACT&sex=T&lang=en",
+  "retrieved_at_utc": "2026-10-03T15:54:30.202568+00:00",
+  "http_status": 200,
+  "bytes": 25294,
+  "sha256": "228885672699c69f8592f258a4389b3fd66e2dfc0768b135f63537606a47cfd3",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:54:30 GMT",
+    "Content-Type": "application/json"
+  }
+}

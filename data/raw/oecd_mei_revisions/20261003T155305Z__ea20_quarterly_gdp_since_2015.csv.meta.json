@@ -1,0 +1,14 @@
+{
+  "card_id": "oecd_mei_revisions",
+  "label": "ea20_quarterly_gdp_since_2015",
+  "url": "https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES_REVISIONS@DF_STES_REVISIONS,4.0/EA20.Q.B1GQ_Q....?startPeriod=2015-Q1&format=csv",
+  "retrieved_at_utc": "2026-10-03T15:53:05.585703+00:00",
+  "http_status": 200,
+  "bytes": 187539,
+  "sha256": "e3671a1146aa3cd9e09fbd121d47ab18716328ddce83c1a1fa03eabfb7fd01bd",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:53:06 GMT",
+    "Content-Type": "application/vnd.sdmx.data+csv; charset=utf-8",
+    "Last-Modified": "2023-12-22"
+  }
+}

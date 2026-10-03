@@ -1,0 +1,13 @@
+{
+  "card_id": "eurostat_nrg_pc_205",
+  "label": "major_economies_eur",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nrg_pc_205?geo=EA&geo=DE&geo=FR&geo=IT&geo=ES&geo=EU27_2020&currency=EUR&lang=en",
+  "retrieved_at_utc": "2026-10-03T15:54:50.570294+00:00",
+  "http_status": 200,
+  "bytes": 99770,
+  "sha256": "68fa540d25cb454851f3679f3265616ece0427c97a00e724609ccc9d3885e04e",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:54:50 GMT",
+    "Content-Type": "application/json"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "card_id": "eurostat_namq_10_lp_ulc",
+  "label": "ea_all",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_lp_ulc?geo=EA&lang=en",
+  "retrieved_at_utc": "2026-10-03T15:54:46.161203+00:00",
+  "http_status": 200,
+  "bytes": 70627,
+  "sha256": "300a556653ac6bb71d9bdecf6a24cf4209ef0998f151550e74b8aafd736aed42",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:54:46 GMT",
+    "Content-Type": "application/json"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "card_id": "eurostat_namq_10_gdp",
+  "label": "ea_sca_b1gq_qoq",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?geo=EA&s_adj=SCA&na_item=B1GQ&unit=CLV_PCH_PRE&lang=en",
+  "retrieved_at_utc": "2026-10-03T15:54:35.746458+00:00",
+  "http_status": 200,
+  "bytes": 11629,
+  "sha256": "278c247ff621dc4d5ead02887511ee795e96b440510392adb961d9b86ac13e40",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:54:36 GMT",
+    "Content-Type": "application/json"
+  }
+}

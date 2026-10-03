@@ -1,0 +1,13 @@
+{
+  "card_id": "eurostat_namq_10_gdp",
+  "label": "vintages_ea_sca",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ei_na_q_vtg?geo=EA&s_adj=SCA&lang=en",
+  "retrieved_at_utc": "2026-10-03T15:54:37.197569+00:00",
+  "http_status": 200,
+  "bytes": 330653,
+  "sha256": "028d77d960d2e8fa5655b1c8bfe1d0a5ff9b4bf3e637e2faacc282ba3e522717",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:54:37 GMT",
+    "Content-Type": "application/json"
+  }
+}

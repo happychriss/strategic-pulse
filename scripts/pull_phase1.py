@@ -10,15 +10,15 @@ from __future__ import annotations
 import sys
 import time
 
-from srm.snapshot import SnapshotError, fetch
+from srm.snapshot import RAW_DIR, SnapshotError, fetch
 
 ECB = "https://data-api.ecb.europa.eu/service/data"
 ES = "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data"
 OECD = (
     "https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES_REVISIONS@DF_STES_REVISIONS,4.0"
 )
-ES_FMT = "format=SDMX-CSV&lang=en"
-NATIONAL = "geo=DE&geo=FR&geo=IT&geo=ES&geo=EU27_2020"
+ES_FMT = "lang=en"
+NATIONAL = "geo=EA&geo=DE&geo=FR&geo=IT&geo=ES&geo=EU27_2020"
 
 # (card_id, label, url, kind)
 PULLS: list[tuple[str, str, str, str]] = [
@@ -68,70 +68,70 @@ PULLS: list[tuple[str, str, str, str]] = [
     ),
     (
         "eurostat_une_rt_m",
-        "ea20_sa_total_pc_act",
-        f"{ES}/une_rt_m?geo=EA20&s_adj=SA&age=TOTAL&unit=PC_ACT&sex=T&{ES_FMT}",
-        "csv",
+        "ea21_sa_total_pc_act",
+        f"{ES}/une_rt_m?geo=EA21&s_adj=SA&age=TOTAL&unit=PC_ACT&sex=T&{ES_FMT}",
+        "json",
     ),
     (
         "eurostat_une_rt_m",
         "vintages_2021_on_ea",
         f"{ES}/ei_lm_m_vtg?geo=EA&unit=PC_ACT&{ES_FMT}",
-        "csv",
+        "json",
     ),
     (
         "eurostat_une_rt_m",
         "vintages_2001_2020_ea",
         f"{ES}/ei_lm_m_vtgfix?geo=EA&unit=PC_ACT&{ES_FMT}",
-        "csv",
+        "json",
     ),
     (
         "eurostat_namq_10_gdp",
-        "ea20_sca_b1gq_qoq",
-        f"{ES}/namq_10_gdp?geo=EA20&s_adj=SCA&na_item=B1GQ&unit=CLV_PCH_PRE&{ES_FMT}",
-        "csv",
+        "ea_sca_b1gq_qoq",
+        f"{ES}/namq_10_gdp?geo=EA&s_adj=SCA&na_item=B1GQ&unit=CLV_PCH_PRE&{ES_FMT}",
+        "json",
     ),
     (
         "eurostat_namq_10_gdp",
         "vintages_ea_sca",
         f"{ES}/ei_na_q_vtg?geo=EA&s_adj=SCA&{ES_FMT}",
-        "csv",
+        "json",
     ),
     (
         "eurostat_sts_inpr_m",
-        "ea20_sca_bd_i21",
-        f"{ES}/sts_inpr_m?geo=EA20&s_adj=SCA&nace_r2=B-D&unit=I21&{ES_FMT}",
-        "csv",
+        "ea21_sca_bd_i21",
+        f"{ES}/sts_inpr_m?geo=EA21&s_adj=SCA&nace_r2=B-D&unit=I21&{ES_FMT}",
+        "json",
     ),
     (
         "eurostat_sts_inpr_m",
         "vintages_2021_on_ea_sca_i21",
         f"{ES}/ei_is_m_vtg?geo=EA&s_adj=SCA&unit=I21&{ES_FMT}",
-        "csv",
+        "json",
     ),
     (
         "eurostat_sts_inpr_m",
         "vintages_2001_2020_ea_sca",
         f"{ES}/ei_is_m_vtgfix?geo=EA&s_adj=SCA&{ES_FMT}",
-        "csv",
+        "json",
     ),
-    ("eurostat_namq_10_lp_ulc", "ea20_all", f"{ES}/namq_10_lp_ulc?geo=EA20&{ES_FMT}", "csv"),
+    ("eurostat_namq_10_lp_ulc", "ea_all", f"{ES}/namq_10_lp_ulc?geo=EA&{ES_FMT}", "json"),
     (
         "eurostat_gov_10dd_edpt1",
-        "ea20_s13",
-        f"{ES}/gov_10dd_edpt1?geo=EA20&sector=S13&{ES_FMT}",
-        "csv",
+        "ea21_ea20_s13",
+        f"{ES}/gov_10dd_edpt1?geo=EA21&geo=EA20&sector=S13&{ES_FMT}",
+        "json",
     ),
     (
         "eurostat_nrg_pc_205",
         "major_economies_eur",
         f"{ES}/nrg_pc_205?{NATIONAL}&currency=EUR&{ES_FMT}",
-        "csv",
+        "json",
     ),
     (
         "eurostat_nrg_pc_203",
         "major_economies_eur",
         f"{ES}/nrg_pc_203?{NATIONAL}&currency=EUR&{ES_FMT}",
-        "csv",
+        "json",
     ),
     (
         "oecd_mei_revisions",
@@ -148,14 +148,28 @@ PULLS: list[tuple[str, str, str, str]] = [
 ]
 
 
+SLOW = {
+    "unemployment_rate_all_vintages",
+    "vintages_2021_on_ea_sca_i21",
+    "vintages_2001_2020_ea_sca",
+}
+
+
+def already_pulled(card_id: str, label: str) -> bool:
+    return any((RAW_DIR / card_id).glob(f"*__{label}.*")) if (RAW_DIR / card_id).exists() else False
+
+
 def main(selected: list[str]) -> int:
     failures = 0
     for card_id, label, url, kind in PULLS:
         if selected and card_id not in selected:
             continue
+        if already_pulled(card_id, label):
+            print(f"SKIP {card_id}/{label} (already archived)", flush=True)
+            continue
         started = time.time()
         try:
-            snap = fetch(card_id, label, url, kind)
+            snap = fetch(card_id, label, url, kind, timeout=420 if label in SLOW else 180)
             print(
                 f"OK   {card_id}/{label}  {snap.size:>10,} B  {time.time() - started:5.1f}s",
                 flush=True,
