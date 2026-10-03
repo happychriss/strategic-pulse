@@ -1,0 +1,15 @@
+{
+  "card_id": "ecb_rtd",
+  "label": "unemployment_rate_all_vintages",
+  "url": "https://data-api.ecb.europa.eu/service/data/RTD/M.S0.S.L_UNETO.F?includeHistory=true&format=csvdata",
+  "retrieved_at_utc": "2026-10-03T15:54:12.687847+00:00",
+  "http_status": 200,
+  "bytes": 21460546,
+  "sha256": "95b406f15f5f7a3fa491b1adf597306840ea126ac151acecc6074fc0c40aeb28",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:54:13 GMT",
+    "Content-Type": "text/csv",
+    "Last-Modified": "Wed, 09 Sep 2026 13:30:00 GMT"
+  },
+  "stored_compression": "gzip"
+}

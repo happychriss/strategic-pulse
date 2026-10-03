@@ -7,7 +7,7 @@ endpoint:
   protocol: eurostat-rest-sdmx-2.1
   base_url: https://ec.europa.eu/eurostat/api/dissemination
   dataset_id: gov_10dd_edpt1
-  example_key: "sdmx/2.1/data/gov_10dd_edpt1"
+  example_key: sdmx/2.1/data/gov_10dd_edpt1
 access:
   auth: none
   licence: CC BY 4.0 (Eurostat reuse policy)
@@ -15,19 +15,21 @@ access:
 coverage:
   geography: EU, euro area, member states
   frequency: annual
-  start: "1995"
+  start: '1995'
 temporal:
   revision_policy: Revised at each EDP notification (April and October).
   vintage_support: none
   knowledge_time_basis: Notification date (April, October). Archive each pull; no vintage API.
-python_access: "sdmx1 source ESTAT, or the JSON-stat REST endpoint."
+python_access: sdmx1 source ESTAT, or the JSON-stat REST endpoint.
 pitfalls:
-  - Two notifications per year, so vintages must be captured by the project.
-  - Dimension filters must be set explicitly (seasonal adjustment, unit, geography); defaults return very large cubes.
+- Euro area appears as EA19, EA20 and EA21 (composition by year); pull recorded EA21 and EA20.
+- Use the default JSON-stat output. format=SDMX-CSV returns HTTP 400 on this endpoint. Requests above
+  the size cap return HTTP 413.
+- Two notifications a year (April, October), so vintages must be captured by the project.
 verification:
-  status: unverified
-  date: null
-  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: sector S13, EA21 and EA20, 1995 to 2025, 18 items, 3 units.'
 docs_urls:
-  - https://ec.europa.eu/eurostat/web/main/data/web-services
-  - https://ec.europa.eu/eurostat/data/data-revision-policy
+- https://ec.europa.eu/eurostat/web/main/data/web-services
+- https://ec.europa.eu/eurostat/data/data-revision-policy

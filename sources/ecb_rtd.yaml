@@ -7,7 +7,7 @@ endpoint:
   protocol: sdmx-rest-2.1
   base_url: https://data-api.ecb.europa.eu/service/data
   dataset_id: RTD
-  example_key: "A.S0.N.F_CEC_CGG_D0.F?includeHistory=true&format=csvdata"
+  example_key: 'M.S0.N.P_C_OV.A?includeHistory=true&format=csvdata (5 key positions: FREQ.REF_AREA.ADJUSTMENT.RT_ECON_CONCEPT.RT_DENOM)'
 access:
   auth: none
   licence: ECB reuse policy (reuse with attribution)
@@ -15,20 +15,27 @@ access:
 coverage:
   geography: Euro area
   frequency: monthly, quarterly, annual
-  start: "2001 (vintages from January 2001)"
+  start: 2001 (vintages from January 2001)
 temporal:
-  revision_policy: Snapshots of series as published in the ECB Economic Bulletin, updated semi-annually (January and July).
-  vintage_support: release_snapshots
-  knowledge_time_basis: Vintage date of the bulletin snapshot. Vintages 2001-2014 are bulk files, 2015 onward via includeHistory in the API.
-python_access: "sdmx1 source ECB, or plain HTTP CSV (format=csvdata)."
+  revision_policy: Each series change is stored with exact validity timestamps; ACTION is Insert, Update
+    or Delete.
+  vintage_support: full_history
+  knowledge_time_basis: VALID_FROM and VALID_TO timestamps on each row returned with includeHistory=true
+    (for example 2017-07-19T15:30+02:00). Exact to the minute, no need for release-date approximation.
+python_access: sdmx1 source ECB, or plain HTTP CSV (format=csvdata).
 pitfalls:
-  - Experimental dataset per the ECB; coverage of variables changed over time.
-  - Vintages before 2015 are separate bulk downloads, not in the API history.
-  - Semi-annual cadence means knowledge time is coarse (about 6 months), not exact publication date.
+- Wildcard keys need exactly 5 positions; six dots returns HTTP 400.
+- Quarterly wildcard (Q....) timed out with HTTP 504; request concrete keys instead.
+- 'includeHistory returns a change log, not a vintage matrix: reconstruct a value as of date T from VALID_FROM
+  <= T < VALID_TO and ignore ACTION=Delete rows after their VALID_TO.'
+- 'Volume: HICP all vintages 0.66 MB, unemployment all vintages 21 MB. Pull series one at a time.'
+- Catalog of 182 monthly series includes HICP, unemployment, industrial production, 10-year benchmark
+  yield and producer prices; annual series cover government finance ratios.
+- Experimental dataset per the ECB; series coverage changed over time.
 verification:
-  status: unverified
-  date: null
-  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: catalog, HICP and unemployment full history. Vintage timestamps confirmed.'
 docs_urls:
-  - https://data.ecb.europa.eu/data/datasets/RTD/data-information
-  - https://eabcn.org/data/eabcn-real-time-database
+- https://data.ecb.europa.eu/data/datasets/RTD/data-information
+- https://eabcn.org/data/eabcn-real-time-database

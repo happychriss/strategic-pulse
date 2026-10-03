@@ -1,0 +1,14 @@
+{
+  "card_id": "ecb_hicp",
+  "label": "hicp_headline_annual_rate",
+  "url": "https://data-api.ecb.europa.eu/service/data/HICP/M.U2.N.000000.4D0.ANR?format=csvdata",
+  "retrieved_at_utc": "2026-10-03T15:56:39.733145+00:00",
+  "http_status": 200,
+  "bytes": 164043,
+  "sha256": "e8b33f8b5e4229478029c7e05a27e6103f15c272809bc7f8181669f2ec94cfa2",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:56:40 GMT",
+    "Content-Type": "text/csv",
+    "Last-Modified": "Fri, 02 Oct 2026 09:07:14 GMT"
+  }
+}

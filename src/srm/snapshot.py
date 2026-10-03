@@ -7,6 +7,7 @@ always be rebuilt from them. Nothing here interprets the data.
 
 from __future__ import annotations
 
+import gzip
 import hashlib
 import json
 import os
@@ -18,6 +19,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 RAW_DIR = Path(__file__).resolve().parents[2] / "data" / "raw"
+COMPRESS_ABOVE = 5_000_000  # bytes; larger payloads are stored gzip-compressed, losslessly
 USER_AGENT = "strategic-regime-monitor/0.0.1 (research; contact via repository)"
 
 
@@ -84,8 +86,9 @@ def fetch(
         stamp = retrieved.strftime("%Y%m%dT%H%M%SZ")
         folder = raw_dir / card_id
         folder.mkdir(parents=True, exist_ok=True)
-        path = folder / f"{stamp}__{label}.{kind}"
-        path.write_bytes(body)
+        compressed = len(body) > COMPRESS_ABOVE
+        path = folder / f"{stamp}__{label}.{kind}{'.gz' if compressed else ''}"
+        path.write_bytes(gzip.compress(body, mtime=0) if compressed else body)
         meta_path = path.with_name(path.name + ".meta.json")
         meta_path.write_text(
             json.dumps(
@@ -97,6 +100,7 @@ def fetch(
                     "http_status": status,
                     "bytes": len(body),
                     "sha256": digest,
+                    "stored_compression": "gzip" if compressed else None,
                     "response_headers": {
                         k: v
                         for k, v in resp_headers.items()

@@ -1,5 +1,6 @@
 import copy
 
+from srm.snapshot import RAW_DIR
 from srm.source_cards import load_cards, validate
 
 
@@ -20,6 +21,21 @@ def test_unverified_cards_do_not_claim_a_date():
         v = card.data["verification"]
         if v["status"] == "unverified":
             assert v["date"] is None, card.path.name
+
+
+def test_verified_cards_have_an_archived_snapshot():
+    for card in load_cards():
+        if card.data["verification"]["status"] == "verified":
+            metas = list((RAW_DIR / card.id).glob("*.meta.json"))
+            assert metas, f"{card.id} is verified but has no snapshot in data/raw"
+
+
+def test_superseded_by_points_to_an_existing_card():
+    ids = {c.id for c in load_cards()}
+    for card in load_cards():
+        target = card.data.get("superseded_by")
+        if target:
+            assert target in ids, f"{card.id} superseded_by unknown card {target}"
 
 
 def test_validator_rejects_broken_card():

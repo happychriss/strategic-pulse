@@ -7,7 +7,7 @@ endpoint:
   protocol: eurostat-rest-sdmx-2.1
   base_url: https://ec.europa.eu/eurostat/api/dissemination
   dataset_id: sts_inpr_m
-  example_key: "sdmx/2.1/data/sts_inpr_m"
+  example_key: sdmx/2.1/data/sts_inpr_m
 access:
   auth: none
   licence: CC BY 4.0 (Eurostat reuse policy)
@@ -15,19 +15,27 @@ access:
 coverage:
   geography: EU, euro area, member states
   frequency: monthly
-  start: "1953"
+  start: '1953'
 temporal:
   revision_policy: Frequently revised in following months.
-  vintage_support: release_snapshots
-  knowledge_time_basis: Vintage tables for industrial production; confirm vintage dataset code on first pull.
-python_access: "sdmx1 source ESTAT, or the JSON-stat REST endpoint."
+  vintage_support: full_history
+  knowledge_time_basis: 'revdate dimension: ei_is_m_vtg 2021-01-04 to 2026-08-28 (700 revdates); ei_is_m_vtgfix
+    covers 2001 to 2020 with 2,619 revdates.'
+python_access: sdmx1 source ESTAT, or the JSON-stat REST endpoint.
 pitfalls:
-  - Calendar and seasonal adjustment variants differ; choose one and record it.
-  - Dimension filters must be set explicitly (seasonal adjustment, unit, geography); defaults return very large cubes.
+- 'Euro area code differs per table: une_rt_m has EA21 only; namq_10_gdp and namq_10_lp_ulc have EA (changing
+  composition), EA19, EA20, EA21; sts_inpr_m has EA19, EA20, EA21 and no EA.'
+- Use the default JSON-stat output. format=SDMX-CSV returns HTTP 400 on this endpoint. Requests above
+  the size cap return HTTP 413.
+- Index base year changes between vintages (I95 to I21); compare vintages with growth rates RT1 and RT12,
+  not index levels.
+- 'NOT YET PULLED: ei_is_m_vtgfix (2001-2020). One request exceeds the size cap (HTTP 413 even for one
+  unit). Needs chunked requests by revdate; open backfill task.'
+- Choose one adjustment variant and record it.
 verification:
-  status: unverified
-  date: null
-  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: main series (EA21) and ei_is_m_vtg index vintages. Old vintage table pending.'
 docs_urls:
-  - https://ec.europa.eu/eurostat/web/main/data/web-services
-  - https://ec.europa.eu/eurostat/data/data-revision-policy
+- https://ec.europa.eu/eurostat/web/main/data/web-services
+- https://ec.europa.eu/eurostat/data/data-revision-policy

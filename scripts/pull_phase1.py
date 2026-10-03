@@ -35,6 +35,18 @@ PULLS: list[tuple[str, str, str, str]] = [
         "csv",
     ),
     (
+        "ecb_hicp",
+        "hicp_headline_annual_rate",
+        f"{ECB}/HICP/M.U2.N.000000.4D0.ANR?format=csvdata",
+        "csv",
+    ),
+    (
+        "ecb_hicp",
+        "hicp_core_xef000_annual_rate",
+        f"{ECB}/HICP/M.U2.N.XEF000.4D0.ANR?format=csvdata",
+        "csv",
+    ),
+    (
         "ecb_fm_policy_rates",
         "deposit_facility",
         f"{ECB}/FM/B.U2.EUR.4F.KR.DFR.LEV?format=csvdata",
@@ -108,12 +120,6 @@ PULLS: list[tuple[str, str, str, str]] = [
         f"{ES}/ei_is_m_vtg?geo=EA&s_adj=SCA&unit=I21&{ES_FMT}",
         "json",
     ),
-    (
-        "eurostat_sts_inpr_m",
-        "vintages_2001_2020_ea_sca",
-        f"{ES}/ei_is_m_vtgfix?geo=EA&s_adj=SCA&{ES_FMT}",
-        "json",
-    ),
     ("eurostat_namq_10_lp_ulc", "ea_all", f"{ES}/namq_10_lp_ulc?geo=EA&{ES_FMT}", "json"),
     (
         "eurostat_gov_10dd_edpt1",
@@ -151,7 +157,6 @@ PULLS: list[tuple[str, str, str, str]] = [
 SLOW = {
     "unemployment_rate_all_vintages",
     "vintages_2021_on_ea_sca_i21",
-    "vintages_2001_2020_ea_sca",
 }
 
 

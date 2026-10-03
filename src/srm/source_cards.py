@@ -82,6 +82,9 @@ def validate(data: dict[str, Any], filename_stem: str | None = None) -> list[str
         problems.append("verified cards need verification.date")
     if data["phase"] not in (1, 2, 3):
         problems.append("phase must be 1, 2 or 3")
+    superseded = data.get("superseded_by")
+    if superseded is not None and not isinstance(superseded, str):
+        problems.append("superseded_by must be a card id")
     if not data["docs_urls"] or not all(str(u).startswith("https://") for u in data["docs_urls"]):
         problems.append("docs_urls must be a non-empty list of https URLs")
     return problems

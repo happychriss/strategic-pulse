@@ -6,8 +6,8 @@ phase: 1
 endpoint:
   protocol: http-xml
   base_url: https://web-api.tp.entsoe.eu/api
-  dataset_id: "documentType=A44 (day-ahead prices)"
-  example_key: "documentType=A44&in_Domain=<EIC>&out_Domain=<EIC>&periodStart=YYYYMMDDHHMM&periodEnd=YYYYMMDDHHMM"
+  dataset_id: documentType=A44 (day-ahead prices)
+  example_key: documentType=A44&in_Domain=<EIC>&out_Domain=<EIC>&periodStart=YYYYMMDDHHMM&periodEnd=YYYYMMDDHHMM
 access:
   auth: free_token
   licence: ENTSO-E Transparency Platform terms (reuse with attribution)
@@ -15,19 +15,19 @@ access:
 coverage:
   geography: European bidding zones
   frequency: hourly (15-minute since market time unit change)
-  start: "2015"
+  start: '2015'
 temporal:
   revision_policy: Market results; corrections are rare.
   vintage_support: none
   knowledge_time_basis: Auction publication time (day-ahead, around 13:00 CET the previous day).
-python_access: "entsoe-py or plain HTTP with security token; parse XML."
+python_access: entsoe-py or plain HTTP with security token; parse XML.
 pitfalls:
-  - Requires registration and a personal API token; store as a secret in the environment, never in git.
-  - Bidding zones are not countries (Germany-Luxembourg split in 2018, Italy zones).
-  - Resolution changed from hourly to 15-minute; aggregate consistently.
+- Requires registration and a personal API token; store as a secret in the environment, never in git.
+- Bidding zones are not countries (Germany-Luxembourg split in 2018, Italy zones).
+- Resolution changed from hourly to 15-minute; aggregate consistently.
 verification:
   status: unverified
   date: null
-  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+  note: Host reachable (HTTP 401 without token). Pull pending a free API token; see docs.
 docs_urls:
-  - https://www.opennetzero.org/entso-e/entso-e-transparency-platform-api
+- https://www.opennetzero.org/entso-e/entso-e-transparency-platform-api

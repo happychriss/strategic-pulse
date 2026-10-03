@@ -6,8 +6,8 @@ phase: 1
 endpoint:
   protocol: sdmx-rest-3.0
   base_url: https://sdmx.oecd.org/public/rest
-  dataset_id: "UNVERIFIED: find the revisions-analysis dataflow ID in the Data Explorer catalogue"
-  example_key: null
+  dataset_id: OECD.SDD.STES,DSD_STES_REVISIONS@DF_STES_REVISIONS,4.0
+  example_key: EA20.M.CP....?startPeriod=2018-01&format=csv (REF_AREA.FREQ.MEASURE.UNIT_MEASURE.ACTIVITY.EDITION)
 access:
   auth: none
   licence: OECD Terms and Conditions (free, attribution)
@@ -15,20 +15,27 @@ access:
 coverage:
   geography: OECD members and selected partners
   frequency: monthly vintages
-  start: "1999 (monthly vintages)"
+  start: 1999 (monthly vintages)
 temporal:
-  revision_policy: Archive of originally published values and subsequent revisions of key infra-annual indicators.
+  revision_policy: Archive of originally published values and subsequent revisions of key infra-annual
+    indicators.
   vintage_support: full_history
-  knowledge_time_basis: Vintage month of the archive; first release is the original publication.
-python_access: "sdmx1 source OECD (SDMX 2.1) or OECD3 (SDMX 3.0, added in sdmx1 2.26)."
+  knowledge_time_basis: 'EDITION dimension (YYYYMM, from 199902): month of the database edition that published
+    the value. Month granularity.'
+python_access: sdmx1 source OECD (SDMX 2.1) or OECD3 (SDMX 3.0, added in sdmx1 2.26).
 pitfalls:
-  - Dataflow ID and the status of the revisions database after the 2024 API change are not confirmed. This is the first Phase 0 question to answer.
-  - Rate limiting applies; batch pulls and cache raw responses.
-  - Third-party mirrors (DBnomics) stopped updating OECD data in autumn 2024; do not rely on them.
+- 'Euro area code depends on the edition: EA19 for editions 2015-03 to 2023-03, EA20 for 2023-04 to 2026-09.
+  A query with one code silently loses half the history; query both.'
+- Requests without narrow filters return HTTP 413. Always filter area, measure and a start period.
+- Measures include CP (consumer prices), UNEMP, ULC, PRVM, B1GQ_Q (GDP volume), LI and others (22 revision
+  measures).
+- Third-party mirrors (DBnomics) stopped updating OECD data in autumn 2024; use sdmx.oecd.org directly.
+- Rate limiting applies; batch and cache.
 verification:
-  status: unverified
-  date: null
-  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: euro area monthly consumer prices and quarterly GDP volume with all editions
+    since 2018 and 2015.'
 docs_urls:
-  - https://www.oecd.org/en/data/insights/data-explainers/2024/09/api.html
-  - https://www.oecd.org/en/publications/undertaking-revisions-and-real-time-data-analysis-using-the-oecd-main-economic-indicators-original-release-data-and-revisions-database_146528313656.html
+- https://www.oecd.org/en/data/insights/data-explainers/2024/09/api.html
+- https://www.oecd.org/en/publications/undertaking-revisions-and-real-time-data-analysis-using-the-oecd-main-economic-indicators-original-release-data-and-revisions-database_146528313656.html

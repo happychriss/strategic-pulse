@@ -7,7 +7,7 @@ endpoint:
   protocol: eurostat-rest-sdmx-2.1
   base_url: https://ec.europa.eu/eurostat/api/dissemination
   dataset_id: nrg_pc_205
-  example_key: "sdmx/2.1/data/nrg_pc_205"
+  example_key: sdmx/2.1/data/nrg_pc_205
 access:
   auth: none
   licence: CC BY 4.0 (Eurostat reuse policy)
@@ -15,19 +15,22 @@ access:
 coverage:
   geography: EU, euro area, member states
   frequency: semi-annual
-  start: "2007"
+  start: '2007'
 temporal:
   revision_policy: Occasionally revised; methodology changed in 2007 and 2017.
   vintage_support: none
   knowledge_time_basis: Ingestion timestamp. No vintage API.
-python_access: "sdmx1 source ESTAT, or the JSON-stat REST endpoint."
+python_access: sdmx1 source ESTAT, or the JSON-stat REST endpoint.
 pitfalls:
-  - Taxes and levies breakdown matters; select a consistent tax level.
-  - Dimension filters must be set explicitly (seasonal adjustment, unit, geography); defaults return very large cubes.
+- Only EA (changing composition) and EU27_2020 aggregates exist for the euro area; national series available.
+- Use the default JSON-stat output. format=SDMX-CSV returns HTTP 400 on this endpoint. Requests above
+  the size cap return HTTP 413.
+- Many consumption bands and three tax levels; indicator definition must select band and tax level explicitly.
+- 'Semi-annual, last period 2025-S2: lags the 2022 energy crisis by design.'
 verification:
-  status: unverified
-  date: null
-  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: EA, EU27_2020, DE, FR, IT, ES in EUR, 1985-S1 to 2025-S2.'
 docs_urls:
-  - https://ec.europa.eu/eurostat/web/main/data/web-services
-  - https://ec.europa.eu/eurostat/data/data-revision-policy
+- https://ec.europa.eu/eurostat/web/main/data/web-services
+- https://ec.europa.eu/eurostat/data/data-revision-policy
