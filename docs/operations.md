@@ -106,21 +106,33 @@ under "Is something happening?". Settings live in the `detector` section of the 
 ## Newsletter dashboard ("Lagebild Europa")
 
 `python -m srm.dashboard` writes `reports/dashboard/index.html`, a German one-page view of the
-current situation, meant to accompany the strategic newsletter. It is built only from the
-detector result (`reports/detector/<version>.json`) and the database, and it adds nothing of its
-own: no thresholds, no wording that the data does not support.
+current situation, meant to accompany the strategic newsletter. Its data is in `data.json`.
 
-- **Top:** the status sentence (quiet, one layer moving, several layers moving), the signals
-  behind it, and the last four months.
-- **Monthly:** each of the six layers with its signals, five years of history on display (all measures use the full history), a level
-  context (where the latest value stands in its whole history), and a bar that
-  measures the latest three-month move against the signal's own past moves (the tick is the 95th
-  percentile).
-- **Record since 2008:** the monthly level with the reference events and the back-test score.
-- **Slow trends:** the eleven yearly indicators, EU value with the fitted trend of the last five
-  years against the five before, and the breadth of member states with unusual trend changes.
-- **Sources:** every card used, dataset codes that delivered data, licence and retrieval date.
-  Each number on the page carries its own source line.
+**The page describes; it does not judge.** It uses no thresholds and no labels such as "calm" or
+"unusual". The detector's alarm rule (95th percentile, two layers) stays in the repository as a
+test instrument and in the run log. It does not appear on the page. Every number is shown
+against its own full history:
 
-The published page is private until shared from the page's Share menu. Readers outside the
+- **Level rank:** the share of all earlier values of the series lower than the latest value.
+- **Move rank:** the share of all earlier three-month moves (quarterly moves for GDP) smaller in
+  absolute size than the latest move. It is computed after at least 60 earlier moves (20 for
+  quarterly series).
+
+What the page shows:
+
+- **Top:** the three largest moves and the three most unusual levels, ranked by these shares.
+  A ranking is not a cutoff, so the list always has three entries.
+- **Monthly:** for each signal, five years of history on display, then two histograms. One shows
+  all earlier values and the other all earlier moves, each with the current value marked. A
+  sentence under each states the rank.
+- **Record since 2008:** one row per layer, one column per month. The colour shows the largest
+  move rank among the layer's signals on a continuous scale (opacity = rank^4). The record uses
+  today's data, not vintages. The reference events are numbered.
+- **Slow trends:** for each of the eleven yearly indicators, the EU value with the fitted trend
+  of the last five years against the five years before. Both slopes are stated, together with
+  the number of member states whose trend points the same way, now and five years earlier.
+- **Sources:** every card used, the dataset codes that delivered data, the licence and the
+  retrieval date. Each number on the page also carries its own source line.
+
+The published page is private until it is shared from the page's Share menu. Readers outside the
 account need a public link.

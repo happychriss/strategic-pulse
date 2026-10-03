@@ -1,9 +1,12 @@
 """Newsletter dashboard: the current situation in Europe on one page, in German.
 
-Everything shown comes from the detector result (`reports/detector/<version>.json`) and the
-database: monthly signals with ten years of history, the yearly structural trends, and for every
-number the source card, dataset and retrieval date it rests on. The page states what is moving
-now; it makes no forecast.
+The page describes; it does not judge. There are no thresholds and no labels such as "calm" or
+"unusual". Every number is shown against its own history: where the latest value stands among
+all earlier values, and how large the latest move is compared with all earlier moves. The reader
+sees the distributions and decides what matters. The detector's alarm rule stays in the
+repository as a test instrument and does not appear here.
+
+Every number carries the source card, dataset code and retrieval date it rests on.
 
     python -m srm.dashboard
 """
@@ -19,16 +22,20 @@ from pathlib import Path
 import psycopg
 
 from srm.db import connect
+from srm.detect import config as detector_config
 from srm.detect import version_id
 from srm.indicators import indicator_series
 from srm.model_content import current_label
 from srm.structural import config as structural_config
-from srm.structural import eu_series, known_year, load_panel, slope
+from srm.structural import eu_series, known_year, load_panel, slope, trend_at
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "reports" / "dashboard"
-HISTORY_YEARS = 5
+DISPLAY_YEARS = 5  # sparklines only; every measure uses the full history
 STRUCTURAL_YEARS = 20
+RECORD_START = "2008-01"
+MIN_HISTORY = {"M": 60, "Q": 20}  # earlier moves needed before a move is placed in its history
+HIST_BINS = 32
 
 LAYERS_DE = {
     "prices_policy": "Preise und Geldpolitik",
@@ -60,38 +67,44 @@ SIGNALS_DE = {
     "eu_asylum_applicants": ("Asylerstanträge je 100.000 Einwohner", "", ""),
 }
 
+# key -> (German name, unit of the level, axis, unit of the yearly trend)
 STRUCTURAL_DE = {
-    "rule_of_law": ("Rechtsstaatlichkeit", "Weltbank-Index", "Regierungsführung"),
-    "voice_accountability": ("Mitsprache und Rechenschaft", "Weltbank-Index", "Regierungsführung"),
+    "rule_of_law": ("Rechtsstaatlichkeit", "Weltbank-Index", "Regierungsführung", "Punkte"),
+    "voice_accountability": (
+        "Mitsprache und Rechenschaft",
+        "Weltbank-Index",
+        "Regierungsführung",
+        "Punkte",
+    ),
     "corruption_perceptions": (
         "Korruptionswahrnehmung (höher = sauberer)",
         "Punkte",
         "Regierungsführung",
+        "Punkte",
     ),
-    "income_inequality": ("Einkommensungleichheit", "S80/S20", "Zusammenhalt"),
-    "gov_expenditure": ("Staatsausgaben", "% des BIP", "Wirtschaftsordnung"),
-    "old_age_dependency": ("Altenquotient", "65+ je 100 im Alter 15–64", "Demografie"),
-    "fertility": ("Geburtenrate", "Kinder je Frau", "Demografie"),
-    "rd_intensity": ("Forschungsausgaben", "% des BIP", "Technologie"),
-    "climate_losses": ("Schäden durch Klimaextreme", "€ je Einwohner", "Klima"),
-    "energy_import_dependency": ("Energieimportabhängigkeit", "%", "Energie"),
-    "gov_debt": ("Staatsschulden", "% des BIP", "Staatsfinanzen"),
+    "income_inequality": ("Einkommensungleichheit", "S80/S20", "Zusammenhalt", ""),
+    "gov_expenditure": ("Staatsausgaben", "% des BIP", "Wirtschaftsordnung", "Pp."),
+    "old_age_dependency": ("Altenquotient", "65+ je 100 im Alter 15–64", "Demografie", ""),
+    "fertility": ("Geburtenrate", "Kinder je Frau", "Demografie", "Kinder je Frau"),
+    "rd_intensity": ("Forschungsausgaben", "% des BIP", "Technologie", "Pp."),
+    "climate_losses": ("Schäden durch Klimaextreme", "€ je Einwohner", "Klima", "€"),
+    "energy_import_dependency": ("Energieimportabhängigkeit", "%", "Energie", "Pp."),
+    "gov_debt": ("Staatsschulden", "% des BIP", "Staatsfinanzen", "Pp."),
 }
 
-EVENTS_DE = {
-    "new alarm": "neu erkannt",
-    "alarm already running": "Alarm lief bereits",
-    "missed": "verpasst",
+EVENTS_TEXT_DE = {
+    "2008-09": "Lehman-Pleite, globale Finanzkrise",
+    "2011-07": "Euro-Schuldenkrise erfasst Italien und Spanien",
+    "2014-06": "EZB führt den Negativzins ein, Deflationssorgen",
+    "2015-09": "Höhepunkt der Fluchtbewegung in die EU",
+    "2020-03": "Pandemie und Lockdowns",
+    "2021-07": "Beginn des Inflationsschubs",
+    "2022-02": "Russlands Angriff auf die Ukraine, Energieschock",
+    "2022-07": "Erste EZB-Zinserhöhung seit elf Jahren",
+    "2023-09": "Letzte EZB-Zinserhöhung, Zinsgipfel",
+    "2024-06": "Erste EZB-Zinssenkung des Lockerungszyklus",
+    "2026-03": "Krieg im Nahen Osten, neuer Energiepreisschock",
 }
-
-COUNTRIES_DE = {
-    "AT": "Österreich", "BE": "Belgien", "BG": "Bulgarien", "CY": "Zypern", "CZ": "Tschechien",
-    "DE": "Deutschland", "DK": "Dänemark", "EE": "Estland", "EL": "Griechenland", "ES": "Spanien",
-    "FI": "Finnland", "FR": "Frankreich", "HR": "Kroatien", "HU": "Ungarn", "IE": "Irland",
-    "IT": "Italien", "LT": "Litauen", "LU": "Luxemburg", "LV": "Lettland", "MT": "Malta",
-    "NL": "Niederlande", "PL": "Polen", "PT": "Portugal", "RO": "Rumänien", "SE": "Schweden",
-    "SI": "Slowenien", "SK": "Slowakei",
-}  # fmt: skip
 
 MONTHS_DE = [
     "Januar", "Februar", "März", "April", "Mai", "Juni",
@@ -108,6 +121,10 @@ def num(v: float | None, digits: int = 1, sign: bool = False) -> str:
         return "–"
     s = f"{v:+,.{digits}f}" if sign else f"{v:,.{digits}f}"
     return s.replace(",", " ").replace(".", ",").replace("-", "−")
+
+
+def pct(share: float) -> str:
+    return f"{round(100 * share)} %"
 
 
 def digits_for(values: list[float]) -> int:
@@ -137,12 +154,96 @@ def _e(text) -> str:
     return escape(str(text), quote=True)
 
 
+# ------------------------------------------------------------------ measures
+
+
+def freq_of(label: str) -> str:
+    return "Q" if "-Q" in label else "M"
+
+
+def months_of(label: str) -> list[str]:
+    """'2008-Q3' -> ['2008-07', '2008-08', '2008-09']; '2008-07' -> ['2008-07']."""
+    if "-Q" in label:
+        y, q = label.split("-Q")
+        first = 3 * (int(q) - 1) + 1
+        return [f"{y}-{m:02d}" for m in range(first, first + 3)]
+    return [label]
+
+
+def share_below(x: float, past: list[float]) -> float:
+    return sum(v < x for v in past) / len(past)
+
+
+def changes_of(pts: list, step: int) -> list[tuple[str, float]]:
+    return [(pts[i][1], pts[i][2] - pts[i - step][2]) for i in range(step, len(pts))]
+
+
+def move_ranks(pts: list) -> dict[str, float]:
+    """For each period: share of all earlier moves (absolute size) smaller than this move.
+    A move is the change over three months (one quarter for quarterly series)."""
+    if not pts:
+        return {}
+    f = freq_of(pts[-1][1])
+    changes = changes_of(pts, 1 if f == "Q" else 3)
+    out, past = {}, []
+    for label, c in changes:
+        if len(past) >= MIN_HISTORY[f]:
+            out[label] = round(share_below(abs(c), past), 4)
+        past.append(abs(c))
+    return out
+
+
+def signal_stats(pts: list) -> dict:
+    """Latest value and move, each placed in the full history of the series."""
+    f = freq_of(pts[-1][1])
+    step = 1 if f == "Q" else 3
+    vals = [p[2] for p in pts]
+    changes = changes_of(pts, step)
+    out = {
+        "freq": f,
+        "value": vals[-1],
+        "latest_period": pts[-1][1],
+        "since": pts[0][1][:4],
+        "levels": [round(v, 3) for v in vals],
+        "changes": [round(c, 3) for _, c in changes],
+        "change": changes[-1][1] if changes else None,
+        "change_6m": vals[-1] - vals[-1 - 2 * step] if len(vals) > 2 * step else None,
+        "level_rank": share_below(vals[-1], vals[:-1]) if len(vals) > 24 else None,
+        "move_rank": None,
+    }
+    if len(changes) > MIN_HISTORY[f]:
+        out["move_rank"] = share_below(abs(changes[-1][1]), [abs(c) for _, c in changes[:-1]])
+    return out
+
+
+def record(signals: list[dict], layers: list[str], end_month: str) -> dict:
+    """Per layer and month: the largest move rank among the layer's signals, and which signal."""
+    months = []
+    y, m = int(RECORD_START[:4]), int(RECORD_START[5:])
+    while f"{y}-{m:02d}" <= end_month:
+        months.append(f"{y}-{m:02d}")
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    rows = {}
+    for layer in layers:
+        best: dict[str, tuple[float, str]] = {}
+        for s in signals:
+            if s["layer"] != layer:
+                continue
+            for label, r in s["move_ranks"].items():
+                for mo in months_of(label):
+                    if mo not in best or r > best[mo][0]:
+                        best[mo] = (r, s["indicator"])
+        rows[layer] = [best.get(mo) for mo in months]
+    return {"months": months, "rows": rows}
+
+
 # ------------------------------------------------------------------ data
 
 
 def provenance_for_families(conn: psycopg.Connection, families: list[str]) -> list[dict]:
     rows = conn.execute(
-        """SELECT sc.card_id, sc.provider, sc.name, string_agg(DISTINCT d.dataset_id, ', ') FILTER (WHERE EXISTS (
+        """SELECT sc.card_id, sc.provider, sc.name,
+                  string_agg(DISTINCT d.dataset_id, ', ') FILTER (WHERE EXISTS (
                       SELECT 1 FROM raw.snapshot sn
                       WHERE sn.dataset_id = d.dataset_id AND sn.load_status = 'loaded')),
                   sc.card->'access'->>'licence', sc.card->'access'->>'terms_url',
@@ -178,38 +279,45 @@ def indicator_families(conn: psycopg.Connection, code: str, mv: int, at: datetim
     return [r[0] for r in rows]
 
 
-def signal_history(conn, code: str, mv: int, at: datetime) -> tuple[list[list], dict | None]:
-    """Last HISTORY_YEARS of values, and where the latest value stands in the full history."""
-    pts = indicator_series(conn, code, at, mv)
-    start = date(at.year - HISTORY_YEARS, at.month, 1)
-    return [[p[1], round(p[2], 4)] for p in pts if p[0] >= start], level_context(pts)
-
-
-def level_context(pts: list) -> dict | None:
-    """Share of all earlier periods with a lower value than the latest one (0..1)."""
-    if len(pts) < 24:
-        return None
-    *past, last = [p[2] for p in pts]
-    return {
-        "rank": round(sum(v < last for v in past) / len(past), 3),
-        "since": pts[0][1][:4],
-        "periods": len(past),
+def structural_entry(conn, ind: dict, cfg: dict, at: datetime) -> dict:
+    n = cfg["trend_years"]
+    panel = load_panel(conn, ind["family"], ind["match"])
+    members, agg, note = eu_series(
+        panel, ind, cfg["aggregate"], known_year(at, ind.get("lag_months", 9))
+    )
+    out = {"key": ind["key"], "axis": ind["axis"], "note": note, "trend_years": n, "members": 0}
+    if not agg:
+        return out | {"series": [], "latest_year": None}
+    t = max(agg)
+    slopes_now = [trend_at(s, t, n) for s in members.values()]
+    slopes_before = [trend_at(s, t - n, n) for s in members.values()]
+    return out | {
+        "series": [[y, round(agg[y], 4)] for y in sorted(agg) if y > t - STRUCTURAL_YEARS],
+        "latest_year": t,
+        "eu_value": round(agg[t], 4),
+        "trend_now": trend_at(agg, t, n),
+        "trend_before": trend_at(agg, t - n, n),
+        "members": sum(a is not None for a in slopes_now),
+        "rising_now": sum(a is not None and a > 0 for a in slopes_now),
+        "falling_now": sum(a is not None and a < 0 for a in slopes_now),
+        "members_before": sum(b is not None for b in slopes_before),
+        "rising_before": sum(b is not None and b > 0 for b in slopes_before),
+        "falling_before": sum(b is not None and b < 0 for b in slopes_before),
     }
 
 
-def structural_series(conn, ind: dict, aggregate: str, at: datetime) -> list[list]:
-    panel = load_panel(conn, ind["family"], ind["match"])
-    _, agg, _ = eu_series(panel, ind, aggregate, known_year(at, ind.get("lag_months", 9)))
-    if not agg:
-        return []
-    last = max(agg)
-    return [[y, round(agg[y], 4)] for y in sorted(agg) if y > last - STRUCTURAL_YEARS]
+def load_events() -> list[dict]:
+    import yaml
+
+    data = yaml.safe_load((ROOT / "model" / "events.yaml").read_text(encoding="utf-8"))
+    return [
+        {"month": str(e["month"]), "text": EVENTS_TEXT_DE.get(str(e["month"]), e["label"])}
+        for e in data["events"]
+    ]
 
 
 def build_payload(conn: psycopg.Connection, label: str | None = None) -> dict:
     label = label or current_label()
-    det_path = ROOT / "reports" / "detector" / f"{label}.json"
-    det = json.loads(det_path.read_text(encoding="utf-8"))
     mv = version_id(conn, label)
     at = datetime.now(UTC)
     sources: dict[str, dict] = {}
@@ -219,46 +327,43 @@ def build_payload(conn: psycopg.Connection, label: str | None = None) -> dict:
             sources.setdefault(p["card"], p)
         return [p["card"] for p in provs]
 
+    cfg = detector_config(label)
+    start = date(at.year - DISPLAY_YEARS, at.month, 1)
     signals = []
-    for s in det["now"]["signals"]:
-        provs = provenance_for_families(conn, indicator_families(conn, s["indicator"], mv, at))
-        signals.append(
-            {
-                **s,
-                **dict(zip(("history", "level"), signal_history(conn, s["indicator"], mv, at))),
-                "sources": remember(provs),
-            }
-        )
-    cfg = structural_config(label)
-    by_key = {i["key"]: i for i in cfg["indicators"]}
+    for layer in cfg["layers"]:
+        for sig in layer["signals"]:
+            pts = indicator_series(conn, sig["indicator"], at, mv)
+            if not pts:
+                continue
+            provs = provenance_for_families(
+                conn, indicator_families(conn, sig["indicator"], mv, at)
+            )
+            signals.append(
+                {
+                    "layer": layer["key"],
+                    "indicator": sig["indicator"],
+                    "knowledge": sig["knowledge"],
+                    **signal_stats(pts),
+                    "move_ranks": move_ranks(pts),
+                    "history": [[p[1], round(p[2], 4)] for p in pts if p[0] >= start],
+                    "sources": remember(provs),
+                }
+            )
+    layers = [layer["key"] for layer in cfg["layers"]]
+    scfg = structural_config(label)
     structural = []
-    for r in det["structural_now"]:
-        ind = by_key[r["key"]]
-        provs = provenance_for_families(conn, [ind["family"]])
-        structural.append(
-            {
-                **r,
-                "series": structural_series(conn, ind, cfg["aggregate"], at),
-                "trend_years": cfg["trend_years"],
-                "sources": remember(provs),
-            }
-        )
-    flagged_years = {
-        r["key"]: [int(y) for y, rows in det["structural_history"].items() for x in rows
-                   if x["key"] == r["key"] and x["unusual"]]
-        for r in det["structural_now"]
-    }  # fmt: skip
+    for ind in scfg["indicators"]:
+        entry = structural_entry(conn, ind, scfg, at)
+        entry["sources"] = remember(provenance_for_families(conn, [ind["family"]]))
+        structural.append(entry)
     return {
         "model_version": label,
-        "generated_utc": det["generated_utc"],
-        "now": {k: v for k, v in det["now"].items() if k != "signals"},
-        "layers": det["layers"],
+        "generated_utc": at.isoformat(),
+        "layers": layers,
         "signals": signals,
-        "timeline": det["timeline"],
-        "events": det["events"],
-        "test": det["test_summary"][label],
+        "record": record(signals, layers, at.strftime("%Y-%m")),
+        "events": load_events(),
         "structural": structural,
-        "structural_flagged_years": flagged_years,
         "sources": sorted(sources.values(), key=lambda p: (p["provider"], p["card"])),
     }
 
@@ -266,91 +371,79 @@ def build_payload(conn: psycopg.Connection, label: str | None = None) -> dict:
 # ------------------------------------------------------------------ wording
 
 
-def trend_words(now: float | None, before: float | None, level: float | None, turn: bool) -> str:
-    if now is None or before is None:
-        return "Trend nicht bestimmbar (Lücken)"
-    flat = 0.003 * abs(level or 1)
-    word = {1: "steigt", -1: "fällt"}
-
-    def sgn(v: float) -> int:
-        return 0 if abs(v) <= flat else (1 if v > 0 else -1)
-
-    a, b = sgn(now), sgn(before)
-    if a == 0:
-        return "seitwärts" if b == 0 else f"kommt zum Stillstand (zuvor: {word[b]})"
-    if turn or (b != 0 and a != b):
-        return f"Trend dreht: {word[a]} jetzt"
-    if b == 0:
-        return f"{word[a]} wieder (zuvor seitwärts)"
-    if abs(now) > 1.25 * abs(before):
-        return f"{word[a]} schneller"
-    if abs(now) < 0.8 * abs(before):
-        return f"{word[a]} langsamer"
-    return f"{word[a]} gleichmäßig"
+def level_sentence(s: dict) -> str:
+    unit = "Quartale" if s["freq"] == "Q" else "Monate"
+    r = s["level_rank"]
+    if r is None:
+        return "Zu kurze Geschichte für eine Einordnung."
+    if r >= 0.5:
+        return f"Höher als in {pct(r)} aller {unit} seit {s['since']}."
+    return f"Niedriger als in {pct(1 - r)} aller {unit} seit {s['since']}."
 
 
-def signal_state(s: dict) -> tuple[str, str]:
-    """(css class, German label) for one signal."""
-    if s["unusual"]:
-        return "move", "Tempo ungewöhnlich"
-    if s["turn"]:
-        return "turn", "Richtungswechsel"
-    return "calm", "Tempo üblich"
+def move_sentence(s: dict, cu: str) -> str:
+    span = "einem Quartal" if s["freq"] == "Q" else "drei Monaten"
+    what = "Quartalsbewegungen" if s["freq"] == "Q" else "Drei-Monats-Bewegungen"
+    d = digits_for(s["levels"])
+    head = f"{num(s['change'], d, True)} {cu} in {span}".replace("  ", " ")
+    if s["move_rank"] is None:
+        return f"{head}. Zu kurze Geschichte für eine Einordnung."
+    return f"{head}: größer als {pct(s['move_rank'])} aller bisherigen {what} seit {s['since']}."
 
 
-def level_extreme(s: dict) -> str | None:
-    """'hoch' or 'niedrig' when the level sits in the outer tenth of its own history."""
-    lv = s.get("level")
-    if not lv:
-        return None
-    return "hoch" if lv["rank"] >= 0.9 else "niedrig" if lv["rank"] <= 0.1 else None
+def name_of(s: dict) -> str:
+    return SIGNALS_DE.get(s["indicator"], (s["indicator"],))[0]
 
 
-def level_words(s: dict) -> str:
-    lv = s.get("level")
-    if not lv:
-        return "Niveau: zu kurze Geschichte für eine Einordnung"
-    unit = "Quartale" if "-Q" in s["latest_period"] else "Monate"
-    if lv["rank"] >= 0.5:
-        return f"Niveau: höher als in {lv['rank']:.0%} aller {unit} seit {lv['since']}".replace(
-            "%", " %"
-        )
-    return f"Niveau: niedriger als in {1 - lv['rank']:.0%} aller {unit} seit {lv['since']}".replace(
-        "%", " %"
-    )
+def top_moves(signals: list[dict], n: int = 3) -> list[dict]:
+    return sorted(
+        (s for s in signals if s["move_rank"] is not None), key=lambda s: -s["move_rank"]
+    )[:n]
 
 
-def headline(p: dict) -> tuple[str, str]:
-    now = p["now"]
-    names = [LAYERS_DE.get(k, k) for k in now["active_layers"]]
-    if now["level"] == 0:
-        return "calm", "Ruhige Lage. Keine Ebene bewegt sich ungewöhnlich."
-    if now["level"] == 1:
-        return "move", f"Eine Ebene in Bewegung: {names[0]}."
-    lead = "Neu: mehrere Ebenen in Bewegung" if now["onset"] else "Mehrere Ebenen in Bewegung"
-    return "alarm", f"{lead}: {', '.join(names)}."
+def top_levels(signals: list[dict], n: int = 3) -> list[dict]:
+    return sorted(
+        (s for s in signals if s["level_rank"] is not None),
+        key=lambda s: -abs(s["level_rank"] - 0.5),
+    )[:n]
 
 
-def explain_signal(s: dict) -> str:
-    name, _, cu = SIGNALS_DE.get(s["indicator"], (s["indicator"], "", ""))
-    if s["unusual"]:
-        way = "Anstieg" if (s["change"] or 0) > 0 else "Rückgang"
-        return (
-            f"{name}: ungewöhnlich schneller {way}, {num(s['change'], 1, True)} {cu} in drei "
-            f"Monaten (üblich sind bis zu ±{num(s['threshold'])})."
-        )
-    way = "nach unten" if (s["change_6m"] or 0) < 0 else "nach oben"
+def trend_sentence(r: dict) -> str:
+    unit = STRUCTURAL_DE.get(r["key"], ("", "", "", ""))[3]
+    if r.get("trend_now") is None or r.get("trend_before") is None:
+        return "EU-Trend nicht bestimmbar: Die EU-Reihe hat Lücken."
+    d = 3 if max(abs(r["trend_now"]), abs(r["trend_before"])) < 0.1 else 2
+    u = f" {unit}" if unit else ""
+
+    def signed(v: float) -> str:
+        return num(0.0, d) if round(v, d) == 0 else num(v, d, True)
+
     return (
-        f"{name}: Richtungswechsel {way}, {num(s['change_6m'], 1, True)} {cu} in sechs Monaten "
-        f"nach einer längeren Bewegung in die Gegenrichtung."
+        f"EU-Trend jetzt {signed(r['trend_now'])}{u} pro Jahr, "
+        f"in den fünf Jahren davor {signed(r['trend_before'])}{u} pro Jahr."
     )
+
+
+def breadth_sentence(r: dict) -> str:
+    if not r.get("members"):
+        return ""
+    up = (r.get("trend_now") or 0) >= 0
+    now = r["rising_now"] if up else r["falling_now"]
+    before = r["rising_before"] if up else r["falling_before"]
+    word = "Steigender" if up else "Fallender"
+    tail = (
+        f", in den fünf Jahren davor in {before} von {r['members_before']}"
+        if r["members_before"]
+        else ""
+    )
+    return f"{word} Trend in {now} von {r['members']} Mitgliedstaaten{tail}."
 
 
 # ------------------------------------------------------------------ drawing
 
 
-def sparkline(points: list[list], window: int, state: str) -> str:
-    """Monthly or quarterly history as a line with area fill, last `window` points marked."""
+def sparkline(points: list[list], window: int) -> str:
+    """History as a line with area fill; the last `window` points sit on a grey band."""
     if len(points) < 2:
         return '<p class="nodata">Zu wenig Daten</p>'
     w, h, pad = 560, 76, 5
@@ -368,7 +461,7 @@ def sparkline(points: list[list], window: int, state: str) -> str:
         return pad + (hi - v) * (h - 2 * pad) / (hi - lo)
 
     line = " ".join(f"{x(i):.1f},{y(v):.1f}" for i, (_, v) in enumerate(points))
-    base = y(max(lo, min(hi, 0))) if lo < 0 < hi else h - pad
+    base = y(0) if lo < 0 < hi else h - pad
     area = f"{x(0):.1f},{base:.1f} {line} {x(len(points) - 1):.1f},{base:.1f}"
     k = max(0, len(points) - 1 - window)
     parts = [
@@ -377,7 +470,7 @@ def sparkline(points: list[list], window: int, state: str) -> str:
             f'aria-label="Verlauf {points[0][0]} bis {points[-1][0]}" '
             f"data-points='{_e(json.dumps(points))}'>"
         ),
-        f'<rect x="{x(k):.1f}" y="0" width="{w - pad - x(k):.1f}" height="{h}" class="win {state}"/>',
+        f'<rect x="{x(k):.1f}" y="0" width="{w - pad - x(k):.1f}" height="{h}" class="win"/>',
     ]
     if lo < 0 < hi:
         parts.append(
@@ -386,22 +479,57 @@ def sparkline(points: list[list], window: int, state: str) -> str:
     parts += [
         f'<polygon points="{area}" class="area"/>',
         f'<polyline points="{line}" class="line"/>',
-        f'<circle cx="{x(len(points) - 1):.1f}" cy="{y(vals[-1]):.1f}" r="4" class="end {state}"/>',
+        f'<circle cx="{x(len(points) - 1):.1f}" cy="{y(vals[-1]):.1f}" r="4" class="end"/>',
         f'<line class="cross" x1="0" x2="0" y1="0" y2="{h}" visibility="hidden"/>',
         "</svg>",
     ]
     return "".join(parts)
 
 
-def gauge(change: float | None, threshold: float | None, state: str) -> str:
-    """Size of the latest 3-month move against the signal's own usual range (tick = 95%)."""
-    if change is None or not threshold:
+def histogram(values: list[float], current: float | None, label: str, zero: bool = False) -> str:
+    """Distribution of all earlier values as bars; the current value as a marked line."""
+    if len(values) < 2 or current is None:
         return ""
-    ratio = min(abs(change) / threshold, 2.0)
+    w, h, pad = 560, 40, 2
+    lo, hi = min([*values, current]), max([*values, current])
+    if hi == lo:
+        hi, lo = hi + 1, lo - 1
+    width = (hi - lo) / HIST_BINS
+    counts = [0] * HIST_BINS
+    for v in values:
+        counts[min(HIST_BINS - 1, int((v - lo) / width))] += 1
+    top = max(counts)
+    bw = (w - 2 * pad) / HIST_BINS
+
+    def x(v):
+        return pad + (v - lo) / (hi - lo) * (w - 2 * pad)
+
+    parts = [f'<svg class="hist" viewBox="0 0 {w} {h + 14}" role="img" aria-label="{_e(label)}">']
+    for i, c in enumerate(counts):
+        if c:
+            bh = max(1.5, (h - 6) * c / top)
+            parts.append(
+                f'<rect x="{pad + i * bw + 0.5:.1f}" y="{h - bh:.1f}" width="{bw - 1:.1f}" '
+                f'height="{bh:.1f}" class="bar"/>'
+            )
+    if zero and lo < 0 < hi:
+        parts.append(f'<line x1="{x(0):.1f}" x2="{x(0):.1f}" y1="0" y2="{h}" class="zero"/>')
+    cx = x(current)
+    parts.append(f'<line x1="{cx:.1f}" x2="{cx:.1f}" y1="0" y2="{h}" class="now"/>')
+    parts.append(f'<circle cx="{cx:.1f}" cy="3" r="3.5" class="now-dot"/>')
+    d = digits_for(values)
+    parts.append(f'<text x="{pad}" y="{h + 12}" class="axis">{num(lo, d)}</text>')
+    parts.append(
+        f'<text x="{w - pad}" y="{h + 12}" class="axis" text-anchor="end">{num(hi, d)}</text>'
+    )
+    parts.append("</svg>")
+    return "".join(parts)
+
+
+def rank_bar(share: float) -> str:
     return (
-        f'<div class="gauge" role="img" aria-label="Bewegung {ratio:.0%} des üblichen Rahmens">'
-        f'<span class="fill {state if ratio >= 1 else "calm"}" style="width:{ratio * 50:.1f}%"></span>'
-        '<span class="tick"></span></div>'
+        f'<span class="rbar" role="img" aria-label="{pct(share)}">'
+        f'<span style="width:{100 * share:.1f}%"></span></span>'
     )
 
 
@@ -456,48 +584,64 @@ def trend_chart(series: list[list], n: int) -> str:
     return "".join(parts)
 
 
-def timeline_svg(timeline: list[dict], events: list[dict]) -> str:
-    n = len(timeline)
-    cw, top, ch = 5, 8, 26
-    w = n * cw
-    h = top + ch + 40
-    idx = {t["month"]: i for i, t in enumerate(timeline)}
-    level_cls = {0: "l0", 1: "l1", 2: "l2"}
-    level_de = {0: "ruhig", 1: "eine Ebene in Bewegung", 2: "mehrere Ebenen in Bewegung"}
+def heat_opacity(share: float) -> float:
+    """Continuous colour scale: small moves nearly invisible, the largest moves dark."""
+    return round(share**4, 3)
+
+
+def record_svg(rec: dict, events: list[dict]) -> str:
+    months = rec["months"]
+    cw, rh, left, top = 5, 18, 212, 4
+    rows = list(rec["rows"])
+    h_rows = top + len(rows) * (rh + 3)
+    w = left + len(months) * cw
+    h = h_rows + 46
+    idx = {m: i for i, m in enumerate(months)}
     parts = [
         (
-            f'<svg class="timeline" viewBox="0 0 {w} {h}" role="img" '
-            f'aria-label="Lage nach Monat seit {timeline[0]["month"][:4]}">'
+            f'<svg class="record-svg" viewBox="0 0 {w} {h}" role="img" '
+            f'aria-label="Größte Bewegung je Ebene und Monat seit {months[0][:4]}">'
         )
     ]
-    for i, t in enumerate(timeline):
-        layers = ", ".join(LAYERS_DE.get(k, k) for k in t["layers"])
-        tip = f"{month_de(t['month'])}: {level_de[t['level']]}"
-        tip += " (neu)" if t["onset"] else ""
-        tip += f" – {layers}" if layers else ""
+    for r, layer in enumerate(rows):
+        y = top + r * (rh + 3)
         parts.append(
-            f'<rect x="{i * cw}" y="{top}" width="{cw - 1}" height="{ch}" class="{level_cls[t["level"]]}">'
-            f"<title>{_e(tip)}</title></rect>"
+            f'<text x="0" y="{y + rh - 5}" class="rowlabel">{_e(LAYERS_DE.get(layer, layer))}</text>'
         )
-        if t["onset"]:
-            parts.append(
-                f'<rect x="{i * cw}" y="{top - 6}" width="{cw - 1}" height="3" class="onset"/>'
+        parts.append(
+            f'<rect x="{left}" y="{y}" width="{len(months) * cw}" height="{rh}" class="rowbg"/>'
+        )
+        for i, cell in enumerate(rec["rows"][layer]):
+            if cell is None:
+                continue
+            share, ind = cell
+            op = heat_opacity(share)
+            if op < 0.01:
+                continue
+            tip = (
+                f"{month_de(months[i])} · {LAYERS_DE.get(layer, layer)}: "
+                f"{name_of({'indicator': ind})}, größer als {pct(share)} der bisherigen Bewegungen"
             )
-        if t["month"].endswith("-01") and int(t["month"][:4]) % 2 == 0:
             parts.append(
-                f'<line x1="{i * cw}" x2="{i * cw}" y1="{top + ch}" y2="{top + ch + 5}" class="tickline"/>'
-                f'<text x="{i * cw}" y="{top + ch + 16}" class="axis">{t["month"][:4]}</text>'
+                f'<rect x="{left + i * cw}" y="{y}" width="{cw - 0.6}" height="{rh}" '
+                f'class="cell" fill-opacity="{op}"><title>{_e(tip)}</title></rect>'
             )
-    for ev in events:
+    for i, m in enumerate(months):
+        if m.endswith("-01") and int(m[:4]) % 2 == 0:
+            x = left + i * cw
+            parts.append(
+                f'<line x1="{x}" x2="{x}" y1="{h_rows}" y2="{h_rows + 5}" class="tickline"/>'
+                f'<text x="{x}" y="{h_rows + 16}" class="axis">{m[:4]}</text>'
+            )
+    for k, ev in enumerate(events, start=1):
         if ev["month"] not in idx:
             continue
-        cx = idx[ev["month"]] * cw + cw / 2
-        cy = top + ch + 24
-        cls = {"new alarm": "ev-new", "alarm already running": "ev-run", "missed": "ev-miss"}
+        cx = left + idx[ev["month"]] * cw + cw / 2
+        cy = h_rows + 22
         parts.append(
-            f'<path d="M{cx - 5},{cy + 9} L{cx},{cy} L{cx + 5},{cy + 9} Z" class="{cls[ev["status"]]}">'
-            f"<title>{_e(month_de(ev['month']))}: {_e(ev['event'])} – "
-            f"{_e(EVENTS_DE[ev['status']])}</title></path>"
+            f'<path d="M{cx - 5},{cy + 9} L{cx},{cy} L{cx + 5},{cy + 9} Z" class="ev">'
+            f"<title>{_e(month_de(ev['month']))}: {_e(ev['text'])}</title></path>"
+            f'<text x="{cx}" y="{cy + 20}" class="evnum" text-anchor="middle">{k}</text>'
         )
     parts.append("</svg>")
     return "".join(parts)
@@ -506,150 +650,126 @@ def timeline_svg(timeline: list[dict], events: list[dict]) -> str:
 # ------------------------------------------------------------------ page
 
 CSS = """
-/* Lagebild: status sentence first, then six layers as instrument rows, the monthly record since
-   2008, the slow yearly trends, and the sources every number rests on. */
+/* Lagebild: a description, not a verdict. The largest moves and the most unusual levels first,
+   then each layer with its signals drawn against their own history, the record since 2008,
+   the slow yearly trends, and the sources every number rests on. */
 :root{
   --ground:#eef1f5; --sheet:#ffffff; --ink:#111a28; --muted:#566273; --faint:#8a95a5;
-  --rule:#d4dae3; --wash:#e4e9f0; --accent:#2a4bb0; --accent-wash:rgba(42,75,176,.10);
-  --calm:#7d8898; --move:#b8670a; --move-wash:rgba(184,103,10,.14); --alarm:#b42318;
-  --alarm-wash:rgba(180,35,24,.12);
+  --rule:#d4dae3; --wash:#e6eaf0; --bar:#b9c2ce; --accent:#2a4bb0; --accent-wash:rgba(42,75,176,.10);
   --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
   --body:"Public Sans","Segoe UI",system-ui,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --ground:#0d131b; --sheet:#141c27; --ink:#e6ebf2; --muted:#9aa6b6; --faint:#6d7a8c;
-  --rule:#273242; --wash:#1b2533; --accent:#8ea6ff; --accent-wash:rgba(142,166,255,.14);
-  --calm:#77849a; --move:#f0a23b; --move-wash:rgba(240,162,59,.16); --alarm:#ff6b5e;
-  --alarm-wash:rgba(255,107,94,.14); color-scheme:dark}}
+  --rule:#273242; --wash:#1d2735; --bar:#3a4657; --accent:#8ea6ff; --accent-wash:rgba(142,166,255,.14);
+  color-scheme:dark}}
 :root[data-theme="dark"]{
   --ground:#0d131b; --sheet:#141c27; --ink:#e6ebf2; --muted:#9aa6b6; --faint:#6d7a8c;
-  --rule:#273242; --wash:#1b2533; --accent:#8ea6ff; --accent-wash:rgba(142,166,255,.14);
-  --calm:#77849a; --move:#f0a23b; --move-wash:rgba(240,162,59,.16); --alarm:#ff6b5e;
-  --alarm-wash:rgba(255,107,94,.14); color-scheme:dark}
+  --rule:#273242; --wash:#1d2735; --bar:#3a4657; --accent:#8ea6ff; --accent-wash:rgba(142,166,255,.14);
+  color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--ground);color:var(--ink);font:15px/1.55 var(--body);margin:0}
 .wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:28px 56px;display:grid;
-  gap:28px;grid-template-columns:minmax(0,1fr)}
+  gap:30px;grid-template-columns:minmax(0,1fr)}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
 .eyebrow{font:600 11px/1.2 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 a{color:var(--accent)}
-a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 .masthead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 24px;
   border-bottom:1px solid var(--rule);padding-bottom:14px}
 .masthead .name{font:700 15px/1 var(--display);letter-spacing:.02em}
 .masthead .date{color:var(--muted);font-size:13px}
 
-.hero{display:grid;gap:18px;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:start}
-.status{display:grid;gap:14px}
-.status h1{font-size:clamp(28px,4.4vw,46px);line-height:1.08;font-weight:700;letter-spacing:-.01em}
-.pill{display:inline-flex;align-items:center;gap:8px;font:600 12px/1 var(--body);letter-spacing:.04em;
-  padding:7px 12px;border-radius:999px;width:max-content}
-.pill::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor}
-.pill.calm{color:var(--calm);background:var(--wash)}
-.pill.move{color:var(--move);background:var(--move-wash)}
-.pill.alarm{color:var(--alarm);background:var(--alarm-wash)}
-.status p{margin:0;max-width:62ch;color:var(--ink)}
-.status .lede{font-size:17px}
-.status .note{color:var(--muted);font-size:14px}
-.status .levels{font-size:15px;border-left:3px solid var(--ink);padding-left:12px}
-.recent{display:flex;flex-wrap:wrap;gap:6px}
-.recent span{font:500 12px/1 var(--body);padding:6px 9px;border-radius:6px;background:var(--wash);color:var(--muted)}
-.recent span b{font-weight:600;color:var(--ink)}
-.recent span.l1 b{color:var(--move)} .recent span.l2 b{color:var(--alarm)}
-
-.panel{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:18px;display:grid;gap:12px}
+.hero{display:grid;gap:18px}
+.hero h1{font-size:clamp(30px,4.6vw,48px);line-height:1.06;font-weight:700;letter-spacing:-.01em}
+.hero .lede{margin:0;max-width:68ch;font-size:16.5px;color:var(--muted)}
+.ranks{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.panel{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:18px;display:grid;gap:10px;align-content:start}
 .panel h2{font-size:16px;font-weight:600}
-.layers-mini{display:grid;gap:8px;margin:0;padding:0;list-style:none}
-.layers-mini li{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:14px;
-  padding-bottom:8px;border-bottom:1px solid var(--rule)}
-.layers-mini li:last-child{border-bottom:0;padding-bottom:0}
-.layers-mini .lvl{display:block;font-size:12px;color:var(--muted)}
-.dot{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap}
-.dot::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--calm)}
-.dot.move{color:var(--move)} .dot.move::before{background:var(--move)}
-.dot.turn{color:var(--move)} .dot.turn::before{background:transparent;border:2px solid var(--move);width:6px;height:6px}
+.panel .hint{margin:0;font-size:12.5px;color:var(--muted)}
+.rank{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.rank li{display:grid;gap:4px}
+.rank .top{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.rank .top strong{font-weight:600;font-size:14.5px}
+.rank .top span{font:600 14px var(--body);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rank .sub{font-size:12.5px;color:var(--muted)}
+.rbar{display:block;height:6px;background:var(--wash);border-radius:3px;overflow:hidden}
+.rbar span{display:block;height:100%;background:var(--accent);border-radius:3px}
 
 section{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
-.sechead{display:grid;gap:4px}
+.sechead{display:grid;gap:6px}
 .sechead h2{font-size:clamp(20px,2.6vw,26px);font-weight:700}
-.sechead p{margin:0;color:var(--muted);max-width:70ch;font-size:14px}
+.sechead p{margin:0;color:var(--muted);max-width:74ch;font-size:14px}
+.sechead p b{color:var(--ink);font-weight:600}
 
 .grid{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
 .layer{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:16px 16px 6px;
   display:grid;gap:4px;align-content:start}
-.layer.active{border-color:var(--move);box-shadow:inset 0 3px 0 var(--move)}
-.layer header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:6px}
-.layer h3{font-size:17px;font-weight:600}
-.sig{display:grid;grid-template-columns:minmax(0,1fr) 128px;gap:4px 14px;padding:12px 0;
-  border-top:1px solid var(--rule)}
-.sig .label{display:grid;gap:3px;min-width:0}
-.sig .label strong{font-weight:600;font-size:14px;line-height:1.3}
-.sig .value{font:600 22px/1.1 var(--body);font-variant-numeric:tabular-nums}
+.layer h3{font-size:17px;font-weight:600;padding-bottom:6px}
+.sig{display:grid;gap:8px;padding:14px 0;border-top:1px solid var(--rule)}
+.sig .head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.sig .head strong{font-weight:600;font-size:14px;line-height:1.3}
+.sig .value{font:600 22px/1.1 var(--body);font-variant-numeric:tabular-nums;white-space:nowrap}
 .sig .value small{font:500 12px var(--body);color:var(--muted);margin-left:3px}
-.sig .move-txt,.sig .level-txt{font-size:12px;color:var(--muted)}
-.sig .level-txt.extreme{color:var(--ink);font-weight:600}
-.sig .level-txt.extreme::before{content:"";display:inline-block;width:7px;height:7px;margin-right:6px;
-  transform:rotate(45deg);background:var(--ink);vertical-align:1px}
-.sig .chart{grid-column:1 / -1;display:grid;gap:6px}
-.sig .src{grid-column:1 / -1;font-size:11.5px;color:var(--faint);line-height:1.4}
-.sig .side{display:grid;gap:6px;justify-items:end;align-content:start;text-align:right}
-.gauge{position:relative;height:6px;width:100%;background:var(--wash);border-radius:3px;overflow:hidden}
-.gauge .fill{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--calm)}
-.gauge .fill.move{background:var(--move)}
-.gauge .tick{position:absolute;left:50%;top:-2px;bottom:-2px;width:2px;background:var(--ink);opacity:.55}
+.sig .part{display:grid;gap:2px}
+.sig .cap{font-size:12.5px;color:var(--ink)}
+.sig .cap b{font-weight:600}
+.sig .src{font-size:11.5px;color:var(--faint);line-height:1.4}
 .spark{width:100%;height:auto;display:block;overflow:visible}
 .spark .line{fill:none;stroke:var(--accent);stroke-width:2;stroke-linejoin:round}
 .spark .area{fill:var(--accent-wash);stroke:none}
-.spark .zero{stroke:var(--rule);stroke-width:1}
-.spark .win{fill:var(--wash)} .spark .win.move,.spark .win.turn{fill:var(--move-wash)}
+.spark .zero,.hist .zero{stroke:var(--faint);stroke-width:1;stroke-dasharray:3 3}
+.spark .win{fill:var(--wash)}
 .spark .end{fill:var(--accent);stroke:var(--sheet);stroke-width:2}
-.spark .end.move,.spark .end.turn{fill:var(--move)}
 .spark .cross{stroke:var(--muted);stroke-width:1}
 .spark-axis{display:flex;justify-content:space-between;font:11px var(--mono);color:var(--faint)}
+.hist{width:100%;height:auto;display:block}
+.hist .bar{fill:var(--bar)}
+.hist .now{stroke:var(--accent);stroke-width:2.5}
+.hist .now-dot{fill:var(--accent)}
+.hist .axis,.trend .axis,.record-svg .axis{font:10px var(--mono);fill:var(--muted)}
 .nodata{color:var(--faint);font-size:12px;margin:0}
 
 .record{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:18px;display:grid;gap:14px}
 .scroll{overflow-x:auto}
-.timeline{width:100%;min-width:640px;height:auto;display:block}
-.timeline .l0{fill:var(--wash)} .timeline .l1{fill:var(--move);opacity:.45} .timeline .l2{fill:var(--alarm)}
-.timeline .onset{fill:var(--ink)}
-.timeline .tickline{stroke:var(--faint);stroke-width:1}
-.timeline .axis,.trend .axis{font:10px var(--mono);fill:var(--muted)}
-.timeline .ev-new{fill:var(--accent)} .timeline .ev-run{fill:var(--faint)} .timeline .ev-miss{fill:none;stroke:var(--alarm);stroke-width:1.5}
-.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:var(--muted);margin:0;padding:0;list-style:none}
-.legend li{display:inline-flex;align-items:center;gap:6px}
-.sw{width:12px;height:12px;border-radius:2px;display:inline-block}
-.sw.l0{background:var(--wash);border:1px solid var(--rule)} .sw.l1{background:var(--move);opacity:.45} .sw.l2{background:var(--alarm)}
-.tri{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:10px solid var(--accent)}
-.tri.run{border-bottom-color:var(--faint)}
-.tri.miss{border-bottom-color:var(--alarm);opacity:.6}
-.scores{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.score{border-top:2px solid var(--rule);padding-top:8px;display:grid;gap:2px}
-.score b{font:700 26px/1 var(--display);font-variant-numeric:tabular-nums}
-.score span{font-size:12.5px;color:var(--muted)}
+.record-svg{width:100%;min-width:760px;height:auto;display:block}
+.record-svg .rowlabel{font:12px var(--body);fill:var(--ink)}
+.record-svg .rowbg{fill:var(--wash)}
+.record-svg .cell{fill:var(--accent)}
+.record-svg .tickline{stroke:var(--faint);stroke-width:1}
+.record-svg .ev{fill:var(--ink)}
+.record-svg .evnum{font:600 10px var(--body);fill:var(--muted)}
+.scale{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.scale .grad{width:220px;max-width:60vw;height:10px;border-radius:2px;border:1px solid var(--rule);
+  background:linear-gradient(90deg,
+    color-mix(in srgb,var(--accent) 0%,transparent) 0%,
+    color-mix(in srgb,var(--accent) 6%,transparent) 50%,
+    color-mix(in srgb,var(--accent) 24%,transparent) 70%,
+    color-mix(in srgb,var(--accent) 41%,transparent) 80%,
+    color-mix(in srgb,var(--accent) 66%,transparent) 90%,
+    var(--accent) 100%)}
+.events{list-style:none;margin:0;padding:0;display:grid;gap:4px 18px;grid-template-columns:repeat(2,minmax(0,1fr));font-size:12.5px;color:var(--muted)}
+.events b{color:var(--ink);font-weight:600;margin-right:6px}
 
 .trends{display:grid;gap:14px;grid-template-columns:repeat(3,minmax(0,1fr))}
 .tcard{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:14px 14px 12px;display:grid;gap:8px;align-content:start}
-.tcard.flag{border-color:var(--move);box-shadow:inset 0 3px 0 var(--move)}
 .tcard .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .tcard h3{font-size:15px;font-weight:600}
 .tcard .axisname{font:600 10.5px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
 .tcard .val{font:600 20px/1 var(--body);font-variant-numeric:tabular-nums;white-space:nowrap}
 .tcard .val small{font:500 11.5px var(--body);color:var(--muted);margin-left:4px}
-.tcard .words{font-size:13.5px;font-weight:600}
-.tcard .breadth{font-size:12.5px;color:var(--muted);margin:0}
-.tcard .breadth.flag{color:var(--move);font-weight:600}
+.tcard p{margin:0;font-size:12.5px;color:var(--muted)}
+.tcard p.lead{color:var(--ink)}
 .tcard .src{font-size:11.5px;color:var(--faint)}
+.tcard.guide{background:transparent;border-style:dashed}
 .trend{width:100%;height:auto;display:block}
 .trend .tline{fill:none;stroke:var(--accent);stroke-width:1.6;opacity:.55}
 .trend .tdot{fill:var(--accent)}
 .trend .fit-now{stroke:var(--ink);stroke-width:2.4;stroke-linecap:round}
 .trend .fit-before{stroke:var(--faint);stroke-width:2.4;stroke-dasharray:4 4;stroke-linecap:round}
 .fitlegend{display:grid;gap:6px;font-size:12.5px;color:var(--muted)}
-.tcard.guide{background:transparent;border-style:dashed}
 .fitlegend i{display:inline-block;width:18px;height:0;border-top:2.4px solid var(--ink);vertical-align:middle;margin-right:6px}
 .fitlegend i.before{border-top:2.4px dashed var(--faint)}
 
@@ -662,24 +782,20 @@ table{border-collapse:collapse;width:100%;font-size:13px;min-width:640px}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
 th{font:600 11px/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 tr:last-child td{border-bottom:0}
-td.mono{font-size:12px;white-space:nowrap}
+td.mono{font:12px var(--mono);white-space:nowrap}
 footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--rule);padding-top:14px;display:grid;gap:6px}
 footer p{margin:0;max-width:90ch}
 #tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--sheet);font:12px/1.3 var(--mono);
   padding:5px 8px;border-radius:5px;z-index:10}
 
 @media (max-width:900px){
-  .hero{grid-template-columns:minmax(0,1fr)}
   .trends{grid-template-columns:repeat(2,minmax(0,1fr))}
   .method{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:680px){
   .wrap{padding-inline:16px}
-  .grid,.trends{grid-template-columns:minmax(0,1fr)}
-  .scores{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .sig{grid-template-columns:minmax(0,1fr) 108px}
+  .grid,.trends,.ranks,.events{grid-template-columns:minmax(0,1fr)}
 }
-@media (prefers-reduced-motion:no-preference){.gauge .fill{transition:width .4s ease}}
 """
 
 SCRIPT = """
@@ -715,76 +831,51 @@ def _source_line(cards: list[str], by_card: dict[str, dict], through: str) -> st
 
 def _signal_block(s: dict, by_card: dict[str, dict]) -> str:
     name, unit, cu = SIGNALS_DE.get(s["indicator"], (s["indicator"], "", ""))
-    state, state_de = signal_state(s)
+    d = digits_for(s["levels"])
+    window = 1 if s["freq"] == "Q" else 3
     hist = s["history"]
-    d = digits_for([v for _, v in hist] or [s["value"] or 0])
-    window = 1 if "-Q" in s["latest_period"] else 3
-    move = (
-        f"Tempo: {num(s['change'], d, True)} {cu} in drei Monaten, üblich bis ±{num(s['threshold'], d)}"
-        if s["change"] is not None and s["threshold"]
-        else "Tempo: zu kurze Geschichte für einen Vergleich"
-    )
-    if s.get("change_6m") is not None:
-        move += f" · {num(s['change_6m'], d, True)} {cu} in sechs Monaten".replace("  ", " ")
-    extreme = level_extreme(s)
-    pseudo = " · ohne historische Datenstände" if s["knowledge"] == "pseudo" else ""
     axis = (
         f'<div class="spark-axis"><span>{_e(period_de(hist[0][0]))}</span>'
         f"<span>{_e(period_de(hist[-1][0]))}</span></div>"
         if hist
         else ""
     )
+    six = (
+        f" In sechs Monaten: {num(s['change_6m'], d, True)} {cu}".rstrip(" .") + "."
+        if s["change_6m"] is not None and s["freq"] == "M"
+        else ""
+    )
+    pseudo = " · ohne historische Datenstände" if s["knowledge"] == "pseudo" else ""
+    level_hist = histogram(s["levels"][:-1], s["value"], "Verteilung aller bisherigen Werte")
+    move_hist = histogram(
+        s["changes"][:-1], s["change"], "Verteilung aller bisherigen Bewegungen", zero=True
+    )
     return f"""
 <div class="sig" data-unit="{_e(unit if unit not in ("Saldo", "Index") else "")}">
-  <div class="label"><strong>{_e(name)}</strong><span class="dot {state}">{state_de}</span></div>
-  <div class="side"><div class="value">{num(s["value"], d)}<small>{_e(unit)}</small></div></div>
-  <div class="chart">{sparkline(hist, window, state)}{axis}
-    {gauge(s["change"], s["threshold"], state)}<span class="move-txt">{move}</span>
-    <span class="level-txt{" extreme" if extreme else ""}">{_e(level_words(s))}</span></div>
+  <div class="head"><strong>{_e(name)}</strong><span class="value">{num(s["value"], d)}<small>{_e(unit)}</small></span></div>
+  <div class="part">{sparkline(hist, window)}{axis}</div>
+  <div class="part">{level_hist}
+    <span class="cap"><b>Niveau:</b> {_e(level_sentence(s))}</span></div>
+  <div class="part">{move_hist}
+    <span class="cap"><b>Bewegung:</b> {_e(move_sentence(s, cu))}{_e(six)}</span></div>
   <div class="src">{_source_line(s["sources"], by_card, period_de(s["latest_period"]))}{pseudo}</div>
 </div>"""
 
 
-def _trend_card(r: dict, by_card: dict[str, dict], flagged: list[int], this_year: int) -> str:
-    name, unit, axis = STRUCTURAL_DE.get(r["key"], (r["label"], "", r["axis"]))
-    vals = [v for _, v in r["series"]] or [r["eu_value"] or 0]
-    words = trend_words(r["trend_now"], r["trend_before"], r["eu_value"], r["turn"])
-    if r["unusual"]:
-        lands = ", ".join(COUNTRIES_DE.get(c, c) for c in r["countries"])
-        breadth = (
-            f'<p class="breadth flag">Europaweit auffällig: ungewöhnliche Trendänderung in '
-            f"{len(r['countries'])} von {r['members']} Staaten ({_e(lands)}).</p>"
-        )
-    else:
-        breadth = '<p class="breadth">Keine europaweite Häufung ungewöhnlicher Trendänderungen.</p>'
-    past = [y for y in flagged if y < this_year]
-    if past:
-        breadth += (
-            f'<p class="breadth">Früher auffällig (Stand Jahresende): {_e(_years(past))}.</p>'
-        )
+def _trend_card(r: dict, by_card: dict[str, dict]) -> str:
+    name, unit, axis, _ = STRUCTURAL_DE.get(r["key"], (r["key"], "", r["axis"], ""))
+    vals = [v for _, v in r["series"]] or [0]
     note = " · EU-Wert: Mittel der Mitgliedstaaten" if "mean of member" in (r["note"] or "") else ""
+    through = str(r["latest_year"]) if r["latest_year"] else "–"
     return f"""
-<article class="tcard{" flag" if r["unusual"] else ""}">
-  <div class="top"><span class="axisname">{_e(axis)}</span><span class="val">{num(r["eu_value"], digits_for(vals))}<small>{_e(unit)}</small></span></div>
+<article class="tcard">
+  <div class="top"><span class="axisname">{_e(axis)}</span><span class="val">{num(r.get("eu_value"), digits_for(vals))}<small>{_e(unit)}</small></span></div>
   <h3>{_e(name)}</h3>
   {trend_chart(r["series"], r["trend_years"])}
-  <div class="words">{_e(words)}</div>
-  {breadth}
-  <div class="src">{_source_line(r["sources"], by_card, str(r["latest_year"]))}{note}</div>
+  <p class="lead">{_e(trend_sentence(r))}</p>
+  <p>{_e(breadth_sentence(r))}</p>
+  <div class="src">{_source_line(r["sources"], by_card, through)}{note}</div>
 </article>"""
-
-
-def _years(years: list[int]) -> str:
-    """[2011, 2012, 2013, 2015] -> '2011–2013, 2015'."""
-    out, run = [], []
-    for y in sorted(years):
-        if run and y != run[-1] + 1:
-            out.append(f"{run[0]}–{run[-1]}" if len(run) > 1 else str(run[0]))
-            run = []
-        run.append(y)
-    if run:
-        out.append(f"{run[0]}–{run[-1]}" if len(run) > 1 else str(run[0]))
-    return ", ".join(out)
 
 
 def _source_row(s: dict) -> str:
@@ -796,88 +887,54 @@ def _source_row(s: dict) -> str:
     )
 
 
+def _rank_item(s: dict, share: float, sub: str) -> str:
+    layer = LAYERS_DE.get(s["layer"], s["layer"])
+    return (
+        f'<li><div class="top"><strong>{_e(name_of(s))}</strong><span>{pct(share)}</span></div>'
+        f'{rank_bar(share)}<span class="sub">{_e(layer)} · {_e(sub)}</span></li>'
+    )
+
+
+GUIDE_CARD = """
+<article class="tcard guide">
+  <span class="axisname">Lesehilfe</span>
+  <h3>So lesen Sie die Karten</h3>
+  <div class="fitlegend"><span><i></i>Trend der letzten fünf Jahre</span>
+  <span><i class="before"></i>Trend der fünf Jahre davor</span></div>
+  <p>Punkte: EU-Wert je Jahr. Liegen die beiden Linien unterschiedlich steil, hat sich der Trend
+  verändert. Darunter steht, in wie vielen Mitgliedstaaten der Trend in dieselbe Richtung zeigt,
+  jetzt und fünf Jahre zuvor.</p>
+  <p>Jahresdaten erscheinen spät. Jede Karte nennt das letzte verfügbare Jahr.</p>
+</article>"""
+
+
 def render(p: dict) -> str:
     by_card = {s["card"]: s for s in p["sources"]}
     generated = datetime.fromisoformat(p["generated_utc"]).date()
-    state, title = headline(p)
-    now = p["now"]
-    active = [s for s in p["signals"] if s["unusual"] or s["turn"]]
-    lede = " ".join(explain_signal(s) for s in active) or (
-        "Alle beobachteten Signale bewegen sich im Rahmen ihrer eigenen Geschichte."
+    signals = p["signals"]
+    moves = "".join(
+        _rank_item(
+            s, s["move_rank"], move_sentence(s, SIGNALS_DE.get(s["indicator"], ("", "", ""))[2])
+        )
+        for s in top_moves(signals)
     )
-    level_short = {0: "ruhig", 1: "1 Ebene", 2: "mehrere Ebenen"}
-    recent = "".join(
-        f'<span class="l{r["level"]}">{_e(MONTHS_DE[int(r["month"][5:]) - 1][:3])}. '
-        f"<b>{level_short[r['level']]}</b></span>"
-        for r in now["recent"]
+    levels = "".join(
+        _rank_item(s, max(s["level_rank"], 1 - s["level_rank"]), level_sentence(s))
+        for s in top_levels(signals)
     )
-    by_layer: dict[str, list[dict]] = {}
-    for s in p["signals"]:
-        by_layer.setdefault(s["layer"], []).append(s)
-    mini, cards = [], []
+    cards = []
     for layer in p["layers"]:
-        sigs = by_layer.get(layer["key"], [])
-        st = (
-            "move"
-            if any(s["unusual"] for s in sigs)
-            else "turn"
-            if any(s["turn"] for s in sigs)
-            else "calm"
-        )
-        st_de = {"move": "Tempo ungewöhnlich", "turn": "Richtungswechsel", "calm": "Tempo üblich"}[
-            st
-        ]
-        ext = [x for x in (level_extreme(s) for s in sigs) if x]
-        lvl = (
-            f'<span class="lvl">Niveau {"hoch" if "hoch" in ext else "niedrig"} bei '
-            f"{len(ext)} von {len(sigs)}</span>"
-            if ext
-            else ""
-        )
-        name = LAYERS_DE.get(layer["key"], layer["label"])
-        on = layer["key"] in now["active_layers"]
-        mini.append(f'<li><span>{_e(name)}{lvl}</span><span class="dot {st}">{st_de}</span></li>')
+        sigs = [s for s in signals if s["layer"] == layer]
         cards.append(
-            f'<article class="layer{" active" if on else ""}"><header><h3>{_e(name)}</h3>'
-            f'<span class="dot {st}">{st_de}</span></header>'
+            f'<article class="layer"><h3>{_e(LAYERS_DE.get(layer, layer))}</h3>'
             + "".join(_signal_block(s, by_card) for s in sigs)
             + "</article>"
         )
-    t = p["test"]
-    ev = t["events"]
-    n_new = sum(e["status"] == "new alarm" for e in ev)
-    n_run = sum(e["status"] == "alarm already running" for e in ev)
-    n_miss = sum(e["status"] == "missed" for e in ev)
-    first_year = p["timeline"][0]["month"][:4]
-    flagged = [r for r in p["structural"] if r["unusual"]]
-    slow_line = (
-        "Bei den langsamen Trends fällt europaweit auf: "
-        + ", ".join(
-            f"{STRUCTURAL_DE.get(r['key'], (r['label'],))[0]} "
-            f"({trend_words(r['trend_now'], r['trend_before'], r['eu_value'], r['turn'])})"
-            for r in flagged
-        )
-        + "."
-        if flagged
-        else "Bei den langsamen Trends gibt es derzeit keine europaweite Häufung."
+    events = "".join(
+        f"<li><b>{k}</b>{_e(month_de(e['month']))}: {_e(e['text'])}</li>"
+        for k, e in enumerate(p["events"], start=1)
     )
-    extremes = [s for s in p["signals"] if level_extreme(s)]
-    level_line = (
-        "Ungewöhnliches Niveau bei üblichem Tempo. "
-        + "; ".join(
-            f"{SIGNALS_DE.get(s['indicator'], (s['indicator'],))[0]}: "
-            f"{level_words(s).removeprefix('Niveau: ')}"
-            for s in extremes
-            if not (s["unusual"] or s["turn"])
-        )
-        + "."
-        if any(not (s["unusual"] or s["turn"]) for s in extremes)
-        else ""
-    )
-    trends = "".join(
-        _trend_card(r, by_card, p["structural_flagged_years"].get(r["key"], []), generated.year)
-        for r in p["structural"]
-    )
+    trends = "".join(_trend_card(r, by_card) for r in p["structural"])
     rows = "".join(_source_row(s) for s in p["sources"])
     return f"""<title>Lagebild Europa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -891,57 +948,48 @@ def render(p: dict) -> str:
 </header>
 
 <div class="hero">
-  <div class="status">
-    <span class="pill {state}">{_e({"calm": "Ruhig", "move": "In Bewegung", "alarm": "Mehrere Ebenen"}[state])}</span>
-    <h1>{_e(title)}</h1>
-    <p class="lede">{_e(lede)}</p>
-    {f'<p class="levels">{_e(level_line)}</p>' if level_line else ""}
-    <p class="note">{_e(slow_line)} Das Lagebild sagt nichts voraus. Es zeigt, wo sich gerade
-    mehr bewegt als üblich, gemessen an der eigenen Geschichte jedes Signals.</p>
-    <div class="recent" aria-label="Letzte Monate">{recent}</div>
+  <h1>Was sich in Europa gerade bewegt</h1>
+  <p class="lede">Diese Seite bewertet nicht. Sie stellt jede Zahl neben ihre eigene Geschichte:
+  Wo liegt der aktuelle Wert unter allen bisherigen Werten, und wie groß ist die letzte Bewegung
+  im Vergleich zu allen bisherigen Bewegungen? Es gibt keine Schwellenwerte. Was davon wichtig
+  ist, entscheiden Sie.</p>
+  <div class="ranks">
+    <div class="panel"><h2>Die größten Bewegungen der letzten drei Monate</h2>
+      <p class="hint">Prozent: Anteil aller bisherigen Bewegungen desselben Signals, die kleiner waren.</p>
+      <ul class="rank">{moves}</ul></div>
+    <div class="panel"><h2>Die ungewöhnlichsten Niveaus</h2>
+      <p class="hint">Prozent: Anteil aller bisherigen Werte, die niedriger lagen (bei sehr niedrigen Werten: höher).</p>
+      <ul class="rank">{levels}</ul></div>
   </div>
-  <aside class="panel" aria-label="Sechs Ebenen auf einen Blick">
-    <h2>Sechs Ebenen auf einen Blick</h2>
-    <ul class="layers-mini">{"".join(mini)}</ul>
-  </aside>
 </div>
 
 <section>
-  <div class="sechead"><span class="eyebrow">Monatlich</span><h2>Was sich gerade bewegt</h2>
-  <p>Zwei Fragen pro Signal. <b>Tempo:</b> Der Balken misst die Bewegung der letzten drei Monate
-  an den bisherigen Bewegungen desselben Signals; erreicht er die Markierung, war sie größer als in
-  95 von 100 früheren Fällen. Ein Richtungswechsel heißt: Nach einer längeren Bewegung kehrt sich
-  die Sechs-Monats-Änderung deutlich um. <b>Niveau:</b> Wo der aktuelle Wert in der gesamten
-  Geschichte des Signals liegt. Ein hohes Niveau bei üblichem Tempo heißt: Der Schock ist da, aber
-  er wächst gerade nicht weiter. Nur das Tempo löst Alarme aus. Die Kurven zeigen fünf Jahre; Tempo und Niveau werden an der gesamten Geschichte gemessen.</p></div>
+  <div class="sechead"><span class="eyebrow">Monatlich · {len(signals)} Signale auf {len(p["layers"])} Ebenen</span><h2>Jedes Signal vor seiner Geschichte</h2>
+  <p><b>Kurve:</b> die letzten fünf Jahre, grau hinterlegt die letzten drei Monate.
+  <b>Niveau:</b> Die Balken zeigen, wie oft das Signal seit Beginn der Reihe welchen Wert hatte;
+  die blaue Linie ist der aktuelle Wert. <b>Bewegung:</b> dieselbe Darstellung für alle bisherigen
+  Drei-Monats-Änderungen (beim Wachstum: Quartalsänderungen); die gestrichelte Linie ist null.
+  Steht die blaue Linie am Rand der Verteilung, ist der Wert für dieses Signal selten.</p></div>
   <div class="grid">{"".join(cards)}</div>
 </section>
 
 <section class="record">
-  <div class="sechead"><span class="eyebrow">Rückblick seit {first_year}</span><h2>Wann sich Europa zuletzt bewegte</h2>
-  <p>Ein Monat zählt als Alarm, wenn sich mindestens zwei Ebenen zugleich ungewöhnlich bewegen.
-  Die Dreiecke markieren Wendepunkte, die vor der ersten Auswertung festgelegt wurden.</p></div>
-  <div class="scroll">{timeline_svg(p["timeline"], p["events"])}</div>
-  <ul class="legend">
-    <li><span class="sw l0"></span>ruhig</li><li><span class="sw l1"></span>eine Ebene</li>
-    <li><span class="sw l2"></span>mehrere Ebenen (Alarm)</li>
-    <li><span class="tri"></span>Wendepunkt neu erkannt</li>
-    <li><span class="tri run"></span>Alarm lief bereits</li><li><span class="tri miss"></span>verpasst</li>
-  </ul>
-  <div class="scores">
-    <div class="score"><b>{n_new} von {len(ev)}</b><span>Wendepunkten mit neuem Alarm erkannt</span></div>
-    <div class="score"><b>{n_run}</b><span>fielen in eine bereits laufende Alarmphase</span></div>
-    <div class="score"><b>{n_miss}</b><span>verpasst</span></div>
-    <div class="score"><b>{len(t["false_alarms"])}</b><span>Alarme ohne passendes Ereignis</span></div>
-  </div>
+  <div class="sechead"><span class="eyebrow">Rückblick seit {p["record"]["months"][0][:4]}</span><h2>Wann sich Europa zuletzt bewegte</h2>
+  <p>Jede Zeile ist eine Ebene, jede Spalte ein Monat. Die Farbe zeigt die größte Bewegung unter
+  den Signalen der Ebene, gemessen an allen früheren Bewegungen desselben Signals: Je dunkler,
+  desto seltener war eine so große Bewegung. Die Farbe ist stufenlos, es gibt keine Grenze. Der
+  Rückblick rechnet mit dem heutigen Datenstand. Die nummerierten Dreiecke markieren Ereignisse,
+  die vor der ersten Auswertung festgelegt wurden.</p></div>
+  <div class="scroll">{record_svg(p["record"], p["events"])}</div>
+  <div class="scale"><span>kleiner als die meisten früheren Bewegungen</span><span class="grad"></span><span>größer als fast alle</span></div>
+  <ol class="events">{events}</ol>
 </section>
 
 <section>
   <div class="sechead"><span class="eyebrow">Jährlich · 27 Mitgliedstaaten</span><h2>Die langsamen Trends</h2>
-  <p>Für jedes Land wird der Trend der letzten fünf Jahre mit dem der fünf Jahre davor verglichen.
-  Europaweit auffällig ist ein Thema erst, wenn ungewöhnlich viele Länder zugleich in dieselbe
-  Richtung umschwenken. Feste Schwellenwerte gibt es nicht.</p>
-</div>
+  <p>Für jeden Indikator: der EU-Wert der letzten zwanzig Jahre, der Trend der letzten fünf Jahre
+  neben dem der fünf Jahre davor, und in wie vielen Mitgliedstaaten der Trend in dieselbe Richtung
+  zeigt.</p></div>
   <div class="trends">{trends}{GUIDE_CARD}</div>
 </section>
 
@@ -951,12 +999,12 @@ def render(p: dict) -> str:
     <div><h3>Nur amtliche Quellen</h3><p>Alle Zahlen stammen von EZB, Eurostat, OECD und Weltbank.
     Jede Datei wird beim Abruf unverändert archiviert. Jede Zahl auf dieser Seite lässt sich auf
     Datensatz und Abrufdatum zurückführen.</p></div>
-    <div><h3>Gemessen an der eigenen Geschichte</h3><p>Ein Signal gilt als ungewöhnlich, wenn
-    seine Bewegung größer ist als 95 % seiner bisherigen Bewegungen. Wo es Datenstände gibt, wird
-    nur verwendet, was zum jeweiligen Zeitpunkt bekannt war.</p></div>
-    <div><h3>Keine Prognose</h3><p>Das Lagebild zeigt, dass sich etwas bewegt, nicht wohin es
-    führt. Umfragen, Handel, Gas und Asyl haben keine historischen Datenstände; für sie nutzt der
-    Rückblick heutige Werte mit Veröffentlichungsverzögerung.</p></div>
+    <div><h3>Gemessen an der eigenen Geschichte</h3><p>Prozentangaben sind Ränge: der Anteil aller
+    früheren Werte oder Bewegungen desselben Signals, die kleiner waren. So werden Signale mit ganz
+    unterschiedlichen Einheiten vergleichbar, ohne dass jemand eine Grenze festlegt.</p></div>
+    <div><h3>Keine Prognose, kein Urteil</h3><p>Die Seite zeigt, wo sich etwas bewegt, nicht
+    wohin es führt. Umfragen, Handel, Gas und Asyl haben keine historischen Datenstände; ihre
+    Geschichte ist der heutige Stand der Reihe.</p></div>
   </div>
 </section>
 
@@ -979,25 +1027,11 @@ def render(p: dict) -> str:
 """
 
 
-GUIDE_CARD = """
-<article class="tcard guide">
-  <span class="axisname">Lesehilfe</span>
-  <h3>So lesen Sie die Karten</h3>
-  <div class="fitlegend"><span><i></i>Trend der letzten fünf Jahre</span>
-  <span><i class="before"></i>Trend der fünf Jahre davor</span></div>
-  <p class="breadth">Punkte: EU-Wert je Jahr. Weichen die beiden Linien deutlich voneinander ab,
-  hat sich der Trend geändert.</p>
-  <p class="breadth">Eine orange Karte heißt: In ungewöhnlich vielen Mitgliedstaaten hat sich der
-  Trend zugleich in dieselbe Richtung verschoben, mehr als in 95 % der vergangenen 15 Jahre.</p>
-  <p class="breadth">Jahresdaten erscheinen spät. Die Karte nennt das letzte verfügbare Jahr.</p>
-</article>"""
-
-
 def write(conn: psycopg.Connection, label: str | None = None) -> Path:
     payload = build_payload(conn, label)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     (OUT_DIR / "data.json").write_text(
-        json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8"
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
     )
     page = OUT_DIR / "index.html"
     page.write_text(render(payload), encoding="utf-8")
