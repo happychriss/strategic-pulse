@@ -1,8 +1,10 @@
 # Operations: the monthly run
 
-The system refreshes itself once a month through a Claude Code routine: a scheduled job that
-starts a fresh cloud session, checks out `main`, runs the pipeline, and reports. The routine
-checks out `main` itself because the repository's default branch is set in GitHub settings.
+The system refreshes on demand: a person starts the run, either locally or by firing the Claude
+Code routine by hand ("Run now"). The routine has no schedule for now. When it runs it starts a
+fresh cloud session, checks out `main`, runs the pipeline, and reports. It checks out `main`
+itself because the repository's default branch is set in GitHub settings. A monthly schedule can
+be added later in the routine settings without changing anything here.
 
 ## What one run does
 
