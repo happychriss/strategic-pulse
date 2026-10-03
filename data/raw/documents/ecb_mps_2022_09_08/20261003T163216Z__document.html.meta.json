@@ -1,0 +1,15 @@
+{
+  "card_id": "ecb_mps_2022_09_08",
+  "label": "document",
+  "url": "https://www.ecb.europa.eu/press/pressconf/2022/html/ecb.is220908~cd8363c58e.en.html",
+  "retrieved_at_utc": "2026-10-03T16:32:16.087237+00:00",
+  "http_status": 200,
+  "bytes": 145499,
+  "sha256": "a76e96defa23eea8fe2861482165b0bc9f180582c1061c1edd6211e802babf95",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 16:32:17 GMT",
+    "Content-Type": "text/html; charset=UTF-8",
+    "ETag": "\"myra-ed10c73a\""
+  }
+}

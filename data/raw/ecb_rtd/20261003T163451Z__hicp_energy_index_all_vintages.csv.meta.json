@@ -1,0 +1,15 @@
+{
+  "card_id": "ecb_rtd",
+  "label": "hicp_energy_index_all_vintages",
+  "url": "https://data-api.ecb.europa.eu/service/data/RTD/M.S0.N.P_C_NRGY.X?includeHistory=true&format=csvdata",
+  "retrieved_at_utc": "2026-10-03T16:34:51.840034+00:00",
+  "http_status": 200,
+  "bytes": 1177579,
+  "sha256": "358675ce2e3e2fe1556245130e69cee9132f59a4e854c35ac0d1458c7700de8c",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 16:34:53 GMT",
+    "Content-Type": "text/csv",
+    "Last-Modified": "Wed, 09 Sep 2026 13:30:00 GMT"
+  }
+}

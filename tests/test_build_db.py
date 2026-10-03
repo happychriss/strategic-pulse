@@ -105,16 +105,18 @@ def test_llm_claims_cannot_be_accepted_without_reviewer(conn):
         )
         doc = scalar(
             conn,
-            "INSERT INTO model.document (title, publisher, published_at) VALUES ('t', 'ECB', now()) "
-            "RETURNING document_id",
+            "INSERT INTO model.document (doc_key, title, publisher, published_at) "
+            "VALUES (%s, 't', 'ECB', now()) RETURNING document_id",
+            str(uuid.uuid4()),
         )
     with pytest.raises(psycopg.errors.CheckViolation), conn.transaction():
         conn.execute(
-            """INSERT INTO model.evidence_claim (document_id, locator, passage, statement, stance,
-                   node_id, extracted_by, review_status)
-               VALUES (%s, 'p1', 'text', 'claim', 'supports', %s, 'llm:any', 'accepted')""",
-            (doc, node),
+            """INSERT INTO model.evidence_claim (claim_key, document_id, locator, passage, statement,
+                   stance, target_kind, target_key, extracted_by, review_status)
+               VALUES (%s, %s, 'p1', 'text', 'claim', 'supports', 'node', 'x', 'llm:any', 'accepted')""",
+            (str(uuid.uuid4()), doc),
         )
+    assert node
 
 
 def test_evidence_used_by_an_assessment_cannot_be_deleted(conn):
@@ -153,3 +155,58 @@ def test_evidence_used_by_an_assessment_cannot_be_deleted(conn):
             "DELETE FROM obs.observation WHERE series_id=%s AND period=%s AND known_from=%s",
             (sid, period, kf),
         )
+
+
+def test_model_content_loaded_with_review_safeguards(conn):
+    assert scalar(conn, "SELECT count(*) FROM model.model_version WHERE label = 'phase1-v0.1'") == 1
+    assert (
+        scalar(conn, "SELECT count(*) FROM model.edge WHERE evidence_status <> 'hypothesis'") == 0
+    )
+    assert (
+        scalar(conn, "SELECT count(*) FROM model.evidence_claim WHERE review_status = 'accepted'")
+        == 0
+    )
+    assert scalar(conn, "SELECT count(*) FROM model.evidence_claim") >= 30
+
+
+def test_changed_definitions_require_a_new_model_version(conn):
+    from srm.model_content import ModelContentError, sync_model
+
+    conn.execute(
+        "UPDATE model.model_version SET definition_sha256 = 'tampered' WHERE label = 'phase1-v0.1'"
+    )
+    try:
+        with pytest.raises(ModelContentError):
+            sync_model(conn)
+    finally:
+        from srm.model_content import definitions_sha256
+
+        conn.execute(
+            "UPDATE model.model_version SET definition_sha256 = %s", (definitions_sha256(),)
+        )
+
+
+def test_indicators_use_only_data_known_at_the_date(conn):
+    from datetime import UTC, datetime
+
+    from srm.indicators import indicator_series, metric
+
+    end_2022 = datetime(2022, 12, 31, 23, tzinfo=UTC)
+    assert metric(indicator_series(conn, "ea_policy_rate", end_2022), "level")[0] == 2.0
+    assert metric(indicator_series(conn, "ea_hicp_headline_yoy", end_2022), "level")[:2] == (
+        10.0,
+        "2022-11",
+    )
+    # Between the end of the RTD core series and today's download no core vintage exists:
+    # the indicator is honestly unavailable rather than filled with later knowledge.
+    assert indicator_series(conn, "ea_hicp_core_yoy", datetime(2025, 9, 1, tzinfo=UTC)) == []
+
+
+def test_regime_conditions_at_end_2022(conn):
+    from datetime import UTC, datetime
+
+    from srm.regimes import evaluate
+
+    res = evaluate(conn, datetime(2022, 12, 31, 23, tzinfo=UTC))
+    hfl = [r for r in res if r.regime == "higher_for_longer" and r.role == "supporting"]
+    assert all(r.met for r in hfl)

@@ -1,0 +1,286 @@
+# Evidence claims. Each passage is verbatim from the archived document (verified by the
+# build). Claims were selected and extracted with AI assistance, so they start as
+# 'proposed' and need a named human reviewer before they count as accepted evidence.
+#
+# To review: read the passage in context (data/raw/documents/<doc>/), then set
+#   review_status: accepted | rejected   and   reviewed_by: <your name>
+defaults:
+  extracted_by: llm:claude
+  review_status: proposed
+
+claims:
+  # ---------------------------------------------------------------- energy -> headline
+  - key: c01_energy_dominant_component_2022
+    doc: ecb_mps_2022_09_08
+    locator: Inflation
+    target: edge:energy_to_headline
+    stance: supports
+    strength: high
+    statement: In August 2022 energy was the dominant component of euro area headline inflation.
+    passage: Energy price inflation remained extremely elevated, at 38.3 per cent, and it was again the dominant component of overall inflation.
+  - key: c02_war_energy_near_term_inflation_2026
+    doc: ecb_mps_2026_03_19
+    locator: Introductory statement
+    target: edge:energy_to_headline
+    stance: supports
+    strength: medium
+    statement: The ECB expected the 2026 Middle East war to raise near-term inflation through energy prices.
+    passage: It will have a material impact on near-term inflation through higher energy prices.
+
+  # ---------------------------------------------------------------- energy -> core
+  - key: c03_energy_costs_broaden_price_pressures_2022
+    doc: ecb_mps_2022_09_08
+    locator: Inflation
+    target: edge:energy_to_core
+    stance: supports
+    strength: medium
+    statement: High energy costs spread price pressures across sectors beyond energy.
+    passage: Price pressures are spreading across more and more sectors, in part owing to the impact of high energy costs across the whole economy.
+  - key: c04_energy_feeding_core_projection_2026
+    doc: ecb_mps_2026_03_19
+    locator: Inflation
+    target: edge:energy_to_core
+    stance: supports
+    strength: high
+    statement: ECB staff revised core inflation up mainly because energy prices feed into it.
+    passage: This is also higher than the path in the December projections, mainly owing to higher energy prices feeding into inflation excluding energy and food.
+  - key: c05_lower_energy_eases_services_2024
+    doc: ecb_sp_2024_05_27_inflation
+    locator: Services inflation
+    target: edge:energy_to_core
+    stance: supports
+    strength: medium
+    statement: The indirect effect also worked in reverse as energy prices fell in 2023-24.
+    passage: The decline in services inflation since last summer has largely been in non-labour-intensive services sectors, reflecting the indirect impact of lower energy prices, the easing of supply bottlenecks and the fading out of pandemic reopening effects in these sectors.
+
+  # ---------------------------------------------------------------- ULC -> core
+  - key: c06_wages_services_relation_2024
+    doc: ecb_sp_2024_05_27_inflation
+    locator: Services inflation
+    target: edge:ulc_to_core
+    stance: supports
+    strength: high
+    statement: Wage inflation and labour-intensive services inflation are tightly related over the medium term.
+    passage: As shown in Chart 5, there is a relatively tight medium-term relation between wage inflation and the inflation rate for labour-intensive services sectors (which make up a large part of the domestic inflation component).
+  - key: c07_productivity_drives_ulc_2024
+    doc: ecb_sp_2024_05_27_inflation
+    locator: Labour costs
+    target: edge:ulc_to_core
+    stance: qualifies
+    strength: medium
+    statement: The price impact of wages depends on productivity; falling productivity raised unit labour costs in 2023.
+    passage: The impact of higher wages on price pressures depends on the rate of labour productivity growth.
+  - key: c08_profits_buffer_labour_costs_2024
+    doc: ecb_sp_2024_05_27_inflation
+    locator: Profits
+    target: edge:ulc_to_core
+    stance: qualifies
+    strength: medium
+    statement: Compressing profit margins can absorb labour cost growth, weakening pass-through.
+    passage: The March projections exercise foresees unit profit growth turning negative in 2024, implying that profits will buffer the relatively strong labour cost growth.
+
+  # ---------------------------------------------------------------- inflation -> policy
+  - key: c09_hike_because_inflation_too_high_2022
+    doc: ecb_mps_2022_09_08
+    locator: Introductory statement
+    target: edge:core_to_policy
+    stance: supports
+    strength: high
+    statement: The ECB raised rates because inflation was far too high and expected to stay above target.
+    passage: We took today's decision, and expect to raise interest rates further, because inflation remains far too high and is likely to stay above our target for an extended period.
+  - key: c10_reaction_to_underlying_inflation_2026
+    doc: ecb_mps_2026_09_10
+    locator: Introductory statement
+    target: edge:core_to_policy
+    stance: supports
+    strength: medium
+    statement: Rate decisions depend on the inflation outlook and the dynamics of underlying inflation.
+    passage: In particular, our interest rate decisions will be based on our assessment of the inflation outlook and the risks surrounding it, in light of the incoming economic and financial data, as well as the dynamics of underlying inflation and the strength of monetary policy transmission.
+
+  # ---------------------------------------------------------------- policy -> financing costs
+  - key: c11_pass_through_basic_step_2023
+    doc: ecb_sp_2023_07_12_banking_channel
+    locator: The bank-based transmission of monetary policy
+    target: edge:policy_to_financing
+    stance: supports
+    strength: high
+    statement: Pass-through of policy rates to bank lending and deposit rates is the basic transmission step.
+    passage: Since for many firms and households the interest rates that matter most are the lending rates and deposit rates set by banks, the pass-through of policy rates to bank lending and deposit rates is a basic step in monetary policy transmission.
+  - key: c12_long_rates_push_lending_rates_2023
+    doc: ecb_sp_2023_07_12_banking_channel
+    locator: Incoming evidence
+    target: edge:policy_to_financing
+    stance: supports
+    strength: medium
+    statement: Higher long-term rates raise the pricing of bank loans.
+    passage: The resulting increase in long-term interest rates pushes up the pricing of bank loans, ultimately increasing lending rates for firms and households.
+  - key: c13_financing_conditions_restrictive_2024
+    doc: ecb_sp_2024_09_16
+    locator: Speech
+    target: edge:policy_to_financing
+    stance: supports
+    strength: medium
+    statement: Past rate increases were still keeping financing conditions restrictive in September 2024.
+    passage: Financing conditions for firms and households remain restrictive, as our past policy rate increases continue to work their way through the transmission chain.
+
+  # ---------------------------------------------------------------- financing costs -> fiscal
+  - key: c14_debt_refinanced_at_higher_rates_2023
+    doc: ecb_blog_2023_01_04
+    locator: Blog
+    target: edge:financing_to_fiscal
+    stance: supports
+    strength: high
+    statement: Government borrowing costs rise as the debt stock is refinanced at higher rates.
+    passage: However, looking further ahead government borrowing costs will eventually increase as the debt stock is refinanced at higher interest rates.
+  - key: c15_longer_maturities_delay_effect_2023
+    doc: ecb_blog_2023_01_04
+    locator: Blog
+    target: edge:financing_to_fiscal
+    stance: qualifies
+    strength: high
+    statement: Longer debt maturities delay the effect of higher yields on the cost of the debt stock.
+    passage: First, euro area governments have increased the maturity of their debt in recent years, and so it takes longer for higher market yields to affect the cost of the overall debt stock.
+  - key: c16_refinancing_share_per_year_2023
+    doc: ecb_blog_2023_01_04
+    locator: Footnote
+    target: edge:financing_to_fiscal
+    stance: qualifies
+    strength: medium
+    statement: Only about 12-14% of large-country bond stocks are refinanced each year, implying a multi-year lag.
+    passage: This implies that approximately 12 to 14 percent of the stock of government bonds in these countries redeems and needs refinancing each year.
+  - key: c17_interest_below_growth_2023
+    doc: ecb_blog_2023_01_04
+    locator: Blog
+    target: edge:financing_to_fiscal
+    stance: contradicts
+    strength: medium
+    statement: As of early 2023, average interest costs were projected to stay below nominal growth for some time.
+    passage: And in spite of recent increases in market rates, average interest costs are still projected to remain below growth rates for some time to come (see Chart).
+  - key: c18_very_long_yields_limited_effect_2026
+    doc: ecb_ebbox_2026_02_07
+    locator: Government funding costs
+    target: edge:financing_to_fiscal
+    stance: qualifies
+    strength: medium
+    statement: Rising very long-term yields have limited direct effects on government funding costs.
+    passage: The direct effects of a rise in very long-term yields on government funding costs are likely to be limited.
+
+  # ---------------------------------------------------------------- energy -> output
+  - key: c19_energy_intensive_output_drop_2023
+    doc: ecb_ebbox_2023_01_02
+    locator: Box
+    target: edge:energy_to_output
+    stance: supports
+    strength: high
+    statement: Much higher energy costs caused the drop in energy-intensive output in 2022.
+    passage: At the same time, energy-intensive production sectors faced much higher energy costs in 2022, and this was behind the drop in output.
+  - key: c20_energy_prices_reduce_purchasing_power_2022
+    doc: ecb_mps_2022_09_08
+    locator: Economic activity
+    target: edge:energy_to_output
+    stance: supports
+    strength: medium
+    statement: Very high energy prices reduce real incomes and constrain activity.
+    passage: Very high energy prices are reducing the purchasing power of people's incomes and, although supply bottlenecks are easing, they are still constraining economic activity.
+  - key: c21_supply_easing_supported_production_2023
+    doc: ecb_ebbox_2023_01_02
+    locator: Box
+    target: edge:energy_to_output
+    stance: qualifies
+    strength: medium
+    statement: Easing supply disruptions kept aggregate industrial production resilient despite energy costs.
+    passage: The reduction of supply chain disruptions has been a key factor behind the resilience of industrial production as well as the rise in import volumes.
+  - key: c22_oil_gas_disruption_scenario_2026
+    doc: ecb_mps_2026_03_19
+    locator: Outlook
+    target: edge:energy_to_output
+    stance: supports
+    strength: medium
+    statement: A prolonged oil and gas disruption would push growth below and inflation above baseline.
+    passage: The scenario analysis suggests that a prolonged disruption in the supply of oil and gas would result in inflation being above, and growth being below, the baseline projections.
+
+  # ---------------------------------------------------------------- financing costs -> output
+  - key: c23_demand_falls_with_higher_rates_2023
+    doc: ecb_sp_2023_07_12_banking_channel
+    locator: The bank-based transmission of monetary policy
+    target: edge:financing_to_output
+    stance: supports
+    strength: medium
+    statement: Aggregate demand falls in response to higher interest rates.
+    passage: In particular, as aggregate demand falls in response to higher interest rates, banks face both lower demand for loans and a deterioration in borrower credit risk which further weigh on bank balance sheets.
+  - key: c24_state_dependent_tightening_2023
+    doc: ecb_sp_2023_07_12_banking_channel
+    locator: The bank-based transmission of monetary policy
+    target: edge:financing_to_output
+    stance: qualifies
+    strength: medium
+    statement: Tightening has weaker effects in strong economies and stronger effects in weak ones.
+    passage: Strong economic conditions can provide countervailing factors that attenuate the impact of monetary policy, while weak macroeconomic conditions may amplify the strength of monetary policy tightening.
+
+  # ---------------------------------------------------------------- regime links
+  - key: c25_inflation_above_target_extended_2026
+    doc: ecb_mps_2026_09_10
+    locator: Introductory statement
+    target: edge:core_supports_hfl
+    stance: supports
+    strength: high
+    statement: In September 2026 the ECB expected inflation to stay well above target for an extended period.
+    passage: The conflict in the Middle East continues to generate inflation pressures, and inflation is set to remain well above target for an extended period.
+  - key: c26_more_hikes_to_guard_expectations_2022
+    doc: ecb_mps_2022_09_08
+    locator: Introductory statement
+    target: edge:policy_supports_hfl
+    stance: supports
+    strength: high
+    statement: The ECB signalled further hikes to dampen demand and protect inflation expectations.
+    passage: Based on our current assessment, over the next several meetings we expect to raise interest rates further to dampen demand and guard against the risk of a persistent upward shift in inflation expectations.
+
+  # ---------------------------------------------------------------- regime-level evidence (dated)
+  - key: c27_disinflation_supported_2024
+    doc: ecb_sp_2024_09_16
+    locator: Speech
+    target: node:higher_for_longer
+    stance: contradicts
+    strength: high
+    statement: In September 2024 the ECB expected disinflation in 2025, helped by anchored expectations and weaker wage dynamics.
+    passage: The disinflation process in 2025 will also be supported by well-anchored forward-looking inflation expectations and weaker price-price and price-wage backward-looking dynamics, in view of the much lower inflation in 2024 compared to 2023.
+  - key: c28_weaker_economy_faster_disinflation_2024
+    doc: ecb_sp_2024_09_16
+    locator: Speech
+    target: node:recession_disinflation
+    stance: supports
+    strength: medium
+    statement: A weaker economy and lower wage pressure led the ECB to expect faster disinflation in 2025.
+    passage: Indeed, the weaker economy and lower wage pressures that characterise the new projections mean the expected speed of disinflation in the course of 2025 has been upwardly revised.
+  - key: c29_inflation_at_target_march_2026
+    doc: ecb_mps_2026_03_19
+    locator: Introductory statement
+    target: node:higher_for_longer
+    stance: contradicts
+    strength: medium
+    statement: Before the energy shock fed through, inflation was near target with anchored expectations.
+    passage: Inflation has been at around our two per cent target, longer-term inflation expectations are well anchored, and the economy has shown resilience over recent quarters.
+  - key: c30_projection_revised_up_sept_2026
+    doc: ecb_mps_2026_09_10
+    locator: Inflation
+    target: node:higher_for_longer
+    stance: supports
+    strength: medium
+    statement: In September 2026 inflation projections for 2027 and 2028 were revised up.
+    passage: Compared with June, the baseline projection for inflation in 2026 is unchanged, while it has been revised up for 2027 and 2028.
+  - key: c31_labour_market_robust_sept_2026
+    doc: ecb_mps_2026_09_10
+    locator: Economic activity
+    target: node:recession_disinflation
+    stance: contradicts
+    strength: medium
+    statement: In September 2026 the labour market remained robust with unemployment unchanged.
+    passage: The labour market has remained robust, with the unemployment rate unchanged in July at 6.4 per cent.
+  - key: c32_economy_resilient_q2_2026
+    doc: ecb_mps_2026_09_10
+    locator: Economic activity
+    target: node:recession_disinflation
+    stance: contradicts
+    strength: medium
+    statement: The economy stayed resilient in 2026-Q2 despite the energy shock.
+    passage: The economy proved resilient in the second quarter, despite headwinds from the energy shock.

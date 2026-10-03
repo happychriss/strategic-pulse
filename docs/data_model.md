@@ -11,7 +11,7 @@ and are immutable once applied.
 | `ref` | Source cards, datasets, regions and region aliases | `srm.build` from `sources/*.yaml` |
 | `raw` | Registry of archived upstream files | `srm.build` from `data/raw/**/*.meta.json` |
 | `obs` | Series and bitemporal observations | `srm.build` from raw snapshots |
-| `model` | Model versions, nodes, indicators, edges, documents, claims, assessments | By hand, with evidence (Phase 1) |
+| `model` | Model versions, nodes, indicators, edges, documents, claims, regime conditions, assessments | `srm.build` from `model/*.yaml` (see `docs/model_review.md`) |
 
 The durable layer is the raw snapshot archive in git. The database is always rebuildable
 from it: `python -m srm.build`. The session-start hook does this automatically.
@@ -43,8 +43,9 @@ Rules enforced in the database and in the card validator:
 
 - `release_rule` is only allowed for `unrevised` data. A release date says nothing about later
   revisions.
-- `obs.as_of(at)` excludes `ingestion` data unless asked. Its real publication time is
-  unknown, so including it would leak revisions into backtests.
+- `obs.as_of(at)` excludes `ingestion` data unless asked. Such rows can never appear before
+  their retrieval time, so they leak nothing; the default only keeps the source mix comparable
+  across backtest dates. Indicators pass `true` where retrieval-time data is the only source.
 
 ## Vintages become intervals
 

@@ -37,10 +37,15 @@ pitfalls:
 - Catalog of 182 monthly series includes HICP, unemployment, industrial production, 10-year benchmark
   yield and producer prices; annual series cover government finance ratios.
 - Experimental dataset per the ECB; series coverage changed over time.
+- Core series P_C_XEFUN.X ends at 2025-05 (HICP methodology change in 2026); later core data only from
+  the new ECB HICP dataset.
+- Industrial production with includeHistory (M.S0.Y.I_XCONS.X) timed out three times on 2026-10-03; not
+  archived yet.
 verification:
   status: verified
   date: '2026-10-03'
-  note: 'Pulled 2026-10-03: catalog, HICP and unemployment full history. Vintage timestamps confirmed.'
+  note: 'Pulled 2026-10-03: catalog, HICP and unemployment full history. Vintage timestamps confirmed.
+    Added 2026-10-03: energy and core indices, government balance and primary balance (annual).'
 docs_urls:
 - https://data.ecb.europa.eu/data/datasets/RTD/data-information
 - https://eabcn.org/data/eabcn-real-time-database

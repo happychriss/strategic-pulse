@@ -79,6 +79,36 @@ PULLS: list[tuple[str, str, str, str]] = [
         "csv",
     ),
     (
+        "ecb_rtd",
+        "hicp_energy_index_all_vintages",
+        f"{ECB}/RTD/M.S0.N.P_C_NRGY.X?includeHistory=true&format=csvdata",
+        "csv",
+    ),
+    (
+        "ecb_rtd",
+        "hicp_ex_energy_unprocessed_food_index_all_vintages",
+        f"{ECB}/RTD/M.S0.N.P_C_XEFUN.X?includeHistory=true&format=csvdata",
+        "csv",
+    ),
+    (
+        "ecb_rtd",
+        "industrial_production_sa_all_vintages",
+        f"{ECB}/RTD/M.S0.Y.I_XCONS.X?includeHistory=true&format=csvdata",
+        "csv",
+    ),
+    (
+        "ecb_rtd",
+        "gov_balance_pct_gdp_all_vintages",
+        f"{ECB}/RTD/A.S0.N.F_UMD_CGG_D0.F?includeHistory=true&format=csvdata",
+        "csv",
+    ),
+    (
+        "ecb_rtd",
+        "gov_primary_balance_pct_gdp_all_vintages",
+        f"{ECB}/RTD/A.S0.N.F_UMS_CGG_D0.F?includeHistory=true&format=csvdata",
+        "csv",
+    ),
+    (
         "eurostat_une_rt_m",
         "ea21_sa_total_pc_act",
         f"{ES}/une_rt_m?geo=EA21&s_adj=SA&age=TOTAL&unit=PC_ACT&sex=T&{ES_FMT}",
@@ -143,6 +173,18 @@ PULLS: list[tuple[str, str, str, str]] = [
         "oecd_mei_revisions",
         "ea20_monthly_cpi_since_2018",
         f"{OECD}/EA20.M.CP....?startPeriod=2018-01&format=csv",
+        "csv",
+    ),
+    (
+        "oecd_mei_revisions",
+        "ea19_quarterly_ulc_since_2008",
+        f"{OECD}/EA19.Q.ULC....?startPeriod=2008-Q1&format=csv",
+        "csv",
+    ),
+    (
+        "oecd_mei_revisions",
+        "ea20_quarterly_ulc_since_2008",
+        f"{OECD}/EA20.Q.ULC....?startPeriod=2008-Q1&format=csv",
         "csv",
     ),
     (

@@ -1,0 +1,49 @@
+# Source documents cited by evidence claims. published_on is the date in the page's own
+# article:published_time metadata (checked by tests). Knowledge time of a claim is the end
+# of that day: an assessment as of T only uses claims from documents published before T.
+documents:
+  - id: ecb_mps_2022_09_08
+    title: "Monetary policy statement, press conference, 8 September 2022"
+    publisher: ECB
+    published_on: 2022-09-08
+    url: https://www.ecb.europa.eu/press/pressconf/2022/html/ecb.is220908~cd8363c58e.en.html
+  - id: ecb_blog_2023_01_04
+    title: "ECB Blog: Fiscal policy: from free to affordable lunch, 4 January 2023"
+    publisher: ECB
+    published_on: 2023-01-04
+    url: https://www.ecb.europa.eu/press/blog/date/2023/html/ecb.blog230104~7aa6afd8fb.en.html
+  - id: ecb_ebbox_2023_01_02
+    title: "Economic Bulletin 1/2023, Box: How have higher energy prices affected industrial production and imports?"
+    publisher: ECB
+    published_on: 2023-02-14
+    url: https://www.ecb.europa.eu/press/economic-bulletin/focus/2023/html/ecb.ebbox202301_02~8d6f1214ae.en.html
+  - id: ecb_sp_2023_07_12_banking_channel
+    title: "Philip R. Lane: The banking channel of monetary policy tightening in the euro area"
+    publisher: ECB
+    published_on: 2023-07-12
+    url: https://www.ecb.europa.eu/press/key/date/2023/html/ecb.sp230712~d950906f00.en.html
+  - id: ecb_sp_2024_05_27_inflation
+    title: "Philip R. Lane: Inflation in the euro area"
+    publisher: ECB
+    published_on: 2024-05-27
+    url: https://www.ecb.europa.eu/press/key/date/2024/html/ecb.sp240527~13d86a7d66.en.html
+  - id: ecb_sp_2024_09_16
+    title: "Philip R. Lane: Moving from 3.75 to 3.50: explaining the latest rate decision"
+    publisher: ECB
+    published_on: 2024-09-16
+    url: https://www.ecb.europa.eu/press/key/date/2024/html/ecb.sp240916~c0eff5db57.en.html
+  - id: ecb_mps_2026_03_19
+    title: "Monetary policy statement, press conference, 19 March 2026"
+    publisher: ECB
+    published_on: 2026-03-19
+    url: https://www.ecb.europa.eu/press/press_conference/monetary-policy-statement/2026/html/ecb.is260319~93b1cbad97.en.html
+  - id: ecb_ebbox_2026_02_07
+    title: "Economic Bulletin 2/2026, Box: Financial and macroeconomic implications of the rise in very long-term yields"
+    publisher: ECB
+    published_on: 2026-04-02
+    url: https://www.ecb.europa.eu/press/economic-bulletin/focus/2026/html/ecb.ebbox202602_07~250e7bbf23.en.html
+  - id: ecb_mps_2026_09_10
+    title: "Monetary policy statement, press conference, 10 September 2026"
+    publisher: ECB
+    published_on: 2026-09-10
+    url: https://www.ecb.europa.eu/press/press_conference/monetary-policy-statement/2026/html/ecb.is260910~6a45359cfc.en.html

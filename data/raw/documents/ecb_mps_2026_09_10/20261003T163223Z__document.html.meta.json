@@ -1,0 +1,15 @@
+{
+  "card_id": "ecb_mps_2026_09_10",
+  "label": "document",
+  "url": "https://www.ecb.europa.eu/press/press_conference/monetary-policy-statement/2026/html/ecb.is260910~6a45359cfc.en.html",
+  "retrieved_at_utc": "2026-10-03T16:32:23.650733+00:00",
+  "http_status": 200,
+  "bytes": 140312,
+  "sha256": "c1b61f5e33bba690cebf0eb1cb5bd8316156445af47468045028740459545534",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 16:32:24 GMT",
+    "Content-Type": "text/html; charset=UTF-8",
+    "ETag": "\"myra-b0e14856\""
+  }
+}

@@ -36,6 +36,9 @@ pitfalls:
   measures).
 - Third-party mirrors (DBnomics) stopped updating OECD data in autumn 2024; use sdmx.oecd.org directly.
 - Rate limiting applies; batch and cache.
+- ULC values behave as quarter-on-quarter % changes although the unit code reads 'percentage of production
+  costs' (PT_PCOS); verify against OECD documentation before relying on levels.
+- Euro area ULC ends at 2024-Q1 in every edition up to 2026-09.
 verification:
   status: verified
   date: '2026-10-03'

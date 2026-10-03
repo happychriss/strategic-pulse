@@ -356,6 +356,14 @@ def build(conn: psycopg.Connection, verbose: bool = True) -> dict[str, dict[str,
                 f"{family:<45} series={r['series']:>4} intervals={r['intervals']:>7} "
                 f"+{r['inserted']} ~{r['updated']} -{r['deleted']}  {time.time() - started:.1f}s"
             )
+    from srm.model_content import sync_model
+
+    model_report = sync_model(conn)
+    if verbose:
+        print(
+            f"model: version created={model_report['model_version_created']} "
+            f"documents={model_report['documents']} claims={model_report['claims']}"
+        )
     skipped = [s for s in snaps if s.skip_reason]
     if verbose and skipped:
         for s in skipped:

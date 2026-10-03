@@ -1,0 +1,15 @@
+{
+  "card_id": "ecb_blog_2023_01_04",
+  "label": "document",
+  "url": "https://www.ecb.europa.eu/press/blog/date/2023/html/ecb.blog230104~7aa6afd8fb.en.html",
+  "retrieved_at_utc": "2026-10-03T16:33:27.190175+00:00",
+  "http_status": 200,
+  "bytes": 116297,
+  "sha256": "6d3b1d4f08d45192fb7771e3ac59271749b2f39524e65eb598ea43f36ba465c5",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 16:33:28 GMT",
+    "Content-Type": "text/html; charset=UTF-8",
+    "ETag": "\"myra-ee9f3b91\""
+  }
+}

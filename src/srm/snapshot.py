@@ -46,6 +46,8 @@ def _looks_like(kind: str, body: bytes) -> bool:
         return not head.startswith((b"<", b"{")) and b"," in head
     if kind == "json":
         return head.startswith((b"{", b"["))
+    if kind == "html":
+        return b"<html" in head or b"<!doctype html" in head
     if kind == "xml":
         return head.startswith(b"<") and b"<html" not in head
     return True
