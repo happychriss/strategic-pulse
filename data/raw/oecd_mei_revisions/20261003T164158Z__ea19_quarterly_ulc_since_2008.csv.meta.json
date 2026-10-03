@@ -1,0 +1,15 @@
+{
+  "card_id": "oecd_mei_revisions",
+  "label": "ea19_quarterly_ulc_since_2008",
+  "url": "https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES_REVISIONS@DF_STES_REVISIONS,4.0/EA19.Q.ULC....?startPeriod=2008-Q1&format=csv",
+  "retrieved_at_utc": "2026-10-03T16:41:58.185294+00:00",
+  "http_status": 200,
+  "bytes": 448907,
+  "sha256": "4f875fb0c72c6a34650ea8a841320623ba0d7a135d362e89fc492148036fb7f2",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 16:41:59 GMT",
+    "Content-Type": "application/vnd.sdmx.data+csv; charset=utf-8",
+    "Last-Modified": "2023-12-22"
+  }
+}

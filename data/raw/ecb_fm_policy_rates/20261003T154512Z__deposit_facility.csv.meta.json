@@ -1,0 +1,14 @@
+{
+  "card_id": "ecb_fm_policy_rates",
+  "label": "deposit_facility",
+  "url": "https://data-api.ecb.europa.eu/service/data/FM/B.U2.EUR.4F.KR.DFR.LEV?format=csvdata",
+  "retrieved_at_utc": "2026-10-03T15:45:12.030835+00:00",
+  "http_status": 200,
+  "bytes": 20943,
+  "sha256": "3b8163aa7331ea6fc41fbf8dbb9833de64b40f6cec4977efbb9bac834b7946af",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:45:12 GMT",
+    "Content-Type": "text/csv",
+    "Last-Modified": "Thu, 10 Sep 2026 14:22:33 GMT"
+  }
+}

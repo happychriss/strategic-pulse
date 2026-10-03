@@ -1,0 +1,14 @@
+{
+  "card_id": "ecb_fm_policy_rates",
+  "label": "main_refinancing",
+  "url": "https://data-api.ecb.europa.eu/service/data/FM/B.U2.EUR.4F.KR.MRR_FR.LEV?format=csvdata",
+  "retrieved_at_utc": "2026-10-03T15:45:44.312925+00:00",
+  "http_status": 200,
+  "bytes": 18254,
+  "sha256": "66fd5fd6a81edbfacb820668f923b40ab727fe56b79588e46a1ef6cc1d27d4c3",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:45:45 GMT",
+    "Content-Type": "text/csv",
+    "Last-Modified": "Thu, 10 Sep 2026 14:22:33 GMT"
+  }
+}

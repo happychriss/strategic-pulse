@@ -1,0 +1,13 @@
+{
+  "card_id": "eurostat_sts_inpr_m",
+  "label": "ea21_sca_bd_i21",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/sts_inpr_m?geo=EA21&s_adj=SCA&nace_r2=B-D&unit=I21&lang=en",
+  "retrieved_at_utc": "2026-10-03T15:54:39.162476+00:00",
+  "http_status": 200,
+  "bytes": 41190,
+  "sha256": "f0f6a3a3c5f072506845047820a935105cac651d3710637bf185374b401a1ddc",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:54:39 GMT",
+    "Content-Type": "application/json"
+  }
+}

@@ -1,0 +1,42 @@
+id: ecb_hicp
+provider: ECB
+name: HICP inflation, euro area (replacement dataset from February 2026)
+role: state_variable
+phase: 1
+endpoint:
+  protocol: sdmx-rest-2.1
+  base_url: https://data-api.ecb.europa.eu/service/data
+  dataset_id: HICP
+  example_key: M.U2.N.000000.4D0.ANR (FREQ.REF_AREA.ADJUSTMENT.ICP_ITEM.DATA_PROVIDER.ICP_SUFFIX)
+datasets:
+- code: ECB:HICP
+  parser: ecb_csv
+  knowledge_rule: ingestion
+  revision_class: revised
+access:
+  auth: none
+  licence: ECB reuse policy (reuse with attribution)
+  terms_url: https://www.ecb.europa.eu/services/disclaimer/html/index.en.html
+coverage:
+  geography: Euro area (U2) and member states
+  frequency: monthly
+  start: '1991'
+temporal:
+  revision_policy: Flash estimate replaced by final release; methodological restatement of history happened
+    in February 2026.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp. Snapshot every pull; flash vs final is not distinguishable
+    in the series.
+python_access: sdmx1 source ECB.
+pitfalls:
+- 'Key layout differs from the old ICP dataset: data provider code is 4D0 (Eurostat), not 4. Item codes
+  000000 (total) and XEF000 (excluding energy, food, alcohol, tobacco) are unchanged.'
+- History was restated relative to ICP; never splice ICP and HICP in one series without recording the
+  break.
+- Latest value (2026-09) may be a flash estimate.
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: headline and core, 1991-01 to 2026-09.'
+docs_urls:
+- https://data.ecb.europa.eu/data/datasets/ICP

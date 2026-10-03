@@ -1,0 +1,14 @@
+{
+  "card_id": "ecb_rtd",
+  "label": "hicp_annual_rate_all_vintages",
+  "url": "https://data-api.ecb.europa.eu/service/data/RTD/M.S0.N.P_C_OV.A?includeHistory=true&format=csvdata",
+  "retrieved_at_utc": "2026-10-03T15:45:53.341423+00:00",
+  "http_status": 200,
+  "bytes": 663973,
+  "sha256": "f086df395f37cf4c8e69d09157a049bea296003433c699b9d2ea391b7030aa1a",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:45:54 GMT",
+    "Content-Type": "text/csv",
+    "Last-Modified": "Wed, 09 Sep 2026 13:30:00 GMT"
+  }
+}

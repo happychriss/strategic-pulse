@@ -1,0 +1,40 @@
+id: ecb_yc
+provider: ECB
+name: Euro area yield curve (government bonds, AAA and all issuers)
+role: state_variable
+phase: 1
+endpoint:
+  protocol: sdmx-rest-2.1
+  base_url: https://data-api.ecb.europa.eu/service/data
+  dataset_id: YC
+  example_key: B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y
+datasets:
+- code: ECB:YC
+  parser: ecb_csv
+  knowledge_rule: release_rule
+  revision_class: unrevised
+  release_lag: P1D
+access:
+  auth: none
+  licence: ECB reuse policy (reuse with attribution)
+  terms_url: https://www.ecb.europa.eu/services/disclaimer/html/index.en.html
+coverage:
+  geography: Euro area
+  frequency: daily
+  start: '2004'
+temporal:
+  revision_policy: Model-based estimate; historical values can be re-estimated if the methodology changes.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp; snapshot every pull to detect methodology changes.
+python_access: sdmx1 source ECB.
+pitfalls:
+- Fitted curve (Svensson), not traded yields; treat as an estimate, not an observation.
+- Spread to policy rate needs aligned business-day calendars.
+- Daily series from 2004-09-06, about 3 MB per maturity.
+- Responses can take 30 to 60 seconds under load; use a long timeout.
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: 10-year and 2-year spot rates, 5,643 daily rows each.'
+docs_urls:
+- https://data.ecb.europa.eu/data/datasets/YC

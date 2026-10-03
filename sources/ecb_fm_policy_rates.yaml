@@ -1,0 +1,41 @@
+id: ecb_fm_policy_rates
+provider: ECB
+name: ECB key policy interest rates
+role: state_variable
+phase: 1
+endpoint:
+  protocol: sdmx-rest-2.1
+  base_url: https://data-api.ecb.europa.eu/service/data
+  dataset_id: FM
+  example_key: B.U2.EUR.4F.KR.MRR_FR.LEV
+datasets:
+- code: ECB:FM
+  parser: ecb_csv
+  knowledge_rule: release_rule
+  revision_class: unrevised
+  release_lag: P0D
+access:
+  auth: none
+  licence: ECB reuse policy (reuse with attribution)
+  terms_url: https://www.ecb.europa.eu/services/disclaimer/html/index.en.html
+coverage:
+  geography: Euro area
+  frequency: daily (business), changes on decision dates
+  start: '1999'
+temporal:
+  revision_policy: Policy rates are decisions, not estimates; not revised.
+  vintage_support: none
+  knowledge_time_basis: Decision announcement date. Valid time and knowledge time are effectively equal.
+python_access: sdmx1 source ECB.
+pitfalls:
+- Three policy rates exist (deposit facility, main refinancing, marginal lending); pick the deposit facility
+  rate as the operative rate since September 2022.
+- Series is stepwise; resample explicitly before computing momentum.
+- Series holds one row per rate change (69 rows deposit facility, 48 main refinancing), not daily values;
+  forward-fill when aligning.
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: deposit facility and main refinancing, 1999 to 2026-09-16.'
+docs_urls:
+- https://data.ecb.europa.eu/data/datasets/FM

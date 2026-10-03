@@ -1,0 +1,50 @@
+id: eurostat_namq_10_gdp
+provider: Eurostat
+name: GDP and main components, quarterly
+role: state_variable
+phase: 1
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: namq_10_gdp
+  example_key: sdmx/2.1/data/namq_10_gdp
+datasets:
+- code: ESTAT:namq_10_gdp
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
+- code: ESTAT:ei_na_q_vtg
+  parser: eurostat_jsonstat
+  knowledge_rule: revdate_dimension
+  revision_class: revised
+  family: ESTAT:ei_na_q_vintages
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EU, euro area, member states
+  frequency: quarterly
+  start: '1975'
+temporal:
+  revision_policy: Revised through flash, preliminary and later estimates, plus annual benchmark revisions.
+  vintage_support: full_history
+  knowledge_time_basis: 'revdate dimension in ei_na_q_vtg: exact revision date, 176 revdates from 2014-10-17
+    to 2026-08-14. No vintages exist before October 2014.'
+python_access: sdmx1 source ESTAT, or the JSON-stat REST endpoint.
+pitfalls:
+- 'Euro area code differs per table: une_rt_m has EA21 only; namq_10_gdp and namq_10_lp_ulc have EA (changing
+  composition), EA19, EA20, EA21; sts_inpr_m has EA19, EA20, EA21 and no EA.'
+- Use the default JSON-stat output. format=SDMX-CSV returns HTTP 400 on this endpoint. Requests above
+  the size cap return HTTP 413.
+- Vintage table is in chain-linked volumes (CLV05_MEUR), the main series pull was quarterly growth (CLV_PCH_PRE);
+  compute growth from vintage levels yourself.
+- A backtest cannot use true GDP vintages before 2014-10; earlier periods need the OECD revisions database
+  or ECB RTD.
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: quarterly growth (EA, 1975-Q1 to 2026-Q2) and vintages (EA, seasonally adjusted).'
+docs_urls:
+- https://ec.europa.eu/eurostat/web/main/data/web-services
+- https://ec.europa.eu/eurostat/data/data-revision-policy

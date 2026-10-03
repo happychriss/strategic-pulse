@@ -1,0 +1,14 @@
+{
+  "card_id": "oecd_mei_revisions",
+  "label": "ea20_monthly_cpi_since_2018",
+  "url": "https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES_REVISIONS@DF_STES_REVISIONS,4.0/EA20.M.CP....?startPeriod=2018-01&format=csv",
+  "retrieved_at_utc": "2026-10-03T15:53:02.930282+00:00",
+  "http_status": 200,
+  "bytes": 364220,
+  "sha256": "33f084196661f9467853bcebe4d54f2ec90d11d017bfacba021c7fa1be18760c",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:53:04 GMT",
+    "Content-Type": "application/vnd.sdmx.data+csv; charset=utf-8",
+    "Last-Modified": "2023-12-22"
+  }
+}

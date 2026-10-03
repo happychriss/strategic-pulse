@@ -1,0 +1,44 @@
+id: eurostat_namq_10_lp_ulc
+provider: Eurostat
+name: Labour productivity and unit labour costs, quarterly
+role: state_variable
+phase: 1
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: namq_10_lp_ulc
+  example_key: sdmx/2.1/data/namq_10_lp_ulc
+datasets:
+- code: ESTAT:namq_10_lp_ulc
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EU, euro area, member states
+  frequency: quarterly
+  start: '1995'
+temporal:
+  revision_policy: Follows national accounts revisions of GDP and employment.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp. No vintage table known; derive an approximate vintage from
+    GDP and employment vintages if needed.
+python_access: sdmx1 source ESTAT, or the JSON-stat REST endpoint.
+pitfalls:
+- 'Euro area code differs per table: une_rt_m has EA21 only; namq_10_gdp and namq_10_lp_ulc have EA (changing
+  composition), EA19, EA20, EA21; sts_inpr_m has EA19, EA20, EA21 and no EA.'
+- Use the default JSON-stat output. format=SDMX-CSV returns HTTP 400 on this endpoint. Requests above
+  the size cap return HTTP 413.
+- Pull returned 5 units, 2 adjustment types and 4 items for the euro area; the indicator definition must
+  select one explicitly.
+- Derived from GDP and employment, so it inherits both revision patterns.
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: euro area (EA), 1980-Q1 to 2026-Q2, 4,500 observations.'
+docs_urls:
+- https://ec.europa.eu/eurostat/web/main/data/web-services
+- https://ec.europa.eu/eurostat/data/data-revision-policy

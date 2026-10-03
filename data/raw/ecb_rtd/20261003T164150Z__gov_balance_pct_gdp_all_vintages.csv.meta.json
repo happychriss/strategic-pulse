@@ -1,0 +1,15 @@
+{
+  "card_id": "ecb_rtd",
+  "label": "gov_balance_pct_gdp_all_vintages",
+  "url": "https://data-api.ecb.europa.eu/service/data/RTD/A.S0.N.F_UMD_CGG_D0.F?includeHistory=true&format=csvdata",
+  "retrieved_at_utc": "2026-10-03T16:41:50.661925+00:00",
+  "http_status": 200,
+  "bytes": 974863,
+  "sha256": "6727ca929e7f5e97e4f3f76a99d44d962bc6577349b3b0e71445b61b7f87fe23",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 16:41:51 GMT",
+    "Content-Type": "text/csv",
+    "Last-Modified": "Wed, 29 Apr 2026 13:30:00 GMT"
+  }
+}

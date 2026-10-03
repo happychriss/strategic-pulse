@@ -1,0 +1,13 @@
+{
+  "card_id": "eurostat_une_rt_m",
+  "label": "vintages_2001_2020_ea",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ei_lm_m_vtgfix?geo=EA&unit=PC_ACT&lang=en",
+  "retrieved_at_utc": "2026-10-03T15:54:33.571929+00:00",
+  "http_status": 200,
+  "bytes": 610866,
+  "sha256": "98e1373d5a136c6853f641b0b2168766b09ea3e75d2e908cb88d9b01c5c6d5a0",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:54:33 GMT",
+    "Content-Type": "application/json"
+  }
+}

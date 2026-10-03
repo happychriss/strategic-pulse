@@ -1,0 +1,13 @@
+{
+  "card_id": "eurostat_sts_inpr_m",
+  "label": "vintages_2021_on_ea_sca_i21",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ei_is_m_vtg?geo=EA&s_adj=SCA&unit=I21&lang=en",
+  "retrieved_at_utc": "2026-10-03T15:54:40.687921+00:00",
+  "http_status": 200,
+  "bytes": 221733,
+  "sha256": "34a178afa64ab2d2b6d6279ee214ff3c32bf57a1f1ff61bde86bfa9d02599dab",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:54:41 GMT",
+    "Content-Type": "application/json"
+  }
+}

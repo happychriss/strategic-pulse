@@ -1,0 +1,15 @@
+{
+  "card_id": "ecb_sp_2024_05_27_inflation",
+  "label": "document",
+  "url": "https://www.ecb.europa.eu/press/key/date/2024/html/ecb.sp240527~13d86a7d66.en.html",
+  "retrieved_at_utc": "2026-10-03T16:32:19.804715+00:00",
+  "http_status": 200,
+  "bytes": 127201,
+  "sha256": "4ff8cd65a70a28a9dd04a55bd96fa073336e9fa91c2eb4c90a62f99f2de46282",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 16:32:20 GMT",
+    "Content-Type": "text/html; charset=UTF-8",
+    "ETag": "\"myra-dd547c3f\""
+  }
+}

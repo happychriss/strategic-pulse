@@ -1,0 +1,14 @@
+{
+  "card_id": "ecb_rtd",
+  "label": "monthly_catalog_latest",
+  "url": "https://data-api.ecb.europa.eu/service/data/RTD/M....?lastNObservations=1&format=csvdata",
+  "retrieved_at_utc": "2026-10-03T15:45:51.230693+00:00",
+  "http_status": 200,
+  "bytes": 82629,
+  "sha256": "719f0f71ac18a98e5d1f98e4e100f0e40b023d636d94a007bce4a436b55d09da",
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 15:45:52 GMT",
+    "Content-Type": "text/csv",
+    "Last-Modified": "Wed, 09 Sep 2026 13:30:00 GMT"
+  }
+}

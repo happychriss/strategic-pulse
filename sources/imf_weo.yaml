@@ -1,0 +1,32 @@
+id: imf_weo
+provider: IMF
+name: World Economic Outlook database (projections and history)
+role: structural_indicator
+phase: 2
+endpoint:
+  protocol: sdmx-rest-3.0
+  base_url: https://api.imf.org/external/sdmx
+  dataset_id: IMF.RES:WEO
+  example_key: null
+access:
+  auth: none
+  licence: IMF data terms (free, attribution)
+  terms_url: https://www.imf.org/en/about/copyright-and-terms
+coverage:
+  geography: Global, country level
+  frequency: annual, projections to 5 years
+  start: "1980"
+temporal:
+  revision_policy: Two main editions a year (April, October); each edition revises history and projections.
+  vintage_support: release_snapshots
+  knowledge_time_basis: Edition date. Archive each edition as its own snapshot.
+python_access: "sdmx1 source IMF_DATA (SDMX 3.0 portal)."
+pitfalls:
+  - Portal moved from imf.org to data.imf.org in 2025; legacy endpoints were retired.
+  - Older vintages may need the archive downloads rather than the API.
+verification:
+  status: unverified
+  date: null
+  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+docs_urls:
+  - https://data.imf.org/-/media/iData/External-Storage/Documents/2C2B2F3E671A4B11ABE756E2441FD6F0/en/WEO-Database-Transition-Guide.pdf

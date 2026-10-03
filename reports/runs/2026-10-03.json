@@ -1,0 +1,403 @@
+{
+  "date": "2026-10-03",
+  "started_utc": "2026-10-03T19:02:23.579624+00:00",
+  "model_version": "phase1-v0.3",
+  "pulls": [
+    {
+      "card": "ecb_icp",
+      "label": "hicp_headline_annual_rate",
+      "status": "unchanged",
+      "bytes": 98839,
+      "path": "data/raw/ecb_icp/20261003T154406Z__hicp_headline_annual_rate.csv"
+    },
+    {
+      "card": "ecb_icp",
+      "label": "hicp_core_xef_annual_rate",
+      "status": "unchanged",
+      "bytes": 126662,
+      "path": "data/raw/ecb_icp/20261003T154509Z__hicp_core_xef_annual_rate.csv"
+    },
+    {
+      "card": "ecb_hicp",
+      "label": "hicp_headline_annual_rate",
+      "status": "unchanged",
+      "bytes": 164043,
+      "path": "data/raw/ecb_hicp/20261003T155639Z__hicp_headline_annual_rate.csv"
+    },
+    {
+      "card": "ecb_hicp",
+      "label": "hicp_core_xef000_annual_rate",
+      "status": "unchanged",
+      "bytes": 202546,
+      "path": "data/raw/ecb_hicp/20261003T155642Z__hicp_core_xef000_annual_rate.csv"
+    },
+    {
+      "card": "ecb_fm_policy_rates",
+      "label": "deposit_facility",
+      "status": "unchanged",
+      "bytes": 20943,
+      "path": "data/raw/ecb_fm_policy_rates/20261003T154512Z__deposit_facility.csv"
+    },
+    {
+      "card": "ecb_fm_policy_rates",
+      "label": "main_refinancing",
+      "status": "unchanged",
+      "bytes": 18254,
+      "path": "data/raw/ecb_fm_policy_rates/20261003T154544Z__main_refinancing.csv"
+    },
+    {
+      "card": "ecb_yc",
+      "label": "spot_10y",
+      "status": "unchanged",
+      "bytes": 3166515,
+      "path": "data/raw/ecb_yc/20261003T154546Z__spot_10y.csv"
+    },
+    {
+      "card": "ecb_yc",
+      "label": "spot_2y",
+      "status": "unchanged",
+      "bytes": 3145804,
+      "path": "data/raw/ecb_yc/20261003T154548Z__spot_2y.csv"
+    },
+    {
+      "card": "ecb_rtd",
+      "label": "monthly_catalog_latest",
+      "status": "unchanged",
+      "bytes": 82629,
+      "path": "data/raw/ecb_rtd/20261003T154551Z__monthly_catalog_latest.csv"
+    },
+    {
+      "card": "ecb_rtd",
+      "label": "hicp_annual_rate_all_vintages",
+      "status": "unchanged",
+      "bytes": 663973,
+      "path": "data/raw/ecb_rtd/20261003T154553Z__hicp_annual_rate_all_vintages.csv"
+    },
+    {
+      "card": "ecb_rtd",
+      "label": "unemployment_rate_all_vintages",
+      "status": "unchanged",
+      "bytes": 21460546,
+      "path": "data/raw/ecb_rtd/20261003T155412Z__unemployment_rate_all_vintages.csv.gz"
+    },
+    {
+      "card": "ecb_rtd",
+      "label": "hicp_energy_index_all_vintages",
+      "status": "unchanged",
+      "bytes": 1177579,
+      "path": "data/raw/ecb_rtd/20261003T163451Z__hicp_energy_index_all_vintages.csv"
+    },
+    {
+      "card": "ecb_rtd",
+      "label": "hicp_ex_energy_unprocessed_food_index_all_vintages",
+      "status": "unchanged",
+      "bytes": 1174107,
+      "path": "data/raw/ecb_rtd/20261003T163502Z__hicp_ex_energy_unprocessed_food_index_all_vintages.csv"
+    },
+    {
+      "card": "ecb_rtd",
+      "label": "gov_balance_pct_gdp_all_vintages",
+      "status": "unchanged",
+      "bytes": 974863,
+      "path": "data/raw/ecb_rtd/20261003T164150Z__gov_balance_pct_gdp_all_vintages.csv"
+    },
+    {
+      "card": "ecb_rtd",
+      "label": "gov_primary_balance_pct_gdp_all_vintages",
+      "status": "unchanged",
+      "bytes": 977868,
+      "path": "data/raw/ecb_rtd/20261003T164154Z__gov_primary_balance_pct_gdp_all_vintages.csv"
+    },
+    {
+      "card": "eurostat_une_rt_m",
+      "label": "ea21_sa_total_pc_act",
+      "status": "unchanged",
+      "bytes": 25294,
+      "path": "data/raw/eurostat_une_rt_m/20261003T155430Z__ea21_sa_total_pc_act.json"
+    },
+    {
+      "card": "eurostat_une_rt_m",
+      "label": "vintages_2021_on_ea",
+      "status": "unchanged",
+      "bytes": 290095,
+      "path": "data/raw/eurostat_une_rt_m/20261003T155431Z__vintages_2021_on_ea.json"
+    },
+    {
+      "card": "eurostat_une_rt_m",
+      "label": "vintages_2001_2020_ea",
+      "status": "unchanged",
+      "bytes": 610866,
+      "path": "data/raw/eurostat_une_rt_m/20261003T155433Z__vintages_2001_2020_ea.json"
+    },
+    {
+      "card": "eurostat_namq_10_gdp",
+      "label": "ea_sca_b1gq_qoq",
+      "status": "unchanged",
+      "bytes": 11629,
+      "path": "data/raw/eurostat_namq_10_gdp/20261003T155435Z__ea_sca_b1gq_qoq.json"
+    },
+    {
+      "card": "eurostat_namq_10_gdp",
+      "label": "vintages_ea_sca",
+      "status": "unchanged",
+      "bytes": 330653,
+      "path": "data/raw/eurostat_namq_10_gdp/20261003T155437Z__vintages_ea_sca.json"
+    },
+    {
+      "card": "eurostat_sts_inpr_m",
+      "label": "ea21_sca_bd_i21",
+      "status": "unchanged",
+      "bytes": 41190,
+      "path": "data/raw/eurostat_sts_inpr_m/20261003T155439Z__ea21_sca_bd_i21.json"
+    },
+    {
+      "card": "eurostat_sts_inpr_m",
+      "label": "vintages_2021_on_ea_sca_i21",
+      "status": "unchanged",
+      "bytes": 221733,
+      "path": "data/raw/eurostat_sts_inpr_m/20261003T155440Z__vintages_2021_on_ea_sca_i21.json"
+    },
+    {
+      "card": "eurostat_namq_10_lp_ulc",
+      "label": "ea_all",
+      "status": "unchanged",
+      "bytes": 70627,
+      "path": "data/raw/eurostat_namq_10_lp_ulc/20261003T155446Z__ea_all.json"
+    },
+    {
+      "card": "eurostat_gov_10dd_edpt1",
+      "label": "ea21_ea20_s13",
+      "status": "unchanged",
+      "bytes": 40195,
+      "path": "data/raw/eurostat_gov_10dd_edpt1/20261003T155448Z__ea21_ea20_s13.json"
+    },
+    {
+      "card": "eurostat_nrg_pc_205",
+      "label": "major_economies_eur",
+      "status": "unchanged",
+      "bytes": 99770,
+      "path": "data/raw/eurostat_nrg_pc_205/20261003T155450Z__major_economies_eur.json"
+    },
+    {
+      "card": "eurostat_nrg_pc_203",
+      "label": "major_economies_eur",
+      "status": "unchanged",
+      "bytes": 150305,
+      "path": "data/raw/eurostat_nrg_pc_203/20261003T155453Z__major_economies_eur.json"
+    },
+    {
+      "card": "oecd_mei_revisions",
+      "label": "ea20_monthly_cpi_since_2018",
+      "status": "unchanged",
+      "bytes": 364220,
+      "path": "data/raw/oecd_mei_revisions/20261003T155302Z__ea20_monthly_cpi_since_2018.csv"
+    },
+    {
+      "card": "oecd_mei_revisions",
+      "label": "ea19_quarterly_ulc_since_2008",
+      "status": "unchanged",
+      "bytes": 448907,
+      "path": "data/raw/oecd_mei_revisions/20261003T164158Z__ea19_quarterly_ulc_since_2008.csv"
+    },
+    {
+      "card": "oecd_mei_revisions",
+      "label": "ea20_quarterly_ulc_since_2008",
+      "status": "unchanged",
+      "bytes": 284824,
+      "path": "data/raw/oecd_mei_revisions/20261003T164201Z__ea20_quarterly_ulc_since_2008.csv"
+    },
+    {
+      "card": "oecd_mei_revisions",
+      "label": "ea20_quarterly_gdp_since_2015",
+      "status": "unchanged",
+      "bytes": 187539,
+      "path": "data/raw/oecd_mei_revisions/20261003T155305Z__ea20_quarterly_gdp_since_2015.csv"
+    }
+  ],
+  "build": {
+    "ECB:FM": {
+      "series": 2,
+      "intervals": 117,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ECB:HICP": {
+      "series": 2,
+      "intervals": 714,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ECB:ICP": {
+      "series": 2,
+      "intervals": 696,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ECB:RTD": {
+      "series": 6,
+      "intervals": 54306,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ECB:YC": {
+      "series": 2,
+      "intervals": 11286,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ESTAT:ei_is_m_vintages": {
+      "series": 1,
+      "intervals": 2761,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ESTAT:ei_lm_m_vintages": {
+      "series": 1,
+      "intervals": 4557,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ESTAT:ei_na_q_vintages": {
+      "series": 1,
+      "intervals": 9010,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ESTAT:gov_10dd_edpt1": {
+      "series": 96,
+      "intervals": 2445,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ESTAT:namq_10_gdp": {
+      "series": 1,
+      "intervals": 125,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ESTAT:namq_10_lp_ulc": {
+      "series": 36,
+      "intervals": 4500,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ESTAT:nrg_pc_203": {
+      "series": 348,
+      "intervals": 9750,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ESTAT:nrg_pc_205": {
+      "series": 267,
+      "intervals": 6406,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ESTAT:sts_inpr_m": {
+      "series": 1,
+      "intervals": 427,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "ESTAT:une_rt_m": {
+      "series": 1,
+      "intervals": 320,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    },
+    "OECD:DSD_STES_REVISIONS@DF_STES_REVISIONS": {
+      "series": 4,
+      "intervals": 3523,
+      "inserted": 0,
+      "updated": 0,
+      "deleted": 0
+    }
+  },
+  "tests": "72 passed in 24.18s",
+  "indicators": {
+    "ea_10y_yield": {
+      "period": "2026-10",
+      "value": 3.5922
+    },
+    "ea_gdp_qoq": {
+      "period": "2026-Q2",
+      "value": 0.442
+    },
+    "ea_gov_balance": {
+      "period": "2025",
+      "value": -2.9217
+    },
+    "ea_gov_interest_burden": {
+      "period": "2025",
+      "value": 1.9035
+    },
+    "ea_hicp_core_yoy": {
+      "period": "2026-09",
+      "value": 2.5
+    },
+    "ea_hicp_energy_yoy": {
+      "period": "2026-08",
+      "value": 14.2641
+    },
+    "ea_hicp_headline_yoy": {
+      "period": "2026-09",
+      "value": 3.8
+    },
+    "ea_policy_rate": {
+      "period": "2026-10",
+      "value": 2.5
+    },
+    "ea_ulc_yoy": {
+      "period": "2026-Q2",
+      "value": 2.6
+    },
+    "ea_unemployment_rate": {
+      "period": "2026-08",
+      "value": 6.4
+    }
+  },
+  "regimes": {
+    "higher_for_longer": {
+      "position": "strongly supported",
+      "direction": "increasing",
+      "net": 0.75,
+      "data_quality": "high",
+      "evidence_strength": "low",
+      "model_confidence": "high"
+    },
+    "recession_disinflation": {
+      "position": "not supported",
+      "direction": "broadly_stable",
+      "net": -0.5,
+      "data_quality": "high",
+      "evidence_strength": "low",
+      "model_confidence": "high"
+    }
+  },
+  "pages": [
+    "reports/assessments/phase1-v0.3/2019-12-31.md",
+    "reports/assessments/phase1-v0.3/2021-12-31.md",
+    "reports/assessments/phase1-v0.3/2022-12-31.md",
+    "reports/assessments/phase1-v0.3/2024-12-31.md",
+    "reports/assessments/phase1-v0.3/2026-10-03.md",
+    "reports/assessments/phase1-v0.3/index.html"
+  ],
+  "changes": [
+    "First run log: baseline recorded, nothing to compare with."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "card_id": "ecb_sp_2024_09_16",
+  "label": "document",
+  "url": "https://www.ecb.europa.eu/press/key/date/2024/html/ecb.sp240916~c0eff5db57.en.html",
+  "retrieved_at_utc": "2026-10-03T16:32:20.698915+00:00",
+  "http_status": 200,
+  "bytes": 110483,
+  "sha256": "ba9a3cc100ba7cbf752f6fff9212a72364f0d6717ffb5507666d27932e88d7ee",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 16:32:21 GMT",
+    "Content-Type": "text/html; charset=UTF-8",
+    "ETag": "\"myra-3d710b0f\""
+  }
+}
