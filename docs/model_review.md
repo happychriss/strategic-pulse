@@ -71,14 +71,15 @@ earlier. Both versions remain loaded; tests prove each still gives its own answe
 
 | As of | v0.1 higher for longer | v0.2 higher for longer | v0.2 recession/disinflation |
 |---|---|---|---|
-| 2019-12-31 | mixed | mixed | not supported |
+| 2019-12-31 | supported | mixed | not supported |
 | 2021-12-31 | strongly supported | strongly supported | not supported |
 | 2022-12-31 | strongly supported | strongly supported | not supported |
 | 2024-12-31 | strongly supported | supported | not supported |
-| 2026-10-03 | supported (3 of 4) | strongly supported | not supported |
+| 2026-10-03 | strongly supported | strongly supported | not supported |
 
 - **The easing now registers at end-2024** as one opposing condition, lowering the position to
-  supported.
+  supported. It also changes end-2019 from supported to mixed, because the ECB's September 2019
+  rate cut counts against higher for longer.
 - **The six-month direction at end-2024 still reads strongly increasing.** In mid-2024 underlying
   inflation had fallen 1.3 points in six months (opposing condition met, position mixed); by
   end-2024 it had stalled at 2.76%. The rebound is a real feature of late 2024, but the cutoffs are
