@@ -1,0 +1,16 @@
+# Reference events for testing the change detector. Fixed on 2026-10-03 BEFORE the first
+# detector run, so the test cannot be tuned to the list. Dates are the month the change began
+# in the real world, not when data showed it. Policy dates come from the ECB rate series (FM).
+# A detection counts if an alarm occurs from 3 months before to 6 months after the event month.
+events:
+  - {month: 2008-09, layer_hint: real_economy, label: "Global financial crisis: Lehman Brothers collapse"}
+  - {month: 2011-07, layer_hint: prices_policy, label: "Euro area sovereign debt crisis escalates (Italy, Spain)"}
+  - {month: 2014-06, layer_hint: prices_policy, label: "ECB takes the deposit rate negative; deflation fears"}
+  - {month: 2015-09, layer_hint: demography_migration, label: "Refugee influx into the EU peaks"}
+  - {month: 2020-03, layer_hint: real_economy, label: "Pandemic shock and lockdowns"}
+  - {month: 2021-07, layer_hint: prices_policy, label: "Inflation surge begins (headline above 2% after years below)"}
+  - {month: 2022-02, layer_hint: resources_energy, label: "Russia invades Ukraine; energy shock and gas cut-off"}
+  - {month: 2022-07, layer_hint: prices_policy, label: "ECB raises rates for the first time in eleven years"}
+  - {month: 2023-09, layer_hint: prices_policy, label: "ECB's last hike; policy rate peaks"}
+  - {month: 2024-06, layer_hint: prices_policy, label: "ECB's first rate cut of the easing cycle"}
+  - {month: 2026-03, layer_hint: resources_energy, label: "War in the Middle East; new energy price shock"}

@@ -1,0 +1,4512 @@
+{
+ "model_version": "phase1-v0.5",
+ "generated_utc": "2026-10-03T21:15:08.722927+00:00",
+ "now": {
+  "month": "2026-10",
+  "level": 1,
+  "onset": false,
+  "active_layers": [
+   "prices_policy"
+  ],
+  "signals": [
+   {
+    "layer": "prices_policy",
+    "indicator": "ea_hicp_headline_yoy",
+    "knowledge": "vintage",
+    "latest_period": "2026-09",
+    "value": 3.8,
+    "change": 1.0,
+    "threshold": 1.6,
+    "history_months": 353,
+    "unusual": false,
+    "turn": false,
+    "change_6m": 1.2,
+    "note": ""
+   },
+   {
+    "layer": "prices_policy",
+    "indicator": "ea_hicp_core_yoy",
+    "knowledge": "vintage",
+    "latest_period": "2026-09",
+    "value": 2.5,
+    "change": 0.1,
+    "threshold": 0.7,
+    "history_months": 353,
+    "unusual": false,
+    "turn": false,
+    "change_6m": 0.2,
+    "note": ""
+   },
+   {
+    "layer": "prices_policy",
+    "indicator": "ea_policy_rate",
+    "knowledge": "vintage",
+    "latest_period": "2026-10",
+    "value": 2.5,
+    "change": 0.25,
+    "threshold": 0.75,
+    "history_months": 330,
+    "unusual": false,
+    "turn": false,
+    "change_6m": 0.5,
+    "note": ""
+   },
+   {
+    "layer": "prices_policy",
+    "indicator": "ea_10y_yield",
+    "knowledge": "vintage",
+    "latest_period": "2026-10",
+    "value": 3.5922,
+    "change": 0.4574,
+    "threshold": 0.6267,
+    "history_months": 262,
+    "unusual": false,
+    "turn": false,
+    "change_6m": 0.5169,
+    "note": ""
+   },
+   {
+    "layer": "prices_policy",
+    "indicator": "ea_household_price_expectations",
+    "knowledge": "pseudo",
+    "latest_period": "2026-09",
+    "value": 35.2,
+    "change": 1.2,
+    "threshold": 11.56,
+    "history_months": 497,
+    "unusual": false,
+    "turn": true,
+    "change_6m": -8.0,
+    "note": ""
+   },
+   {
+    "layer": "real_economy",
+    "indicator": "ea_unemployment_rate",
+    "knowledge": "vintage",
+    "latest_period": "2026-08",
+    "value": 6.4,
+    "change": 0.1,
+    "threshold": 0.4,
+    "history_months": 316,
+    "unusual": false,
+    "turn": false,
+    "change_6m": 0.0,
+    "note": ""
+   },
+   {
+    "layer": "real_economy",
+    "indicator": "ea_gdp_qoq",
+    "knowledge": "vintage",
+    "latest_period": "2026-Q2",
+    "value": 0.442,
+    "change": 0.4473,
+    "threshold": 1.3002,
+    "history_months": 369,
+    "unusual": false,
+    "turn": false,
+    "change_6m": 0.2479,
+    "note": ""
+   },
+   {
+    "layer": "real_economy",
+    "indicator": "ea_economic_sentiment",
+    "knowledge": "pseudo",
+    "latest_period": "2026-09",
+    "value": 97.9,
+    "change": 2.3,
+    "threshold": 9.5,
+    "history_months": 557,
+    "unusual": false,
+    "turn": false,
+    "change_6m": 1.1,
+    "note": ""
+   },
+   {
+    "layer": "real_economy",
+    "indicator": "ea_industry_confidence",
+    "knowledge": "pseudo",
+    "latest_period": "2026-09",
+    "value": -3.8,
+    "change": 3.6,
+    "threshold": 8.0,
+    "history_months": 557,
+    "unusual": false,
+    "turn": false,
+    "change_6m": 3.2,
+    "note": ""
+   },
+   {
+    "layer": "resources_energy",
+    "indicator": "ea_hicp_energy_yoy",
+    "knowledge": "vintage",
+    "latest_period": "2026-08",
+    "value": 14.2641,
+    "change": 3.4354,
+    "threshold": 11.5845,
+    "history_months": 352,
+    "unusual": false,
+    "turn": false,
+    "change_6m": 17.3882,
+    "note": ""
+   },
+   {
+    "layer": "resources_energy",
+    "indicator": "eu_gas_imports_russia_share",
+    "knowledge": "pseudo",
+    "latest_period": "2026-06",
+    "value": 6.4011,
+    "change": -1.6815,
+    "threshold": 5.0713,
+    "history_months": 146,
+    "unusual": false,
+    "turn": false,
+    "change_6m": -1.3782,
+    "note": ""
+   },
+   {
+    "layer": "international_integration",
+    "indicator": "ea_export_volume_yoy",
+    "knowledge": "pseudo",
+    "latest_period": "2026-06",
+    "value": 4.2716,
+    "change": 11.5789,
+    "threshold": 12.9479,
+    "history_months": 278,
+    "unusual": false,
+    "turn": false,
+    "change_6m": 4.9281,
+    "note": ""
+   },
+   {
+    "layer": "international_integration",
+    "indicator": "ea_import_volume_yoy",
+    "knowledge": "pseudo",
+    "latest_period": "2026-06",
+    "value": 1.3699,
+    "change": -2.415,
+    "threshold": 11.6962,
+    "history_months": 278,
+    "unusual": false,
+    "turn": false,
+    "change_6m": -4.5666,
+    "note": ""
+   },
+   {
+    "layer": "societal_cohesion",
+    "indicator": "ea_consumer_confidence",
+    "knowledge": "pseudo",
+    "latest_period": "2026-09",
+    "value": -16.5,
+    "change": 1.2,
+    "threshold": 4.82,
+    "history_months": 497,
+    "unusual": false,
+    "turn": false,
+    "change_6m": -0.2,
+    "note": ""
+   },
+   {
+    "layer": "societal_cohesion",
+    "indicator": "ea_unemployment_fears",
+    "knowledge": "pseudo",
+    "latest_period": "2026-09",
+    "value": 28.3,
+    "change": -4.1,
+    "threshold": 10.92,
+    "history_months": 497,
+    "unusual": false,
+    "turn": false,
+    "change_6m": 1.2,
+    "note": ""
+   },
+   {
+    "layer": "societal_cohesion",
+    "indicator": "ea_youth_unemployment",
+    "knowledge": "pseudo",
+    "latest_period": "2026-08",
+    "value": 15.0,
+    "change": -0.2,
+    "threshold": 1.225,
+    "history_months": 316,
+    "unusual": false,
+    "turn": false,
+    "change_6m": -0.2,
+    "note": ""
+   },
+   {
+    "layer": "demography_migration",
+    "indicator": "eu_asylum_applicants",
+    "knowledge": "pseudo",
+    "latest_period": "2026-05",
+    "value": 11.3833,
+    "change": -0.5167,
+    "threshold": 3.7296,
+    "history_months": 134,
+    "unusual": false,
+    "turn": false,
+    "change_6m": -1.275,
+    "note": ""
+   }
+  ],
+  "recent": [
+   {
+    "month": "2026-07",
+    "level": 2,
+    "onset": false
+   },
+   {
+    "month": "2026-08",
+    "level": 1,
+    "onset": false
+   },
+   {
+    "month": "2026-09",
+    "level": 1,
+    "onset": false
+   },
+   {
+    "month": "2026-10",
+    "level": 1,
+    "onset": false
+   }
+  ]
+ },
+ "timeline": [
+  {
+   "month": "2008-01",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "prices_policy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2008-02",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2008-03",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2008-04",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2008-05",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2008-06",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2008-07",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2008-08",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2008-09",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2008-10",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2008-11",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2008-12",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2009-01",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2009-02",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2009-03",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2009-04",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2009-05",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2009-06",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2009-07",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2009-08",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2009-09",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2009-10",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2009-11",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "international_integration"
+   ]
+  },
+  {
+   "month": "2009-12",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2010-01",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2010-02",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2010-03",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2010-04",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "international_integration"
+   ]
+  },
+  {
+   "month": "2010-05",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2010-06",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2010-07",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2010-08",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2010-09",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2010-10",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2010-11",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "international_integration"
+   ]
+  },
+  {
+   "month": "2010-12",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2011-01",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "international_integration",
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2011-02",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2011-03",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2011-04",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2011-05",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2011-06",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2011-07",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2011-08",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2011-09",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2011-10",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2011-11",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2011-12",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2012-01",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2012-02",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "international_integration"
+   ]
+  },
+  {
+   "month": "2012-03",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2012-04",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2012-05",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "prices_policy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2012-06",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2012-07",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2012-08",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2012-09",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2012-10",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2012-11",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2012-12",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2013-01",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "international_integration"
+   ]
+  },
+  {
+   "month": "2013-02",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2013-03",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "international_integration"
+   ]
+  },
+  {
+   "month": "2013-04",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2013-05",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2013-06",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2013-07",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2013-08",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2013-09",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2013-10",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2013-11",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2013-12",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-01",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-02",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-03",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-04",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-05",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-06",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-07",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-08",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-09",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-10",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-11",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2014-12",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2015-01",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2015-02",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2015-03",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2015-04",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2015-05",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2015-06",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2015-07",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2015-08",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2015-09",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2015-10",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2015-11",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2015-12",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "international_integration"
+   ]
+  },
+  {
+   "month": "2016-01",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2016-02",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2016-03",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2016-04",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2016-05",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2016-06",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2016-07",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2016-08",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2016-09",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2016-10",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2016-11",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2016-12",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2017-01",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2017-02",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2017-03",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2017-04",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2017-05",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2017-06",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2017-07",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2017-08",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "international_integration",
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2017-09",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2017-10",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2017-11",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2017-12",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2018-01",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2018-02",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2018-03",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2018-04",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2018-05",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2018-06",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2018-07",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "international_integration",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2018-08",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2018-09",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2018-10",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2018-11",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2018-12",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2019-01",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2019-02",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2019-03",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2019-04",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2019-05",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2019-06",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2019-07",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2019-08",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2019-09",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2019-10",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2019-11",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2019-12",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2020-01",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2020-02",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2020-03",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2020-04",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2020-05",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2020-06",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2020-07",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2020-08",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2020-09",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2020-10",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2020-11",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "demography_migration",
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2020-12",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2021-01",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2021-02",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "real_economy"
+   ]
+  },
+  {
+   "month": "2021-03",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2021-04",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2021-05",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2021-06",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2021-07",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2021-08",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2021-09",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2021-10",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2021-11",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2021-12",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2022-01",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2022-02",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2022-03",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2022-04",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2022-05",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2022-06",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2022-07",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2022-08",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2022-09",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2022-10",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2022-11",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2022-12",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2023-01",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2023-02",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2023-03",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2023-04",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2023-05",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2023-06",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2023-07",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2023-08",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2023-09",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2023-10",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2023-11",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2023-12",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2024-01",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2024-02",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2024-03",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2024-04",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "international_integration"
+   ]
+  },
+  {
+   "month": "2024-05",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "international_integration"
+   ]
+  },
+  {
+   "month": "2024-06",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2024-07",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2024-08",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2024-09",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2024-10",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2024-11",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2024-12",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2025-01",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2025-02",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2025-03",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2025-04",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2025-05",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2025-06",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2025-07",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2025-08",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2025-09",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2025-10",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "prices_policy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2025-11",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2025-12",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2026-01",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2026-02",
+   "level": 0,
+   "onset": false,
+   "layers": []
+  },
+  {
+   "month": "2026-03",
+   "level": 2,
+   "onset": true,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2026-04",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2026-05",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "month": "2026-06",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2026-07",
+   "level": 2,
+   "onset": false,
+   "layers": [
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2026-08",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "resources_energy"
+   ]
+  },
+  {
+   "month": "2026-09",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  },
+  {
+   "month": "2026-10",
+   "level": 1,
+   "onset": false,
+   "layers": [
+    "prices_policy"
+   ]
+  }
+ ],
+ "layers": [
+  {
+   "key": "prices_policy",
+   "label": "Prices and monetary policy"
+  },
+  {
+   "key": "real_economy",
+   "label": "Real economy"
+  },
+  {
+   "key": "resources_energy",
+   "label": "Resources and energy"
+  },
+  {
+   "key": "international_integration",
+   "label": "International integration"
+  },
+  {
+   "key": "societal_cohesion",
+   "label": "Societal cohesion"
+  },
+  {
+   "key": "demography_migration",
+   "label": "Demography and migration"
+  }
+ ],
+ "events": [
+  {
+   "event": "Global financial crisis: Lehman Brothers collapse",
+   "month": "2008-09",
+   "status": "new alarm",
+   "alarm_month": "2008-07",
+   "lag_months": -2,
+   "layers": [
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "event": "Euro area sovereign debt crisis escalates (Italy, Spain)",
+   "month": "2011-07",
+   "status": "new alarm",
+   "alarm_month": "2011-08",
+   "lag_months": 1,
+   "layers": [
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "event": "ECB takes the deposit rate negative; deflation fears",
+   "month": "2014-06",
+   "status": "missed",
+   "alarm_month": null,
+   "lag_months": null,
+   "layers": []
+  },
+  {
+   "event": "Refugee influx into the EU peaks",
+   "month": "2015-09",
+   "status": "missed",
+   "alarm_month": null,
+   "lag_months": null,
+   "layers": []
+  },
+  {
+   "event": "Pandemic shock and lockdowns",
+   "month": "2020-03",
+   "status": "new alarm",
+   "alarm_month": "2020-03",
+   "lag_months": 0,
+   "layers": [
+    "real_economy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "event": "Inflation surge begins (headline above 2% after years below)",
+   "month": "2021-07",
+   "status": "alarm already running",
+   "alarm_month": "2021-04",
+   "lag_months": -3,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "event": "Russia invades Ukraine; energy shock and gas cut-off",
+   "month": "2022-02",
+   "status": "alarm already running",
+   "alarm_month": "2021-11",
+   "lag_months": -3,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "event": "ECB raises rates for the first time in eleven years",
+   "month": "2022-07",
+   "status": "alarm already running",
+   "alarm_month": "2022-04",
+   "lag_months": -3,
+   "layers": [
+    "prices_policy",
+    "real_economy",
+    "resources_energy",
+    "societal_cohesion"
+   ]
+  },
+  {
+   "event": "ECB's last hike; policy rate peaks",
+   "month": "2023-09",
+   "status": "alarm already running",
+   "alarm_month": "2023-06",
+   "lag_months": -3,
+   "layers": [
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "event": "ECB's first rate cut of the easing cycle",
+   "month": "2024-06",
+   "status": "new alarm",
+   "alarm_month": "2024-06",
+   "lag_months": 0,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy"
+   ]
+  },
+  {
+   "event": "War in the Middle East; new energy price shock",
+   "month": "2026-03",
+   "status": "new alarm",
+   "alarm_month": "2026-03",
+   "lag_months": 0,
+   "layers": [
+    "international_integration",
+    "prices_policy",
+    "resources_energy"
+   ]
+  }
+ ],
+ "false_alarms": [
+  "2008-01",
+  "2011-01",
+  "2012-05",
+  "2017-03",
+  "2017-08",
+  "2018-07",
+  "2025-10"
+ ],
+ "structural_now": [
+  {
+   "axis": "governance",
+   "key": "rule_of_law",
+   "label": "Rule of law (World Bank estimate)",
+   "latest_year": 2025,
+   "eu_value": 1.0463,
+   "trend_now": -0.0139,
+   "trend_before": 0.0002,
+   "trend_change": -0.0141,
+   "threshold": 0.0961,
+   "unusual": false,
+   "turn": false,
+   "toward": "low pole",
+   "breadth": 0.04,
+   "breadth_threshold": 0.11,
+   "countries": [
+    "PL"
+   ],
+   "dispersion_ratio": 1.0,
+   "members": 27,
+   "note": "EU value = unweighted mean of member states"
+  },
+  {
+   "axis": "governance",
+   "key": "voice_accountability",
+   "label": "Voice and accountability (World Bank estimate)",
+   "latest_year": 2025,
+   "eu_value": 1.1351,
+   "trend_now": -0.0015,
+   "trend_before": -0.0003,
+   "trend_change": -0.0012,
+   "threshold": 0.1007,
+   "unusual": false,
+   "turn": false,
+   "toward": "low pole",
+   "breadth": 0.04,
+   "breadth_threshold": 0.19,
+   "countries": [
+    "PL"
+   ],
+   "dispersion_ratio": 1.05,
+   "members": 27,
+   "note": "EU value = unweighted mean of member states"
+  },
+  {
+   "axis": "governance",
+   "key": "corruption_perceptions",
+   "label": "Corruption Perceptions Index (higher = cleaner)",
+   "latest_year": 2025,
+   "eu_value": 62.0,
+   "trend_now": -0.6,
+   "trend_before": 0.0,
+   "trend_change": -0.6,
+   "threshold": 2.33,
+   "unusual": false,
+   "turn": false,
+   "toward": "high pole",
+   "breadth": 0.04,
+   "breadth_threshold": 0.05,
+   "countries": [
+    "ES"
+   ],
+   "dispersion_ratio": 1.0,
+   "members": 27,
+   "note": ""
+  },
+  {
+   "axis": "societal_cohesion",
+   "key": "income_inequality",
+   "label": "Income inequality S80/S20",
+   "latest_year": 2025,
+   "eu_value": 4.62,
+   "trend_now": -0.08,
+   "trend_before": -0.058,
+   "trend_change": -0.022,
+   "threshold": 0.5085,
+   "unusual": false,
+   "turn": false,
+   "toward": "low pole",
+   "breadth": 0.04,
+   "breadth_threshold": 0.09,
+   "countries": [
+    "RO"
+   ],
+   "dispersion_ratio": 0.85,
+   "members": 27,
+   "note": ""
+  },
+  {
+   "axis": "economic_order",
+   "key": "gov_expenditure",
+   "label": "Government expenditure, % of GDP",
+   "latest_year": 2025,
+   "eu_value": 49.5,
+   "trend_now": -0.35,
+   "trend_before": 1.04,
+   "trend_change": -1.39,
+   "threshold": 3.846,
+   "unusual": false,
+   "turn": false,
+   "toward": "low pole",
+   "breadth": 0.04,
+   "breadth_threshold": 0.15,
+   "countries": [
+    "EL"
+   ],
+   "dispersion_ratio": 0.98,
+   "members": 27,
+   "note": ""
+  },
+  {
+   "axis": "demography_migration",
+   "key": "old_age_dependency",
+   "label": "Old-age dependency ratio (65+ per 100 aged 15-64)",
+   "latest_year": 2025,
+   "eu_value": 34.5,
+   "trend_now": 0.46,
+   "trend_before": 0.6,
+   "trend_change": -0.14,
+   "threshold": 0.71,
+   "unusual": false,
+   "turn": false,
+   "toward": "low pole",
+   "breadth": 0.04,
+   "breadth_threshold": 0.15,
+   "countries": [
+    "CZ"
+   ],
+   "dispersion_ratio": 1.04,
+   "members": 27,
+   "note": ""
+  },
+  {
+   "axis": "demography_migration",
+   "key": "fertility",
+   "label": "Total fertility rate",
+   "latest_year": 2024,
+   "eu_value": 1.34,
+   "trend_now": -0.049,
+   "trend_before": -0.005,
+   "trend_change": -0.044,
+   "threshold": 0.1278,
+   "unusual": true,
+   "turn": false,
+   "toward": "high pole",
+   "breadth": 0.11,
+   "breadth_threshold": 0.04,
+   "countries": [
+    "CZ",
+    "EE",
+    "RO"
+   ],
+   "dispersion_ratio": 0.9,
+   "members": 27,
+   "note": ""
+  },
+  {
+   "axis": "technology",
+   "key": "rd_intensity",
+   "label": "R&D expenditure, % of GDP",
+   "latest_year": 2024,
+   "eu_value": 2.26,
+   "trend_now": -0.003,
+   "trend_before": 0.029,
+   "trend_change": -0.032,
+   "threshold": 0.2004,
+   "unusual": false,
+   "turn": false,
+   "toward": "low pole",
+   "breadth": 0.04,
+   "breadth_threshold": 0.16,
+   "countries": [
+    "BE"
+   ],
+   "dispersion_ratio": 1.04,
+   "members": 27,
+   "note": ""
+  },
+  {
+   "axis": "climate_environment",
+   "key": "climate_losses",
+   "label": "Losses from climate extremes, EUR per inhabitant",
+   "latest_year": 2024,
+   "eu_value": 89.92,
+   "trend_now": 6.137,
+   "trend_before": 8.865,
+   "trend_change": -2.728,
+   "threshold": 80.5297,
+   "unusual": false,
+   "turn": false,
+   "toward": "high pole",
+   "breadth": 0.04,
+   "breadth_threshold": 0.07,
+   "countries": [
+    "SI"
+   ],
+   "dispersion_ratio": 1.45,
+   "members": 27,
+   "note": ""
+  },
+  {
+   "axis": "resources_energy",
+   "key": "energy_import_dependency",
+   "label": "Energy import dependency, %",
+   "latest_year": 2024,
+   "eu_value": 57.286,
+   "trend_now": 0.2495,
+   "trend_before": 1.0974,
+   "trend_change": -0.8479,
+   "threshold": 4.9949,
+   "unusual": false,
+   "turn": false,
+   "toward": "high pole",
+   "breadth": 0.04,
+   "breadth_threshold": 0.09,
+   "countries": [
+    "IE"
+   ],
+   "dispersion_ratio": 1.01,
+   "members": 27,
+   "note": ""
+  },
+  {
+   "axis": "fiscal_capacity",
+   "key": "gov_debt",
+   "label": "Government debt, % of GDP",
+   "latest_year": 2025,
+   "eu_value": 81.7,
+   "trend_now": -1.17,
+   "trend_before": 0.68,
+   "trend_change": -1.85,
+   "threshold": 11.682,
+   "unusual": false,
+   "turn": false,
+   "toward": "low pole",
+   "breadth": 0.04,
+   "breadth_threshold": 0.15,
+   "countries": [
+    "EL"
+   ],
+   "dispersion_ratio": 0.76,
+   "members": 27,
+   "note": ""
+  }
+ ],
+ "structural_history": {
+  "2005": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": true,
+    "toward": "low pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   }
+  ],
+  "2006": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   }
+  ],
+  "2007": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   }
+  ],
+  "2008": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": true,
+    "turn": true,
+    "toward": "low pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   }
+  ],
+  "2009": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   }
+  ],
+  "2010": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   }
+  ],
+  "2011": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": true,
+    "turn": false,
+    "toward": "high pole"
+   }
+  ],
+  "2012": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": true,
+    "turn": false,
+    "toward": "high pole"
+   }
+  ],
+  "2013": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": true,
+    "turn": false,
+    "toward": "high pole"
+   }
+  ],
+  "2014": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": true,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": true,
+    "turn": false,
+    "toward": "high pole"
+   }
+  ],
+  "2015": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": true,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": true,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": true,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   }
+  ],
+  "2016": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": true,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": true,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   }
+  ],
+  "2017": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": true,
+    "turn": true,
+    "toward": "low pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": true,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": true,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   }
+  ],
+  "2018": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": true,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": true,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   }
+  ],
+  "2019": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": true,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": true,
+    "turn": false,
+    "toward": "low pole"
+   }
+  ],
+  "2020": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": true,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   }
+  ],
+  "2021": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   }
+  ],
+  "2022": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": null,
+    "turn": null,
+    "toward": ""
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": true,
+    "turn": true,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "low pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   }
+  ],
+  "2023": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": true,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": null,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   }
+  ],
+  "2024": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   }
+  ],
+  "2025": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   }
+  ],
+  "2026": [
+   {
+    "key": "rule_of_law",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "voice_accountability",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "corruption_perceptions",
+    "axis": "governance",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "income_inequality",
+    "axis": "societal_cohesion",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "gov_expenditure",
+    "axis": "economic_order",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "old_age_dependency",
+    "axis": "demography_migration",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "fertility",
+    "axis": "demography_migration",
+    "unusual": true,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "rd_intensity",
+    "axis": "technology",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   },
+   {
+    "key": "climate_losses",
+    "axis": "climate_environment",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "energy_import_dependency",
+    "axis": "resources_energy",
+    "unusual": false,
+    "turn": false,
+    "toward": "high pole"
+   },
+   {
+    "key": "gov_debt",
+    "axis": "fiscal_capacity",
+    "unusual": false,
+    "turn": false,
+    "toward": "low pole"
+   }
+  ]
+ },
+ "indicator_labels": {
+  "ea_hicp_headline_yoy": "HICP headline, annual % change",
+  "ea_hicp_energy_yoy": "HICP energy, annual % change",
+  "ea_hicp_core_yoy": "HICP excluding energy and food, annual % change",
+  "ea_ulc_yoy": "Unit labour costs, annual % change (compounded from quarterly)",
+  "ea_policy_rate": "ECB deposit facility rate",
+  "ea_10y_yield": "Euro area 10-year AAA government yield, monthly mean",
+  "ea_unemployment_rate": "Unemployment rate",
+  "ea_gdp_qoq": "Real GDP, quarter-on-quarter % change",
+  "ea_gov_balance": "General government balance, % of GDP",
+  "ea_gov_interest_burden": "Government interest expenditure, % of GDP",
+  "ea_economic_sentiment": "Economic sentiment indicator",
+  "ea_industry_confidence": "Industry confidence, balance",
+  "ea_household_price_expectations": "Households' price expectations, next 12 months, balance",
+  "ea_consumer_confidence": "Consumer confidence, balance",
+  "ea_unemployment_fears": "Households' unemployment expectations, next 12 months, balance",
+  "ea_youth_unemployment": "Youth unemployment rate (under 25)",
+  "eu_asylum_applicants": "First-time asylum applicants per 100,000, 12-month average",
+  "eu_gas_imports_russia_share": "Share of Russia in EU natural gas imports",
+  "ea_export_volume_yoy": "Extra-euro area export volume, annual % change",
+  "ea_import_volume_yoy": "Extra-euro area import volume, annual % change"
+ },
+ "test_summary": {
+  "phase1-v0.4 (speed only)": {
+   "events": [
+    {
+     "event": "Global financial crisis: Lehman Brothers collapse",
+     "month": "2008-09",
+     "status": "new alarm",
+     "alarm_month": "2008-07",
+     "lag_months": -2,
+     "layers": [
+      "real_economy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "Euro area sovereign debt crisis escalates (Italy, Spain)",
+     "month": "2011-07",
+     "status": "new alarm",
+     "alarm_month": "2011-09",
+     "lag_months": 2,
+     "layers": [
+      "prices_policy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "ECB takes the deposit rate negative; deflation fears",
+     "month": "2014-06",
+     "status": "missed",
+     "alarm_month": null,
+     "lag_months": null,
+     "layers": []
+    },
+    {
+     "event": "Refugee influx into the EU peaks",
+     "month": "2015-09",
+     "status": "missed",
+     "alarm_month": null,
+     "lag_months": null,
+     "layers": []
+    },
+    {
+     "event": "Pandemic shock and lockdowns",
+     "month": "2020-03",
+     "status": "new alarm",
+     "alarm_month": "2020-03",
+     "lag_months": 0,
+     "layers": [
+      "real_economy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "Inflation surge begins (headline above 2% after years below)",
+     "month": "2021-07",
+     "status": "alarm already running",
+     "alarm_month": "2021-04",
+     "lag_months": -3,
+     "layers": [
+      "prices_policy",
+      "real_economy",
+      "resources_energy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "Russia invades Ukraine; energy shock and gas cut-off",
+     "month": "2022-02",
+     "status": "alarm already running",
+     "alarm_month": "2021-11",
+     "lag_months": -3,
+     "layers": [
+      "international_integration",
+      "prices_policy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "ECB raises rates for the first time in eleven years",
+     "month": "2022-07",
+     "status": "alarm already running",
+     "alarm_month": "2022-04",
+     "lag_months": -3,
+     "layers": [
+      "prices_policy",
+      "resources_energy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "ECB's last hike; policy rate peaks",
+     "month": "2023-09",
+     "status": "alarm already running",
+     "alarm_month": "2023-06",
+     "lag_months": -3,
+     "layers": [
+      "prices_policy",
+      "resources_energy"
+     ]
+    },
+    {
+     "event": "ECB's first rate cut of the easing cycle",
+     "month": "2024-06",
+     "status": "missed",
+     "alarm_month": null,
+     "lag_months": null,
+     "layers": []
+    },
+    {
+     "event": "War in the Middle East; new energy price shock",
+     "month": "2026-03",
+     "status": "new alarm",
+     "alarm_month": "2026-04",
+     "lag_months": 1,
+     "layers": [
+      "prices_policy",
+      "resources_energy",
+      "societal_cohesion"
+     ]
+    }
+   ],
+   "false_alarms": [
+    "2008-01",
+    "2017-03"
+   ],
+   "onsets": 6,
+   "alarm_months": 63,
+   "months": 226
+  },
+  "phase1-v0.5": {
+   "events": [
+    {
+     "event": "Global financial crisis: Lehman Brothers collapse",
+     "month": "2008-09",
+     "status": "new alarm",
+     "alarm_month": "2008-07",
+     "lag_months": -2,
+     "layers": [
+      "real_economy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "Euro area sovereign debt crisis escalates (Italy, Spain)",
+     "month": "2011-07",
+     "status": "new alarm",
+     "alarm_month": "2011-08",
+     "lag_months": 1,
+     "layers": [
+      "real_economy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "ECB takes the deposit rate negative; deflation fears",
+     "month": "2014-06",
+     "status": "missed",
+     "alarm_month": null,
+     "lag_months": null,
+     "layers": []
+    },
+    {
+     "event": "Refugee influx into the EU peaks",
+     "month": "2015-09",
+     "status": "missed",
+     "alarm_month": null,
+     "lag_months": null,
+     "layers": []
+    },
+    {
+     "event": "Pandemic shock and lockdowns",
+     "month": "2020-03",
+     "status": "new alarm",
+     "alarm_month": "2020-03",
+     "lag_months": 0,
+     "layers": [
+      "real_economy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "Inflation surge begins (headline above 2% after years below)",
+     "month": "2021-07",
+     "status": "alarm already running",
+     "alarm_month": "2021-04",
+     "lag_months": -3,
+     "layers": [
+      "prices_policy",
+      "real_economy",
+      "resources_energy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "Russia invades Ukraine; energy shock and gas cut-off",
+     "month": "2022-02",
+     "status": "alarm already running",
+     "alarm_month": "2021-11",
+     "lag_months": -3,
+     "layers": [
+      "international_integration",
+      "prices_policy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "ECB raises rates for the first time in eleven years",
+     "month": "2022-07",
+     "status": "alarm already running",
+     "alarm_month": "2022-04",
+     "lag_months": -3,
+     "layers": [
+      "prices_policy",
+      "real_economy",
+      "resources_energy",
+      "societal_cohesion"
+     ]
+    },
+    {
+     "event": "ECB's last hike; policy rate peaks",
+     "month": "2023-09",
+     "status": "alarm already running",
+     "alarm_month": "2023-06",
+     "lag_months": -3,
+     "layers": [
+      "prices_policy",
+      "resources_energy"
+     ]
+    },
+    {
+     "event": "ECB's first rate cut of the easing cycle",
+     "month": "2024-06",
+     "status": "new alarm",
+     "alarm_month": "2024-06",
+     "lag_months": 0,
+     "layers": [
+      "international_integration",
+      "prices_policy",
+      "resources_energy"
+     ]
+    },
+    {
+     "event": "War in the Middle East; new energy price shock",
+     "month": "2026-03",
+     "status": "new alarm",
+     "alarm_month": "2026-03",
+     "lag_months": 0,
+     "layers": [
+      "international_integration",
+      "prices_policy",
+      "resources_energy"
+     ]
+    }
+   ],
+   "false_alarms": [
+    "2008-01",
+    "2011-01",
+    "2012-05",
+    "2017-03",
+    "2017-08",
+    "2018-07",
+    "2025-10"
+   ],
+   "onsets": 12,
+   "alarm_months": 80,
+   "months": 226
+  }
+ }
+}

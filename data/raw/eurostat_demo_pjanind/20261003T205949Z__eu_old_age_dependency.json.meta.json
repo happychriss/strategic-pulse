@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_demo_pjanind",
+  "label": "eu_old_age_dependency",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/demo_pjanind?indic_de=OLDDEP1&geo=AT&geo=BE&geo=BG&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IT&geo=LT&geo=LU&geo=LV&geo=MT&geo=NL&geo=PL&geo=PT&geo=RO&geo=SE&geo=SI&geo=SK&geo=EU27_2020&lang=en",
+  "retrieved_at_utc": "2026-10-03T20:59:49.976893+00:00",
+  "http_status": 200,
+  "bytes": 23962,
+  "sha256": "04c417589e632cd40b0026e866e3ab6a8d1c66694089ec8428d6894e585a2759",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 20:59:50 GMT",
+    "Content-Type": "application/json"
+  }
+}

@@ -1,0 +1,47 @@
+id: worldbank_wgi
+provider: World Bank
+name: 'Worldwide Governance Indicators: rule of law, voice and accountability'
+role: structural_indicator
+phase: 2
+endpoint:
+  protocol: rest-json
+  base_url: https://api.worldbank.org/v2
+  dataset_id: WGI (RL.EST, VA.EST)
+  example_key: country/DEU/indicator/GOV_WGI_RL.EST?source=3&format=json
+datasets:
+- code: WB:GOV_WGI_RL.EST
+  parser: worldbank_json
+  knowledge_rule: ingestion
+  revision_class: revised
+  family: WB:WGI
+- code: WB:GOV_WGI_VA.EST
+  parser: worldbank_json
+  knowledge_rule: ingestion
+  revision_class: revised
+  family: WB:WGI
+access:
+  auth: none
+  licence: CC BY 4.0 (World Bank open data)
+  terms_url: https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets
+coverage:
+  geography: EU member states and EU aggregate (EUU)
+  frequency: annual
+  start: '1996'
+temporal:
+  revision_policy: Each annual release re-estimates the whole history.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp; historical tests use a pseudo-real-time lag.
+python_access: World Bank API v2 JSON, per_page large enough for one page.
+pitfalls:
+- Estimates on a standard normal scale (about -2.5 to 2.5) with margins of error; small changes are not
+  meaningful.
+- Whole history revised each release.
+- WGI lives in source 3 with ids GOV_WGI_RL.EST and GOV_WGI_VA.EST; RL.EST without source returns 'indicator
+  not found'.
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: 27 member states, 1996-2025; no EU aggregate in source 3 (EU value = unweighted
+    mean).'
+docs_urls:
+- https://www.worldbank.org/en/publication/worldwide-governance-indicators

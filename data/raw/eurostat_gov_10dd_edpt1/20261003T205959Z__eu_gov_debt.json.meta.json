@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_gov_10dd_edpt1",
+  "label": "eu_gov_debt",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10dd_edpt1?na_item=GD&sector=S13&unit=PC_GDP&geo=AT&geo=BE&geo=BG&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IT&geo=LT&geo=LU&geo=LV&geo=MT&geo=NL&geo=PL&geo=PT&geo=RO&geo=SE&geo=SI&geo=SK&geo=EU27_2020&lang=en",
+  "retrieved_at_utc": "2026-10-03T20:59:59.534291+00:00",
+  "http_status": 200,
+  "bytes": 13559,
+  "sha256": "a4896bb08c64ffbeb4dc6f62e51a10cc3850f9dc12342140b138308442777b5c",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 20:59:59 GMT",
+    "Content-Type": "application/json"
+  }
+}

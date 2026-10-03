@@ -1,0 +1,15 @@
+{
+  "card_id": "worldbank_wgi",
+  "label": "eu_voice_accountability",
+  "url": "https://api.worldbank.org/v2/country/AUT;BEL;BGR;CYP;CZE;DEU;DNK;EST;GRC;ESP;FIN;FRA;HRV;HUN;IRL;ITA;LTU;LUX;LVA;MLT;NLD;POL;PRT;ROU;SWE;SVN;SVK;EUU/indicator/GOV_WGI_VA.EST?source=3&format=json&per_page=5000&date=1996:2026",
+  "retrieved_at_utc": "2026-10-03T21:01:34.237843+00:00",
+  "http_status": 200,
+  "bytes": 183953,
+  "sha256": "3c1a2961d51ea087e66ae7336f3ce493c41a89f97d32b9272e1f174f52f1adfe",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 21:01:34 GMT",
+    "Content-Type": "application/json;charset=utf-8",
+    "Last-Modified": "Sat, 03 Oct 2026 21:01:34 GMT"
+  }
+}

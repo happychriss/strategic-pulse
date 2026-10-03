@@ -1,8 +1,10 @@
 # Operations: the monthly run
 
-The system refreshes itself once a month through a Claude Code routine: a scheduled job that
-starts a fresh cloud session, checks out `main`, runs the pipeline, and reports. The routine
-checks out `main` itself because the repository's default branch is set in GitHub settings.
+The system refreshes on demand: a person starts the run, either locally or by firing the Claude
+Code routine by hand ("Run now"). The routine has no schedule for now. When it runs it starts a
+fresh cloud session, checks out `main`, runs the pipeline, and reports. It checks out `main`
+itself because the repository's default branch is set in GitHub settings. A monthly schedule can
+be added later in the routine settings without changing anything here.
 
 ## What one run does
 
@@ -76,3 +78,24 @@ PYTHONPATH=src .venv/bin/python -m srm.pull --missing-only    # fetch never-arch
   not in the manifest until chunked requests exist.
 - ECB RTD industrial production history times out; removed from the manifest.
 - ENTSO-E needs an API token (`ENTSOE_API_TOKEN`); not in the manifest.
+
+## Change detector
+
+`python -m srm.detect` runs the detector for now and the historical test 2008 to today, writing
+`reports/detector/<version>.md`. The monthly run includes the current detection in its run log
+under "Is something happening?". Settings live in the `detector` section of the model version:
+`sensitivity` (unusual = larger than this share of the signal's own past 3-month changes) and
+`alarm_layers` (layers needed for an alarm). Reference events for the test are in
+`model/events.yaml` and must be fixed before a run, never adjusted to results.
+
+### Model phase1-v0.5
+
+- **Direction lens:** a 6-month change that flips sign after at least 75% of the previous 12
+  months moved the other way, and exceeds the median of the signal's own 6-month moves.
+- **New versus ongoing alarms:** a new alarm needs `onset_quiet_months` (3) quiet months before.
+- **Yearly structural layer** (`srm.structural`): 11 indicators across all nine axes for the 27
+  member states. Five-year trend against the previous five years; a Europe-wide movement is
+  flagged when unusually many member states change trend the same way (at least three). The
+  EU aggregate alone is never tested against single countries, because averages move less.
+- `python -m srm.detect` writes `reports/detector/<version>.md` (test) and `.json` (page data);
+  the monthly run and `python -m srm.assess` both refresh them before writing the page.

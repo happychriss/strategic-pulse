@@ -148,8 +148,34 @@ def parse_oecd_csv(path: Path) -> Iterator[Point]:
         )
 
 
+def parse_worldbank_json(path: Path) -> Iterator[Point]:
+    """World Bank API v2 JSON: [page metadata, [rows]]. One series per indicator and country."""
+    data = json.loads(read_bytes(path), parse_float=Decimal, parse_int=Decimal)
+    rows = data[1] if isinstance(data, list) and len(data) > 1 and data[1] else []
+    for row in rows:
+        if row.get("value") is None:
+            continue
+        iso3 = row.get("countryiso3code") or row["country"]["id"]
+        indicator = row["indicator"]["id"]
+        dims = {"indicator": indicator, "country": iso3}
+        yield Point(
+            series_key=f"indicator={indicator}|country={iso3}",
+            dims=dims,
+            region_src=iso3,
+            freq="A",
+            unit=row.get("unit") or None,
+            title=row["indicator"].get("value"),
+            period_label=str(row["date"]),
+            value=Decimal(row["value"]),
+            status=row.get("obs_status") or None,
+            attrs=None,
+            vintage=None,
+        )
+
+
 PARSERS = {
     "ecb_csv": parse_ecb_csv,
     "eurostat_jsonstat": parse_eurostat_jsonstat,
     "oecd_csv": parse_oecd_csv,
+    "worldbank_json": parse_worldbank_json,
 }

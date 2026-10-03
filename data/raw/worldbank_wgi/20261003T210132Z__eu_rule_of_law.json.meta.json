@@ -1,0 +1,15 @@
+{
+  "card_id": "worldbank_wgi",
+  "label": "eu_rule_of_law",
+  "url": "https://api.worldbank.org/v2/country/AUT;BEL;BGR;CYP;CZE;DEU;DNK;EST;GRC;ESP;FIN;FRA;HRV;HUN;IRL;ITA;LTU;LUX;LVA;MLT;NLD;POL;PRT;ROU;SWE;SVN;SVK;EUU/indicator/GOV_WGI_RL.EST?source=3&format=json&per_page=5000&date=1996:2026",
+  "retrieved_at_utc": "2026-10-03T21:01:32.568434+00:00",
+  "http_status": 200,
+  "bytes": 174500,
+  "sha256": "0ecb73a7d4ba6a6f8c2207bf7dcf191cbff746c727e7f6cfde11fea6e8303008",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 21:01:33 GMT",
+    "Content-Type": "application/json;charset=utf-8",
+    "Last-Modified": "Sat, 03 Oct 2026 21:01:33 GMT"
+  }
+}

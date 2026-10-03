@@ -1,0 +1,38 @@
+id: eurostat_ei_bssi_m_r2
+provider: Eurostat
+name: Economic sentiment and confidence indicators by sector, monthly
+role: state_variable
+phase: 1
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: ei_bssi_m_r2
+  example_key: statistics/1.0/data/ei_bssi_m_r2
+datasets:
+- code: ESTAT:ei_bssi_m_r2
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EU27_2020, EA20, EA21, member states
+  frequency: monthly
+  start: '1985'
+temporal:
+  revision_policy: Survey results; seasonally adjusted series are re-estimated, raw balances are not revised.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp. For historical detector tests a pseudo-real-time rule (period
+    end plus publication lag, latest values) is used and labelled as an approximation.
+python_access: JSON-stat REST endpoint (default format).
+pitfalls:
+- 'Euro area code: EA21 carries the full back-cast history to 2026; EA20 ends 2025-12.'
+- 'Balances, not growth rates: use changes, not levels.'
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: EA21 back-cast 1980-01 to 2026-09 (EA20 ends 2025-12).'
+docs_urls:
+- https://economy-finance.ec.europa.eu/economic-forecast-and-surveys/business-and-consumer-surveys_en

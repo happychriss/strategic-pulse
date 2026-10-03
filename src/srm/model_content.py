@@ -21,7 +21,15 @@ from srm.documents import passage_in_document
 from srm.snapshot import RAW_DIR
 
 MODEL_DIR = RAW_DIR.parents[1] / "model"
-TRANSFORMS = {"identity", "yoy_pct", "qoq_pct", "compound_4q", "step_monthly", "monthly_mean"}
+TRANSFORMS = {
+    "identity",
+    "yoy_pct",
+    "qoq_pct",
+    "compound_4q",
+    "step_monthly",
+    "monthly_mean",
+    "mean_12m",
+}
 
 
 class ModelContentError(RuntimeError):

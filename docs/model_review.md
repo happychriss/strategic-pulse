@@ -105,3 +105,11 @@ Regime conditions are unchanged from v0.2. Three indicators gain sources for rec
 An `extension` component only appends periods after the last vintage-safe value, so it never
 rewrites history. Because fresh sources carry retrieval-time knowledge, they cannot affect past
 cutoffs; from now on each monthly pull adds one vintage of them.
+
+## phase1-v0.4 and phase1-v0.5: change detector and structural layer
+
+v0.4 adds three axes (international integration, societal cohesion, demography and migration),
+ten monthly indicators beyond finance and the change detector. v0.5 adds the remaining axes
+(governance, economic order, technology, climate), the direction lens, new-versus-ongoing alarms
+and the yearly structural layer. The page now opens with "What is happening now"; the regime
+assessment follows as context. Results and their limits: `reports/detector/phase1-v0.5.md`.

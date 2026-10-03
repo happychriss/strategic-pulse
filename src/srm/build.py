@@ -39,7 +39,7 @@ from srm.snapshot import RAW_DIR
 from srm.source_cards import load_cards
 
 REPO = RAW_DIR.parents[1]
-REGION_SYSTEM = {"ECB": "ECB", "ESTAT": "ESTAT", "OECD": "OECD"}
+REGION_SYSTEM = {"ECB": "ECB", "ESTAT": "ESTAT", "OECD": "OECD", "WB": "WB"}
 
 
 def stable_uuid(*parts: str) -> str:
@@ -54,6 +54,8 @@ def dataset_for_url(url: str) -> str | None:
         return f"ESTAT:{m.group(1)}"
     if m := re.search(r"sdmx\.oecd\.org/public/rest/data/[^,/]+,([^,/]+),", url):
         return f"OECD:{m.group(1)}"
+    if m := re.search(r"api\.worldbank\.org/v2/country/[^/]+/indicator/([^/?]+)", url):
+        return f"WB:{m.group(1)}"
     return None
 
 

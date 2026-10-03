@@ -1,0 +1,38 @@
+id: eurostat_ei_etea_m
+provider: Eurostat
+name: Euro area international trade in goods, monthly
+role: structural_indicator
+phase: 1
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: ei_etea_m
+  example_key: statistics/1.0/data/ei_etea_m
+datasets:
+- code: ESTAT:ei_etea_m
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EA20
+  frequency: monthly
+  start: '2002'
+temporal:
+  revision_policy: Revised in following months.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp. For historical detector tests a pseudo-real-time rule (period
+    end plus publication lag, latest values) is used and labelled as an approximation.
+python_access: JSON-stat REST endpoint (default format).
+pitfalls:
+- Partner code follows euro area composition (extra-EA20, extra-EA21); query without partner filter.
+- 'Use geo=EA21: the EA20 query returns an empty dataset.'
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: EA21 volume indices 2002-01 to 2026-06; EA20 returns no values.'
+docs_urls:
+- https://ec.europa.eu/eurostat/web/international-trade-in-goods/database
