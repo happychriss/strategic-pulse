@@ -8,6 +8,21 @@ endpoint:
   base_url: https://ec.europa.eu/eurostat/api/dissemination
   dataset_id: une_rt_m
   example_key: sdmx/2.1/data/une_rt_m
+datasets:
+- code: ESTAT:une_rt_m
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
+- code: ESTAT:ei_lm_m_vtg
+  parser: eurostat_jsonstat
+  knowledge_rule: revdate_dimension
+  revision_class: revised
+  family: ESTAT:ei_lm_m_vintages
+- code: ESTAT:ei_lm_m_vtgfix
+  parser: eurostat_jsonstat
+  knowledge_rule: revdate_dimension
+  revision_class: revised
+  family: ESTAT:ei_lm_m_vintages
 access:
   auth: none
   licence: CC BY 4.0 (Eurostat reuse policy)

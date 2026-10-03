@@ -46,3 +46,17 @@ def test_validator_rejects_broken_card():
     bad = copy.deepcopy(good)
     bad["verification"] = {"status": "verified", "date": None, "note": "x"}
     assert any("verification.date" in p for p in validate(bad))
+
+
+def test_release_rule_requires_unrevised_data():
+    card = next(c for c in load_cards() if c.id == "ecb_yc").data
+    bad = copy.deepcopy(card)
+    bad["datasets"][0]["revision_class"] = "revised"
+    assert any("only allowed for unrevised" in p for p in validate(bad))
+
+
+def test_verified_cards_declare_datasets():
+    card = next(c for c in load_cards() if c.id == "ecb_hicp").data
+    bad = copy.deepcopy(card)
+    del bad["datasets"]
+    assert any("datasets" in p for p in validate(bad))

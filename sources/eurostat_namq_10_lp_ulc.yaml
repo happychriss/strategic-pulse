@@ -8,6 +8,11 @@ endpoint:
   base_url: https://ec.europa.eu/eurostat/api/dissemination
   dataset_id: namq_10_lp_ulc
   example_key: sdmx/2.1/data/namq_10_lp_ulc
+datasets:
+- code: ESTAT:namq_10_lp_ulc
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
 access:
   auth: none
   licence: CC BY 4.0 (Eurostat reuse policy)

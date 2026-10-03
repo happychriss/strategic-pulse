@@ -41,6 +41,13 @@ su postgres -c "psql -v ON_ERROR_STOP=1 -qtAc \"SELECT 1 FROM pg_roles WHERE rol
 su postgres -c "psql -qtAc \"SELECT 1 FROM pg_database WHERE datname='srm_dev'\"" | grep -q 1 \
   || su postgres -c "createdb -O srm srm_dev"
 
+# --- Schema and observations: rebuilt from source cards and raw snapshots in git ---
+# Deterministic and idempotent; a failure must not block the session.
+if ! PYTHONPATH=src SRM_DATABASE_URL="postgresql://srm:srm@localhost:5432/srm_dev" \
+     .venv/bin/python -m srm.build -q; then
+  echo "session-start: WARNING database build failed; run: python -m srm.build" >&2
+fi
+
 # --- Session environment ---
 if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
   {
@@ -50,4 +57,4 @@ if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
   } >> "$CLAUDE_ENV_FILE"
 fi
 
-echo "session-start: python deps ok, postgres ${PG_VERSION} up, db srm_dev ready"
+echo "session-start: python deps ok, postgres ${PG_VERSION} up, db srm_dev built from snapshots"

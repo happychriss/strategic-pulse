@@ -8,6 +8,11 @@ endpoint:
   base_url: https://sdmx.oecd.org/public/rest
   dataset_id: OECD.SDD.STES,DSD_STES_REVISIONS@DF_STES_REVISIONS,4.0
   example_key: EA20.M.CP....?startPeriod=2018-01&format=csv (REF_AREA.FREQ.MEASURE.UNIT_MEASURE.ACTIVITY.EDITION)
+datasets:
+- code: OECD:DSD_STES_REVISIONS@DF_STES_REVISIONS
+  parser: oecd_csv
+  knowledge_rule: edition_dimension
+  revision_class: revised
 access:
   auth: none
   licence: OECD Terms and Conditions (free, attribution)

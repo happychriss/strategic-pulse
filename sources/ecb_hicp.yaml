@@ -8,6 +8,11 @@ endpoint:
   base_url: https://data-api.ecb.europa.eu/service/data
   dataset_id: HICP
   example_key: M.U2.N.000000.4D0.ANR (FREQ.REF_AREA.ADJUSTMENT.ICP_ITEM.DATA_PROVIDER.ICP_SUFFIX)
+datasets:
+- code: ECB:HICP
+  parser: ecb_csv
+  knowledge_rule: ingestion
+  revision_class: revised
 access:
   auth: none
   licence: ECB reuse policy (reuse with attribution)

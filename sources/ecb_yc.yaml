@@ -8,6 +8,12 @@ endpoint:
   base_url: https://data-api.ecb.europa.eu/service/data
   dataset_id: YC
   example_key: B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y
+datasets:
+- code: ECB:YC
+  parser: ecb_csv
+  knowledge_rule: release_rule
+  revision_class: unrevised
+  release_lag: P1D
 access:
   auth: none
   licence: ECB reuse policy (reuse with attribution)

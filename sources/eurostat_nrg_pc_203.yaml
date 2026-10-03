@@ -8,6 +8,11 @@ endpoint:
   base_url: https://ec.europa.eu/eurostat/api/dissemination
   dataset_id: nrg_pc_203
   example_key: sdmx/2.1/data/nrg_pc_203
+datasets:
+- code: ESTAT:nrg_pc_203
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
 access:
   auth: none
   licence: CC BY 4.0 (Eurostat reuse policy)

@@ -8,6 +8,11 @@ endpoint:
   base_url: https://ec.europa.eu/eurostat/api/dissemination
   dataset_id: gov_10dd_edpt1
   example_key: sdmx/2.1/data/gov_10dd_edpt1
+datasets:
+- code: ESTAT:gov_10dd_edpt1
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
 access:
   auth: none
   licence: CC BY 4.0 (Eurostat reuse policy)

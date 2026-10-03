@@ -8,6 +8,11 @@ endpoint:
   base_url: https://data-api.ecb.europa.eu/service/data
   dataset_id: RTD
   example_key: 'M.S0.N.P_C_OV.A?includeHistory=true&format=csvdata (5 key positions: FREQ.REF_AREA.ADJUSTMENT.RT_ECON_CONCEPT.RT_DENOM)'
+datasets:
+- code: ECB:RTD
+  parser: ecb_csv
+  knowledge_rule: source_vintage_log
+  revision_class: revised
 access:
   auth: none
   licence: ECB reuse policy (reuse with attribution)

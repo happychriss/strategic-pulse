@@ -8,6 +8,7 @@ in the database.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -20,6 +21,16 @@ ROLES = {"structural_indicator", "state_variable", "event", "context"}
 VINTAGE_SUPPORT = {"none", "release_snapshots", "full_history"}
 VERIFICATION = {"unverified", "verified"}
 AUTH = {"none", "free_token", "registration", "paid"}
+PARSERS = {"ecb_csv", "eurostat_jsonstat", "oecd_csv"}
+KNOWLEDGE_RULES = {
+    "source_vintage_log",  # change log with exact timestamps (ECB includeHistory)
+    "revdate_dimension",  # vintage tables with a revision-date dimension (Eurostat)
+    "edition_dimension",  # monthly database editions (OECD)
+    "release_rule",  # unrevised data: known at period end plus release_lag
+    "ingestion",  # revised data without vintages: known only from retrieval time
+}
+REVISION_CLASSES = {"revised", "unrevised"}
+LAG = re.compile(r"^P(\d+)D$")
 
 REQUIRED: dict[str, set[str]] = {
     "": {
@@ -82,11 +93,43 @@ def validate(data: dict[str, Any], filename_stem: str | None = None) -> list[str
         problems.append("verified cards need verification.date")
     if data["phase"] not in (1, 2, 3):
         problems.append("phase must be 1, 2 or 3")
+    problems += _validate_datasets(data)
     superseded = data.get("superseded_by")
     if superseded is not None and not isinstance(superseded, str):
         problems.append("superseded_by must be a card id")
     if not data["docs_urls"] or not all(str(u).startswith("https://") for u in data["docs_urls"]):
         problems.append("docs_urls must be a non-empty list of https URLs")
+    return problems
+
+
+def _validate_datasets(data: dict[str, Any]) -> list[str]:
+    datasets = data.get("datasets")
+    if datasets is None:
+        if data["verification"]["status"] == "verified":
+            return ["verified cards need a datasets list"]
+        return []
+    problems = []
+    for i, ds in enumerate(datasets):
+        where = f"datasets[{i}]"
+        missing = {"code", "parser", "knowledge_rule", "revision_class"} - set(ds)
+        if missing:
+            problems.append(f"{where} missing {sorted(missing)}")
+            continue
+        if ":" not in ds["code"]:
+            problems.append(f"{where}.code must be provider-qualified, e.g. ECB:RTD")
+        if ds["parser"] not in PARSERS:
+            problems.append(f"{where}.parser must be one of {sorted(PARSERS)}")
+        if ds["knowledge_rule"] not in KNOWLEDGE_RULES:
+            problems.append(f"{where}.knowledge_rule must be one of {sorted(KNOWLEDGE_RULES)}")
+        if ds["revision_class"] not in REVISION_CLASSES:
+            problems.append(f"{where}.revision_class must be one of {sorted(REVISION_CLASSES)}")
+        if ds["knowledge_rule"] == "release_rule":
+            # Safety rule: a release date says nothing about later revisions, so only
+            # unrevised data may claim knowledge before it was retrieved.
+            if ds["revision_class"] != "unrevised":
+                problems.append(f"{where}: release_rule is only allowed for unrevised data")
+            if not LAG.match(str(ds.get("release_lag", ""))):
+                problems.append(f"{where}: release_rule needs release_lag like P1D")
     return problems
 
 
