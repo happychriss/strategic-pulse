@@ -1,0 +1,3 @@
+# The model version used for new assessments. Every file in versions/ stays loadable,
+# so assessments made with older versions remain reproducible.
+current: phase1-v0.2

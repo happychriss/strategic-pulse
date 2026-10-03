@@ -92,12 +92,39 @@ TRANSFORM_FUNCS = {
 }
 
 
+# ------------------------------------------------------------------ provenance
+ObsKey = tuple  # (series_id, period Range, known_from): natural key of obs.observation
+
+
+def _inputs_for(transform: str, start: date, raw: list[tuple[date, ObsKey]]) -> list[ObsKey]:
+    """Raw observations that a derived point at `start` was computed from."""
+    by_start = {s: k for s, k in raw}
+    if transform == "identity":
+        wanted = [start]
+    elif transform == "yoy_pct":
+        wanted = [start, _add_months(start, -12)]
+    elif transform == "qoq_pct":
+        wanted = [start, _add_months(start, -3)]
+    elif transform == "compound_4q":
+        wanted = [_add_months(start, -3 * k) for k in range(4)]
+    elif transform == "monthly_mean":
+        nxt = _add_months(start, 1)
+        return [k for s, k in raw if start <= s < nxt]
+    elif transform == "step_monthly":
+        nxt = _add_months(start, 1)
+        before = [k for s, k in raw if s < nxt]
+        return before[-1:]
+    else:
+        raise ValueError(transform)
+    return [by_start[w] for w in wanted if w in by_start]
+
+
 # ------------------------------------------------------------------ database access
 def current_version(conn: psycopg.Connection) -> int:
-    """The model version named in model/model.yaml, the definitions on disk."""
-    from srm.model_content import read
+    """The model version named in model/current.yaml."""
+    from srm.model_content import current_label
 
-    label = read("model.yaml")["model_version"]["label"]
+    label = current_label()
     row = conn.execute(
         "SELECT model_version_id FROM model.model_version WHERE label = %s", (label,)
     ).fetchone()
@@ -106,9 +133,10 @@ def current_version(conn: psycopg.Connection) -> int:
     return row[0]
 
 
-def indicator_series(
+def indicator_series_with_inputs(
     conn: psycopg.Connection, code: str, at: datetime, model_version_id: int | None = None
-) -> list[Point]:
+) -> tuple[list[Point], dict[date, list[ObsKey]]]:
+    """Indicator values knowable at `at`, plus the observations behind each value."""
     mv = model_version_id or current_version(conn)
     comps = conn.execute(
         """SELECT c.role, c.series_id, c.transform FROM model.indicator_component c
@@ -117,18 +145,33 @@ def indicator_series(
         (code, mv, at),
     ).fetchall()
     by_role: dict[str, list[Point]] = {}
+    inputs_by_role: dict[str, dict[date, list[ObsKey]]] = {}
     for role, series_id, transform in comps:
         rows = conn.execute(
-            """SELECT lower(period), period_label, value FROM obs.as_of(%s, true)
+            """SELECT lower(period), period_label, value, period, known_from FROM obs.as_of(%s, true)
                WHERE series_id = %s ORDER BY period""",
             (at, series_id),
         ).fetchall()
         pts = [(r[0], r[1], float(r[2])) for r in rows]
-        by_role[role] = TRANSFORM_FUNCS[transform](pts, at)
+        raw = [(r[0], (series_id, r[3], r[4])) for r in rows]
+        derived = TRANSFORM_FUNCS[transform](pts, at)
+        by_role[role] = derived
+        inputs_by_role[role] = {p[0]: _inputs_for(transform, p[0], raw) for p in derived}
     if {"minuend", "subtrahend"} <= set(by_role):
         sub = _by_start(by_role["subtrahend"])
-        return [(s, lab, round(v - sub[s][2], 4)) for s, lab, v in by_role["minuend"] if s in sub]
-    return by_role.get("value", [])
+        points = [(s, lab, round(v - sub[s][2], 4)) for s, lab, v in by_role["minuend"] if s in sub]
+        inputs = {
+            p[0]: inputs_by_role["minuend"][p[0]] + inputs_by_role["subtrahend"][p[0]]
+            for p in points
+        }
+        return points, inputs
+    return by_role.get("value", []), inputs_by_role.get("value", {})
+
+
+def indicator_series(
+    conn: psycopg.Connection, code: str, at: datetime, model_version_id: int | None = None
+) -> list[Point]:
+    return indicator_series_with_inputs(conn, code, at, model_version_id)[0]
 
 
 def metric(points: list[Point], name: str) -> tuple[float, str, str | None] | None:
@@ -146,5 +189,6 @@ def metric(points: list[Point], name: str) -> tuple[float, str, str | None] | No
 
 
 def age_in_months(label: str, at: datetime) -> int:
+    """Whole months between the end of the period and `at`; 0 for the current period."""
     _, end, _ = parse_period(label)
-    return (at.year - end.year) * 12 + (at.month - end.month)
+    return max(0, (at.year - end.year) * 12 + (at.month - end.month))

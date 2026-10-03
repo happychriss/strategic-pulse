@@ -4,13 +4,14 @@ Model content lives in git, versioned:
 
 | File | Contents | Rule |
 |---|---|---|
-| `model/model.yaml` | Nodes (axes, state variables, regimes), indicators, relationships, regime conditions | Immutable per `model_version.label`; any change needs a new label (build enforces) |
+| `model/versions/<label>.yaml` | Nodes (axes, state variables, regimes), indicators, relationships, regime conditions | Frozen once loaded; a change needs a new file and label (build enforces). All versions stay loaded so older assessments remain reproducible |
+| `model/current.yaml` | Names the version used for new assessments | |
 | `model/documents.yaml` | Cited documents; `published_on` equals the page's own metadata (tested) | Knowledge time = end of that day |
 | `model/claims.yaml` | Evidence claims with verbatim passages | Build fails if a passage is not in the archived document |
 
 `python scripts/pull_documents.py` archives any newly listed document.
 
-## Phase 1 content (phase1-v0.1)
+## Phase 1 content (phase1-v0.1, phase1-v0.2)
 
 - **Axes:** Resources/Energy, Fiscal Capacity.
 - **State variables:** headline and underlying inflation, unit labour costs, policy rate,
@@ -36,7 +37,8 @@ output must not silently become accepted evidence, and the database enforces it:
 2. In `model/claims.yaml` set `review_status: accepted` or `rejected` and
    `reviewed_by: <your name>`. Edit `statement` if the summary overreaches.
 3. When a relationship has accepted supporting evidence you agree with, set its `status` to the
-   `proposed_status` in a **new model version** (change `model_version.label`, e.g. `phase1-v0.2`).
+   `proposed_status` in a **new model version**: copy the current file in `model/versions/` to a new
+   label, edit it there, and point `model/current.yaml` at it.
 4. Run `python -m srm.build` and `pytest`. Tests refuse a promoted relationship without an
    accepted supporting claim.
 
@@ -61,3 +63,30 @@ Conditions evaluated as of end-2019, end-2021, end-2022, end-2024 and today:
   dataset has only retrieval-time knowledge. Between July 2025 and the first download the
   indicator is unavailable as of those dates.
 - **Unit labour costs are stale.** OECD data for the euro area ends in 2024-Q1 in all editions.
+
+## phase1-v0.2 and the assessment page
+
+v0.2 adds one opposing condition to higher for longer: the deposit rate lower than six months
+earlier. Both versions remain loaded; tests prove each still gives its own answer.
+
+| As of | v0.1 higher for longer | v0.2 higher for longer | v0.2 recession/disinflation |
+|---|---|---|---|
+| 2019-12-31 | mixed | mixed | not supported |
+| 2021-12-31 | strongly supported | strongly supported | not supported |
+| 2022-12-31 | strongly supported | strongly supported | not supported |
+| 2024-12-31 | strongly supported | supported | not supported |
+| 2026-10-03 | supported (3 of 4) | strongly supported | not supported |
+
+- **The easing now registers at end-2024** as one opposing condition, lowering the position to
+  supported.
+- **The six-month direction at end-2024 still reads strongly increasing.** In mid-2024 underlying
+  inflation had fallen 1.3 points in six months (opposing condition met, position mixed); by
+  end-2024 it had stalled at 2.76%. The rebound is a real feature of late 2024, but the cutoffs are
+  too far apart to show the mid-2024 dip. Monthly cutoffs would.
+- **Evidence strength reads low everywhere** because no claim has been reviewed yet.
+
+Regenerate the pages with `python -m srm.assess` (defaults to the four Phase 1 dates and now).
+Each run is stored in `model.assessment_run`; every judgement links to its observations, claims
+and driving relationships in `model.assessment_input`. Pages are written to
+`reports/assessments/<version>/`: one Markdown file per cutoff and `index.html` for all cutoffs.
+The rules are documented at the top of `src/srm/assess.py` (`ENGINE_VERSION`).

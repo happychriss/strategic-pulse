@@ -6,10 +6,10 @@ from collections import defaultdict
 import yaml
 
 from srm.documents import latest_document_file, passage_in_document
-from srm.model_content import MODEL_DIR, TRANSFORMS
+from srm.model_content import MODEL_DIR, TRANSFORMS, current_definitions, version_files
 from srm.parsers import read_bytes
 
-M = yaml.safe_load((MODEL_DIR / "model.yaml").read_text())
+M = current_definitions()
 DOCS = yaml.safe_load((MODEL_DIR / "documents.yaml").read_text())["documents"]
 CLAIMS = yaml.safe_load((MODEL_DIR / "claims.yaml").read_text())
 NODES = {n["code"]: n for n in M["nodes"]}
@@ -93,3 +93,12 @@ def test_every_axis_and_state_variable_has_an_indicator():
     for code, n in NODES.items():
         if n["kind"] in ("structural_axis", "state_variable"):
             assert code in covered, code
+
+
+def test_version_files_are_named_by_label_and_current_exists():
+    labels = []
+    for path in version_files():
+        label = yaml.safe_load(path.read_text())["model_version"]["label"]
+        assert path.stem == label
+        labels.append(label)
+    assert M["model_version"]["label"] in labels

@@ -8,7 +8,13 @@ from datetime import datetime
 
 import psycopg
 
-from srm.indicators import age_in_months, current_version, indicator_series, metric
+from srm.indicators import (
+    age_in_months,
+    current_version,
+    indicator_series_with_inputs,
+    metric,
+)
+from srm.periods import parse_period
 
 OPS = {">": operator.gt, ">=": operator.ge, "<": operator.lt, "<=": operator.le}
 
@@ -28,6 +34,7 @@ class ConditionResult:
     age_months: int | None
     met: bool | None  # None = not evaluable with data known at that instant
     rationale: str
+    inputs: tuple = ()  # observation keys behind the latest and reference values
 
 
 def evaluate(
@@ -43,13 +50,20 @@ def evaluate(
            WHERE rc.model_version_id = %s ORDER BY n.code, rc.role DESC, rc.condition_key""",
         (mv,),
     ).fetchall()
-    cache: dict[str, list] = {}
+    cache: dict[str, tuple] = {}
     out = []
     for regime, key, role, ind, met_name, op, thr, rationale in rows:
         if ind not in cache:
-            cache[ind] = indicator_series(conn, ind, at, mv)
-        m = metric(cache[ind], met_name)
+            cache[ind] = indicator_series_with_inputs(conn, ind, at, mv)
+        points, inputs = cache[ind]
+        m = metric(points, met_name)
         value, latest, ref = m if m else (None, None, None)
+        used: list = []
+        if latest:
+            start = parse_period(latest)[0]
+            used += inputs.get(start, [])
+            if ref:
+                used += inputs.get(parse_period(ref)[0], [])
         out.append(
             ConditionResult(
                 regime,
@@ -65,6 +79,7 @@ def evaluate(
                 age_in_months(latest, at) if latest else None,
                 None if value is None else OPS[op](value, float(thr)),
                 rationale,
+                tuple(used),
             )
         )
     return out

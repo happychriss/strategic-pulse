@@ -158,7 +158,10 @@ def test_evidence_used_by_an_assessment_cannot_be_deleted(conn):
 
 
 def test_model_content_loaded_with_review_safeguards(conn):
-    assert scalar(conn, "SELECT count(*) FROM model.model_version WHERE label = 'phase1-v0.1'") == 1
+    assert (
+        scalar(conn, "SELECT count(*) FROM model.model_version WHERE label LIKE 'phase1-v0.%%'")
+        >= 2
+    )
     assert (
         scalar(conn, "SELECT count(*) FROM model.edge WHERE evidence_status <> 'hypothesis'") == 0
     )
@@ -179,10 +182,11 @@ def test_changed_definitions_require_a_new_model_version(conn):
         with pytest.raises(ModelContentError):
             sync_model(conn)
     finally:
-        from srm.model_content import definitions_sha256
+        from srm.model_content import MODEL_DIR, definitions_sha256
 
         conn.execute(
-            "UPDATE model.model_version SET definition_sha256 = %s", (definitions_sha256(),)
+            "UPDATE model.model_version SET definition_sha256 = %s WHERE label = 'phase1-v0.1'",
+            (definitions_sha256(MODEL_DIR / "versions" / "phase1-v0.1.yaml"),),
         )
 
 
@@ -210,3 +214,35 @@ def test_regime_conditions_at_end_2022(conn):
     res = evaluate(conn, datetime(2022, 12, 31, 23, tzinfo=UTC))
     hfl = [r for r in res if r.regime == "higher_for_longer" and r.role == "supporting"]
     assert all(r.met for r in hfl)
+
+
+def test_assessment_run_is_traceable_to_files_and_respects_cutoff(conn):
+    from datetime import UTC, datetime
+
+    from srm.assess import assess, persist
+    from srm.build import REPO
+    from srm.report import load_run, render_html, render_markdown
+
+    at = datetime(2022, 12, 31, 23, tzinfo=UTC)
+    run = load_run(conn, persist(conn, assess(conn, at)))
+    assert {r["code"] for r in run["regimes"]} == {"higher_for_longer", "recession_disinflation"}
+    for r in run["regimes"]:
+        assert r["observations"], r["code"]
+        assert all((REPO / o["path"]).exists() for o in r["observations"])
+        assert all(o["known_from"] <= at for o in r["observations"])
+        assert all(c["published_at"] <= at for c in r["claims"])
+    assert "<title>Euro Area Regime Monitor</title>" in render_html([run])
+    assert "Trace to source files" in render_markdown(run)
+
+
+def test_both_model_versions_stay_reproducible(conn):
+    from datetime import UTC, datetime
+
+    from srm.assess import assess
+
+    at = datetime(2024, 12, 31, 23, tzinfo=UTC)
+    ids = dict(conn.execute("SELECT label, model_version_id FROM model.model_version").fetchall())
+    v1 = {r.code: r.position for r in assess(conn, at, ids["phase1-v0.1"])["regimes"]}
+    v2 = {r.code: r.position for r in assess(conn, at, ids["phase1-v0.2"])["regimes"]}
+    assert v1["higher_for_longer"] == "strongly supported"
+    assert v2["higher_for_longer"] == "supported"  # the 2024 easing now counts against it

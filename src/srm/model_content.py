@@ -1,7 +1,8 @@
 """Load versioned model content (model/*.yaml) into the model schema.
 
-Definitions (model/model.yaml) are immutable per model version: if the file changes while
-model_version.label stays the same, loading fails. Documents and claims are evidence; they
+Definitions live in model/versions/<label>.yaml, one frozen file per model version, and all
+of them are loaded so older assessments stay reproducible. model/current.yaml names the version
+used for new assessments. If a version file changes after it was loaded, loading fails. Documents and claims are evidence; they
 are upserted on every build, and each claim's passage must appear verbatim in its archived
 source document.
 """
@@ -31,8 +32,20 @@ def read(name: str, model_dir: Path = MODEL_DIR) -> dict[str, Any]:
     return yaml.safe_load((model_dir / name).read_text(encoding="utf-8"))
 
 
-def definitions_sha256(model_dir: Path = MODEL_DIR) -> str:
-    return hashlib.sha256((model_dir / "model.yaml").read_bytes()).hexdigest()
+def version_files(model_dir: Path = MODEL_DIR) -> list[Path]:
+    return sorted((model_dir / "versions").glob("*.yaml"))
+
+
+def current_label(model_dir: Path = MODEL_DIR) -> str:
+    return read("current.yaml", model_dir)["current"]
+
+
+def current_definitions(model_dir: Path = MODEL_DIR) -> dict[str, Any]:
+    return read(f"versions/{current_label(model_dir)}.yaml", model_dir)
+
+
+def definitions_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def end_of_day(d: date | str) -> datetime:
@@ -52,25 +65,33 @@ def _range(lo: str | None, hi: str | None) -> str:
 
 
 def sync_model(conn: psycopg.Connection, model_dir: Path = MODEL_DIR) -> dict[str, int]:
-    m = read("model.yaml", model_dir)
-    label = m["model_version"]["label"]
-    digest = definitions_sha256(model_dir)
     report = {"model_version_created": 0, "documents": 0, "claims": 0}
+    versions: dict[str, int] = {}
     with conn.transaction():
-        row = conn.execute(
-            "SELECT model_version_id, definition_sha256 FROM model.model_version WHERE label = %s",
-            (label,),
-        ).fetchone()
-        if row and row[1] != digest:
-            raise ModelContentError(
-                f"model/model.yaml changed but model_version.label is still {label!r}; "
-                "definitions are immutable per version, so bump the label"
-            )
-        if row:
-            mv = row[0]
-        else:
-            mv = _create_version(conn, m, label, digest)
-            report["model_version_created"] = 1
+        for path in version_files(model_dir):
+            m = yaml.safe_load(path.read_text(encoding="utf-8"))
+            label = m["model_version"]["label"]
+            if path.stem != label:
+                raise ModelContentError(f"{path.name}: label {label!r} must match the file name")
+            digest = definitions_sha256(path)
+            row = conn.execute(
+                "SELECT model_version_id, definition_sha256 FROM model.model_version WHERE label = %s",
+                (label,),
+            ).fetchone()
+            if row and row[1] != digest:
+                raise ModelContentError(
+                    f"{path.name} changed after it was loaded; released versions are frozen, "
+                    "so create a new version file instead"
+                )
+            if row:
+                versions[label] = row[0]
+            else:
+                versions[label] = _create_version(conn, m, label, digest)
+                report["model_version_created"] += 1
+        current = current_label(model_dir)
+        if current not in versions:
+            raise ModelContentError(f"model/current.yaml names unknown version {current!r}")
+        mv = versions[current]
 
         docs = read("documents.yaml", model_dir)["documents"]
         for d in docs:
