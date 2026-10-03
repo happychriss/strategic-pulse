@@ -84,3 +84,18 @@ def test_page_names_source_and_escapes_it():
     assert "Quelle: ECB · ECB:HICP, abgerufen 3. Oktober 2026 · Daten bis 09/2026" in html
     assert "ungewöhnlich schneller Anstieg" in html
     assert "c=&lt;2&gt;" in html and "<2>" not in html
+
+
+def test_level_context_places_the_latest_value_in_its_whole_history():
+    from datetime import date
+
+    from srm.dashboard import level_context, level_extreme, level_words
+
+    pts = [(date(2000 + i // 12, i % 12 + 1, 1), f"{2000 + i // 12}-{i % 12 + 1:02d}", float(i % 10))
+           for i in range(40)] + [(date(2003, 5, 1), "2003-05", 50.0)]  # fmt: skip
+    lv = level_context(pts)
+    assert lv["rank"] == 1.0 and lv["since"] == "2000"
+    s = {"level": lv, "latest_period": "2003-05"}
+    assert level_extreme(s) == "hoch"
+    assert level_words(s) == "Niveau: höher als in 100 % aller Monate seit 2000"
+    assert level_context(pts[:10]) is None

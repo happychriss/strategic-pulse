@@ -112,7 +112,8 @@ own: no thresholds, no wording that the data does not support.
 
 - **Top:** the status sentence (quiet, one layer moving, several layers moving), the signals
   behind it, and the last four months.
-- **Monthly:** each of the six layers with its signals, ten years of history, and a bar that
+- **Monthly:** each of the six layers with its signals, five years of history on display (all measures use the full history), a level
+  context (where the latest value stands in its whole history), and a bar that
   measures the latest three-month move against the signal's own past moves (the tick is the 95th
   percentile).
 - **Record since 2008:** the monthly level with the reference events and the back-test score.

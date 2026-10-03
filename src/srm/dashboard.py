@@ -27,7 +27,7 @@ from srm.structural import eu_series, known_year, load_panel, slope
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "reports" / "dashboard"
-HISTORY_YEARS = 10
+HISTORY_YEARS = 5
 STRUCTURAL_YEARS = 20
 
 LAYERS_DE = {
@@ -178,10 +178,23 @@ def indicator_families(conn: psycopg.Connection, code: str, mv: int, at: datetim
     return [r[0] for r in rows]
 
 
-def signal_history(conn, code: str, mv: int, at: datetime) -> list[list]:
+def signal_history(conn, code: str, mv: int, at: datetime) -> tuple[list[list], dict | None]:
+    """Last HISTORY_YEARS of values, and where the latest value stands in the full history."""
     pts = indicator_series(conn, code, at, mv)
     start = date(at.year - HISTORY_YEARS, at.month, 1)
-    return [[p[1], round(p[2], 4)] for p in pts if p[0] >= start]
+    return [[p[1], round(p[2], 4)] for p in pts if p[0] >= start], level_context(pts)
+
+
+def level_context(pts: list) -> dict | None:
+    """Share of all earlier periods with a lower value than the latest one (0..1)."""
+    if len(pts) < 24:
+        return None
+    *past, last = [p[2] for p in pts]
+    return {
+        "rank": round(sum(v < last for v in past) / len(past), 3),
+        "since": pts[0][1][:4],
+        "periods": len(past),
+    }
 
 
 def structural_series(conn, ind: dict, aggregate: str, at: datetime) -> list[list]:
@@ -212,7 +225,7 @@ def build_payload(conn: psycopg.Connection, label: str | None = None) -> dict:
         signals.append(
             {
                 **s,
-                "history": signal_history(conn, s["indicator"], mv, at),
+                **dict(zip(("history", "level"), signal_history(conn, s["indicator"], mv, at))),
                 "sources": remember(provs),
             }
         )
@@ -279,10 +292,32 @@ def trend_words(now: float | None, before: float | None, level: float | None, tu
 def signal_state(s: dict) -> tuple[str, str]:
     """(css class, German label) for one signal."""
     if s["unusual"]:
-        return "move", "Ungewöhnlich schnell"
+        return "move", "Tempo ungewöhnlich"
     if s["turn"]:
         return "turn", "Richtungswechsel"
-    return "calm", "Im üblichen Rahmen"
+    return "calm", "Tempo üblich"
+
+
+def level_extreme(s: dict) -> str | None:
+    """'hoch' or 'niedrig' when the level sits in the outer tenth of its own history."""
+    lv = s.get("level")
+    if not lv:
+        return None
+    return "hoch" if lv["rank"] >= 0.9 else "niedrig" if lv["rank"] <= 0.1 else None
+
+
+def level_words(s: dict) -> str:
+    lv = s.get("level")
+    if not lv:
+        return "Niveau: zu kurze Geschichte für eine Einordnung"
+    unit = "Quartale" if "-Q" in s["latest_period"] else "Monate"
+    if lv["rank"] >= 0.5:
+        return f"Niveau: höher als in {lv['rank']:.0%} aller {unit} seit {lv['since']}".replace(
+            "%", " %"
+        )
+    return f"Niveau: niedriger als in {1 - lv['rank']:.0%} aller {unit} seit {lv['since']}".replace(
+        "%", " %"
+    )
 
 
 def headline(p: dict) -> tuple[str, str]:
@@ -519,6 +554,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .status p{margin:0;max-width:62ch;color:var(--ink)}
 .status .lede{font-size:17px}
 .status .note{color:var(--muted);font-size:14px}
+.status .levels{font-size:15px;border-left:3px solid var(--ink);padding-left:12px}
 .recent{display:flex;flex-wrap:wrap;gap:6px}
 .recent span{font:500 12px/1 var(--body);padding:6px 9px;border-radius:6px;background:var(--wash);color:var(--muted)}
 .recent span b{font-weight:600;color:var(--ink)}
@@ -530,6 +566,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .layers-mini li{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:14px;
   padding-bottom:8px;border-bottom:1px solid var(--rule)}
 .layers-mini li:last-child{border-bottom:0;padding-bottom:0}
+.layers-mini .lvl{display:block;font-size:12px;color:var(--muted)}
 .dot{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap}
 .dot::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--calm)}
 .dot.move{color:var(--move)} .dot.move::before{background:var(--move)}
@@ -552,7 +589,10 @@ section{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
 .sig .label strong{font-weight:600;font-size:14px;line-height:1.3}
 .sig .value{font:600 22px/1.1 var(--body);font-variant-numeric:tabular-nums}
 .sig .value small{font:500 12px var(--body);color:var(--muted);margin-left:3px}
-.sig .move-txt{font-size:12px;color:var(--muted)}
+.sig .move-txt,.sig .level-txt{font-size:12px;color:var(--muted)}
+.sig .level-txt.extreme{color:var(--ink);font-weight:600}
+.sig .level-txt.extreme::before{content:"";display:inline-block;width:7px;height:7px;margin-right:6px;
+  transform:rotate(45deg);background:var(--ink);vertical-align:1px}
 .sig .chart{grid-column:1 / -1;display:grid;gap:6px}
 .sig .src{grid-column:1 / -1;font-size:11.5px;color:var(--faint);line-height:1.4}
 .sig .side{display:grid;gap:6px;justify-items:end;align-content:start;text-align:right}
@@ -680,10 +720,13 @@ def _signal_block(s: dict, by_card: dict[str, dict]) -> str:
     d = digits_for([v for _, v in hist] or [s["value"] or 0])
     window = 1 if "-Q" in s["latest_period"] else 3
     move = (
-        f"{num(s['change'], d, True)} {cu} in drei Monaten · üblich bis ±{num(s['threshold'], d)}"
+        f"Tempo: {num(s['change'], d, True)} {cu} in drei Monaten, üblich bis ±{num(s['threshold'], d)}"
         if s["change"] is not None and s["threshold"]
-        else "zu kurze Geschichte für einen Vergleich"
+        else "Tempo: zu kurze Geschichte für einen Vergleich"
     )
+    if s.get("change_6m") is not None:
+        move += f" · {num(s['change_6m'], d, True)} {cu} in sechs Monaten".replace("  ", " ")
+    extreme = level_extreme(s)
     pseudo = " · ohne historische Datenstände" if s["knowledge"] == "pseudo" else ""
     axis = (
         f'<div class="spark-axis"><span>{_e(period_de(hist[0][0]))}</span>'
@@ -696,7 +739,8 @@ def _signal_block(s: dict, by_card: dict[str, dict]) -> str:
   <div class="label"><strong>{_e(name)}</strong><span class="dot {state}">{state_de}</span></div>
   <div class="side"><div class="value">{num(s["value"], d)}<small>{_e(unit)}</small></div></div>
   <div class="chart">{sparkline(hist, window, state)}{axis}
-    {gauge(s["change"], s["threshold"], state)}<span class="move-txt">{move}</span></div>
+    {gauge(s["change"], s["threshold"], state)}<span class="move-txt">{move}</span>
+    <span class="level-txt{" extreme" if extreme else ""}">{_e(level_words(s))}</span></div>
   <div class="src">{_source_line(s["sources"], by_card, period_de(s["latest_period"]))}{pseudo}</div>
 </div>"""
 
@@ -780,10 +824,19 @@ def render(p: dict) -> str:
             if any(s["turn"] for s in sigs)
             else "calm"
         )
-        st_de = {"move": "in Bewegung", "turn": "Richtungswechsel", "calm": "ruhig"}[st]
+        st_de = {"move": "Tempo ungewöhnlich", "turn": "Richtungswechsel", "calm": "Tempo üblich"}[
+            st
+        ]
+        ext = [x for x in (level_extreme(s) for s in sigs) if x]
+        lvl = (
+            f'<span class="lvl">Niveau {"hoch" if "hoch" in ext else "niedrig"} bei '
+            f"{len(ext)} von {len(sigs)}</span>"
+            if ext
+            else ""
+        )
         name = LAYERS_DE.get(layer["key"], layer["label"])
         on = layer["key"] in now["active_layers"]
-        mini.append(f'<li><span>{_e(name)}</span><span class="dot {st}">{st_de}</span></li>')
+        mini.append(f'<li><span>{_e(name)}{lvl}</span><span class="dot {st}">{st_de}</span></li>')
         cards.append(
             f'<article class="layer{" active" if on else ""}"><header><h3>{_e(name)}</h3>'
             f'<span class="dot {st}">{st_de}</span></header>'
@@ -808,6 +861,19 @@ def render(p: dict) -> str:
         if flagged
         else "Bei den langsamen Trends gibt es derzeit keine europaweite Häufung."
     )
+    extremes = [s for s in p["signals"] if level_extreme(s)]
+    level_line = (
+        "Ungewöhnliches Niveau bei üblichem Tempo. "
+        + "; ".join(
+            f"{SIGNALS_DE.get(s['indicator'], (s['indicator'],))[0]}: "
+            f"{level_words(s).removeprefix('Niveau: ')}"
+            for s in extremes
+            if not (s["unusual"] or s["turn"])
+        )
+        + "."
+        if any(not (s["unusual"] or s["turn"]) for s in extremes)
+        else ""
+    )
     trends = "".join(
         _trend_card(r, by_card, p["structural_flagged_years"].get(r["key"], []), generated.year)
         for r in p["structural"]
@@ -829,6 +895,7 @@ def render(p: dict) -> str:
     <span class="pill {state}">{_e({"calm": "Ruhig", "move": "In Bewegung", "alarm": "Mehrere Ebenen"}[state])}</span>
     <h1>{_e(title)}</h1>
     <p class="lede">{_e(lede)}</p>
+    {f'<p class="levels">{_e(level_line)}</p>' if level_line else ""}
     <p class="note">{_e(slow_line)} Das Lagebild sagt nichts voraus. Es zeigt, wo sich gerade
     mehr bewegt als üblich, gemessen an der eigenen Geschichte jedes Signals.</p>
     <div class="recent" aria-label="Letzte Monate">{recent}</div>
@@ -841,10 +908,12 @@ def render(p: dict) -> str:
 
 <section>
   <div class="sechead"><span class="eyebrow">Monatlich</span><h2>Was sich gerade bewegt</h2>
-  <p>Jede Kurve zeigt zehn Jahre. Der Balken misst die Bewegung der letzten drei Monate an den
-  bisherigen Bewegungen desselben Signals. Erreicht er die Markierung, war die Bewegung größer als
-  in 95 von 100 früheren Fällen. Ein Richtungswechsel heißt: Nach einer längeren Bewegung in eine
-  Richtung kehrt sich die Sechs-Monats-Änderung deutlich um.</p></div>
+  <p>Zwei Fragen pro Signal. <b>Tempo:</b> Der Balken misst die Bewegung der letzten drei Monate
+  an den bisherigen Bewegungen desselben Signals; erreicht er die Markierung, war sie größer als in
+  95 von 100 früheren Fällen. Ein Richtungswechsel heißt: Nach einer längeren Bewegung kehrt sich
+  die Sechs-Monats-Änderung deutlich um. <b>Niveau:</b> Wo der aktuelle Wert in der gesamten
+  Geschichte des Signals liegt. Ein hohes Niveau bei üblichem Tempo heißt: Der Schock ist da, aber
+  er wächst gerade nicht weiter. Nur das Tempo löst Alarme aus. Die Kurven zeigen fünf Jahre; Tempo und Niveau werden an der gesamten Geschichte gemessen.</p></div>
   <div class="grid">{"".join(cards)}</div>
 </section>
 
