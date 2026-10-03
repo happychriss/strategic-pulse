@@ -279,7 +279,7 @@ CSS = """
   --accent:#86b4f0; --hfl:#e49a58; --rd:#a0a8f2; --pos:#6cc49a; --neg:#f08a8a; --chip:#222b38; color-scheme:dark}
 [hidden]{display:none!important}
 body{background:var(--paper);color:var(--ink);font:15px/1.55 var(--body)}
-.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:28px 64px;display:grid;gap:36px}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:28px 64px;display:grid;grid-template-columns:minmax(0,1fr);gap:36px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
 h1{font-size:2.1rem;font-weight:600;letter-spacing:-.01em}
 h2{font-size:1.35rem;font-weight:600}
@@ -293,7 +293,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 header{display:grid;gap:10px}
 .meta{display:flex;flex-wrap:wrap;gap:6px 18px;font:400 .8rem/1.4 var(--mono);color:var(--muted)}
 .note{border-left:3px solid var(--rule);padding-left:12px;color:var(--muted);max-width:80ch}
-section{display:grid;gap:14px;min-width:0}
+section{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0}
 .scroll{overflow-x:auto;min-width:0}
 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
@@ -335,6 +335,25 @@ details[open] summary{margin-bottom:10px}
 .trace-group h4{margin:0;font:500 .78rem/1.3 var(--mono);color:var(--muted)}
 .trace td{font-size:.8rem}
 .legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.82rem;color:var(--muted)}
+.now{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.status{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px}
+.status .big{font:600 1.7rem/1.1 var(--display)}
+.lv0{color:var(--muted)} .lv1{color:var(--ink)} .lv2{color:var(--accent)}
+.badge{font:500 .74rem/1.2 var(--mono);padding:3px 8px;border-radius:4px;border:1px solid var(--accent);color:var(--accent)}
+.layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+.layer{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:12px 14px;display:grid;align-content:start;gap:10px;min-width:0}
+.layer.on{border-color:var(--accent)}
+.layer h4{margin:0;font:600 .95rem/1.2 var(--body);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sig{display:grid;gap:2px;font-size:.86rem}
+.sig .name{min-width:0}
+.sig .val{font-family:var(--mono);font-size:.78rem;color:var(--ink)}
+.sig .why{font-size:.76rem;color:var(--muted)}
+.flag{font:500 .7rem/1.2 var(--mono);padding:2px 6px;border-radius:3px;background:var(--chip)}
+.flag.speed,.flag.turn{color:var(--accent)}
+.timeline svg{width:100%;height:auto;display:block}
+.timeline text{fill:var(--muted);font:10px var(--mono)}
+.lg{display:inline-block;width:.9em;height:.9em;border-radius:2px;vertical-align:-1px;margin-right:5px}
+.struct td.flags{font-family:var(--mono);font-size:.74rem;white-space:nowrap;letter-spacing:.5px}
 @media (max-width:560px){h1{font-size:1.6rem}.grades{grid-template-columns:1fr 1fr}}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
 """
@@ -384,7 +403,200 @@ def _effect(v):
     return {1: "↑ pushes toward", -1: "↓ pushes away"}.get(v, "–")
 
 
-def render_html(runs: list[dict]) -> str:
+LEVEL_TEXT = {0: "Quiet", 1: "One layer is moving", 2: "Something is happening"}
+LEVEL_FILL = {
+    0: "var(--chip)",
+    1: "color-mix(in srgb, var(--accent) 45%, var(--chip))",
+    2: "var(--accent)",
+}
+
+
+def _signal_rows(sigs: list[dict], labels: dict[str, str]) -> str:
+    rows = []
+    for g in sigs:
+        name = labels.get(g["indicator"], g["indicator"])
+        flags = []
+        if g.get("unusual"):
+            flags.append('<span class="flag speed">unusual speed</span>')
+        if g.get("turn"):
+            flags.append('<span class="flag turn">direction change</span>')
+        if g.get("unusual") is None:
+            flags.append('<span class="flag">not evaluable</span>')
+        chg = "" if g.get("change") is None else f"3-mo change {g['change']:+.2f}"
+        why = ""
+        if g.get("threshold") is not None:
+            why = f"usual 3-month moves stay within ±{g['threshold']:.2f}"
+        if g.get("note"):
+            why = g["note"]
+        if g.get("knowledge") == "pseudo":
+            why += " · no data vintages (approximation in tests)"
+        rows.append(
+            f'<div class="sig"><span class="name">{_e(name)} {" ".join(flags)}</span>'
+            f'<span class="val">{_e(g.get("latest_period") or "")} {_e(chg)}</span>'
+            f'<span class="why">{_e(why)}</span></div>'
+        )
+    return "\n".join(rows)
+
+
+def _timeline_svg(timeline: list[dict], events: list[dict]) -> str:
+    n = len(timeline)
+    cw, ch, left, top = 4, 22, 4, 6
+    width = left * 2 + n * cw
+    height = top + ch + 34
+    idx = {t["month"]: i for i, t in enumerate(timeline)}
+    parts = [
+        f'<svg viewBox="0 0 {width} {height}" role="img" aria-label="Detector level by month">'
+    ]
+    for i, t in enumerate(timeline):
+        x = left + i * cw
+        parts.append(
+            f'<rect x="{x}" y="{top}" width="{cw - 1}" height="{ch}" fill="{LEVEL_FILL[t["level"]]}">'
+            f"<title>{t['month']}: {LEVEL_TEXT[t['level']]}{' (new alarm)' if t['onset'] else ''}"
+            f"{': ' + ', '.join(t['layers']) if t['layers'] else ''}</title></rect>"
+        )
+        if t["onset"]:
+            parts.append(
+                f'<rect x="{x}" y="{top - 5}" width="{cw - 1}" height="3" fill="var(--ink)"/>'
+            )
+        if t["month"].endswith("-01") and int(t["month"][:4]) % 2 == 0:
+            parts.append(
+                f'<line x1="{x}" x2="{x}" y1="{top + ch}" y2="{top + ch + 4}" stroke="var(--muted)" stroke-width="1"/>'
+                f'<text x="{x}" y="{top + ch + 14}">{t["month"][:4]}</text>'
+            )
+    for ev in events:
+        if ev["month"] in idx:
+            x = left + idx[ev["month"]] * cw + cw / 2
+            y = top + ch + 20
+            mark = {
+                "new alarm": "var(--accent)",
+                "alarm already running": "var(--muted)",
+                "missed": "var(--neg)",
+            }[ev["status"]]
+            parts.append(
+                f'<path d="M{x - 4},{y + 8} L{x},{y} L{x + 4},{y + 8} Z" fill="{mark}">'
+                f"<title>{_e(ev['month'])} {_e(ev['event'])}: {_e(ev['status'])}</title></path>"
+            )
+    parts.append("</svg>")
+    return "".join(parts)
+
+
+def render_happening(p: dict) -> str:
+    labels = p.get("indicator_labels", {})
+    now = p["now"]
+    by_layer: dict[str, list[dict]] = {}
+    for g in now["signals"]:
+        by_layer.setdefault(g["layer"], []).append(g)
+    lvl = now["level"]
+    out = [
+        '<section class="now" id="now">',
+        "<h2>What is happening now</h2>",
+        f'<div class="status"><span class="big lv{lvl}">{LEVEL_TEXT[lvl]}</span>'
+        + ('<span class="badge">new alarm</span>' if now["onset"] else "")
+        + f'<span class="muted mono">as of {_e(now["month"])} · model {_e(p["model_version"])}</span></div>',
+        ('<p class="muted">Each signal is compared with its own history: a 3-month move larger than 95% of its past '
+        "moves is unusual speed; a 6-month move against a consistent earlier run is a direction change. "
+        "When at least two layers move, something is happening. No fixed levels are used.</p>"),
+        '<div class="layers">',
+    ]
+    for layer in p["layers"]:
+        sigs = by_layer.get(layer["key"], [])
+        on = layer["key"] in now["active_layers"]
+        state = "moving" if on else "quiet"
+        out.append(
+            f'<article class="layer{" on" if on else ""}"><h4><span>{_e(layer["label"])}</span>'
+            f'<span class="flag{" speed" if on else ""}">{state}</span></h4>{_signal_rows(sigs, labels)}</article>'
+        )
+    out.append("</div>")
+    ts = p.get("test_summary", {})
+    out += [
+        '<div class="timeline"><h3>Detector history, monthly since 2008</h3>',
+        ('<div class="legend"><span><span class="lg" style="background:var(--chip)"></span>quiet</span>'
+        f'<span><span class="lg" style="background:{LEVEL_FILL[1]}"></span>one layer moving</span>'
+        '<span><span class="lg" style="background:var(--accent)"></span>something is happening</span>'
+        '<span><span class="lg" style="background:var(--ink);height:.3em"></span>new alarm</span>'
+        '<span>▲ reference event: <span style="color:var(--accent)">new alarm</span>, '
+        '<span class="muted">alarm already running</span>, <span style="color:var(--neg)">missed</span></span></div>'),
+        f'<div class="scroll">{_timeline_svg(p["timeline"], p["events"])}</div>',
+    ]
+    if ts:
+        out.append(
+            '<div class="scroll"><table><thead><tr><th>Version</th><th>New alarm at event</th><th>Already running</th>'
+            "<th>Missed</th><th>New alarms outside events</th></tr></thead><tbody>"
+        )
+        for lab, sc in ts.items():
+            st = [e["status"] for e in sc["events"]]
+            out.append(
+                f'<tr><td class="mono">{_e(lab)}</td><td class="num">{st.count("new alarm")}</td>'
+                f'<td class="num">{st.count("alarm already running")}</td><td class="num">{st.count("missed")}</td>'
+                f'<td class="num">{len(sc["false_alarms"])}</td></tr>'
+            )
+        out.append("</tbody></table></div>")
+    years: dict[str, list[str]] = {}
+    for t in p["timeline"]:
+        years.setdefault(t["month"][:4], []).append("N" if t["onset"] else str(t["level"]))
+    out.append(
+        "<details><summary>Levels as a table (N = new alarm, 2 = alarm, 1 = one layer, 0 = quiet)</summary>"
+        '<div class="scroll"><table><tbody>'
+        + "".join(
+            f'<tr><td class="mono">{y}</td><td class="mono">{" ".join(v)}</td></tr>'
+            for y, v in years.items()
+        )
+        + "</tbody></table></div></details></div>"
+    )
+    # yearly structural layer
+    hist = p.get("structural_history", {})
+    yrs = sorted(hist)[-12:]
+    out += [
+        "<h3>Structural axes, yearly</h3>",
+        ('<p class="muted">Five-year trend against the previous five years, for the EU and each member state. A '
+        "Europe-wide movement is flagged when unusually many member states change trend in the same direction. "
+        f"History columns {yrs[0] if yrs else ''}–{yrs[-1] if yrs else ''}: E = Europe-wide movement, "
+        "D = EU trend changed direction, · = nothing unusual, – = not assessable.</p>"),
+        ('<div class="scroll"><table class="struct"><thead><tr><th>Axis</th><th>Indicator</th><th>Latest</th>'
+        "<th>EU value</th><th>Trend per year (before → now)</th><th>Now</th><th>History</th></tr></thead><tbody>"),
+    ]
+    for s_ in p.get("structural_now", []):
+        now_flags = []
+        if s_.get("unusual"):
+            now_flags.append(
+                f'<span class="flag speed">Europe-wide, toward {_e(s_["toward"])}</span>'
+            )
+        if s_.get("turn"):
+            now_flags.append('<span class="flag turn">direction change</span>')
+        if s_.get("breadth") is not None:
+            now_flags.append(
+                f'<span class="muted">{round(100 * s_["breadth"])}% of states'
+                + (
+                    f" (usual up to {round(100 * s_['breadth_threshold'])}%)"
+                    if s_.get("breadth_threshold") is not None
+                    else ""
+                )
+                + "</span>"
+            )
+        trend = (
+            ""
+            if s_.get("trend_now") is None
+            else f"{s_['trend_before']:+.2f} → {s_['trend_now']:+.2f}"
+        )
+        flags = []
+        for y in yrs:
+            r = next((x for x in hist[y] if x["key"] == s_["key"]), None)
+            if r is None or r["unusual"] is None:
+                flags.append("–")
+            else:
+                flags.append(("E" if r["unusual"] else "") + ("D" if r["turn"] else "") or "·")
+        out.append(
+            f"<tr><td>{_e(s_['axis'].replace('_', ' '))}</td><td>{_e(s_['label'])}</td>"
+            f'<td class="mono">{_e(s_.get("latest_year") or "")}</td>'
+            f'<td class="num">{"" if s_.get("eu_value") is None else _e(s_["eu_value"])}</td>'
+            f'<td class="mono">{_e(trend)}</td><td>{" ".join(now_flags)}</td>'
+            f'<td class="flags">{" ".join(flags)}</td></tr>'
+        )
+    out.append("</tbody></table></div></section>")
+    return "\n".join(out)
+
+
+def render_html(runs: list[dict], happening: dict | None = None) -> str:
     runs = sorted(runs, key=lambda r: r["as_of"])
     latest = runs[-1]
     version = latest["version"]
@@ -412,6 +624,7 @@ def render_html(runs: list[dict]) -> str:
             "marked proposed are unreviewed: they are shown here but do not count toward evidence strength.</p>"
         ),
         "</header>",
+        render_happening(happening) if happening else "",
         "<section>",
         "<h2>Regime path</h2>",
         (
@@ -579,6 +792,8 @@ def _regime_section(r: dict) -> str:
 
 # ------------------------------------------------------------------ write
 def write_reports(conn: psycopg.Connection, run_ids: list[str]) -> list[Path]:
+    import json
+
     runs = [load_run(conn, rid) for rid in run_ids]
     written = []
     by_version = defaultdict(list)
@@ -592,6 +807,8 @@ def write_reports(conn: psycopg.Connection, run_ids: list[str]) -> list[Path]:
             path.write_text(render_markdown(run), encoding="utf-8")
             written.append(path)
         page = folder / "index.html"
-        page.write_text(render_html(vruns), encoding="utf-8")
+        det = REPORTS_DIR.parent / "detector" / f"{version}.json"
+        happening = json.loads(det.read_text(encoding="utf-8")) if det.exists() else None
+        page.write_text(render_html(vruns, happening), encoding="utf-8")
         written.append(page)
     return written

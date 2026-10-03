@@ -21,7 +21,7 @@ ROLES = {"structural_indicator", "state_variable", "event", "context"}
 VINTAGE_SUPPORT = {"none", "release_snapshots", "full_history"}
 VERIFICATION = {"unverified", "verified"}
 AUTH = {"none", "free_token", "registration", "paid"}
-PARSERS = {"ecb_csv", "eurostat_jsonstat", "oecd_csv"}
+PARSERS = {"ecb_csv", "eurostat_jsonstat", "oecd_csv", "worldbank_json"}
 KNOWLEDGE_RULES = {
     "source_vintage_log",  # change log with exact timestamps (ECB includeHistory)
     "revdate_dimension",  # vintage tables with a revision-date dimension (Eurostat)

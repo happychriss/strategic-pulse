@@ -1,0 +1,37 @@
+id: eurostat_nrg_ind_id
+provider: Eurostat
+name: Energy imports dependency
+role: structural_indicator
+phase: 2
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: nrg_ind_id
+  example_key: statistics/1.0/data/nrg_ind_id
+datasets:
+- code: ESTAT:nrg_ind_id
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EU27_2020 and all member states
+  frequency: annual
+  start: '1990'
+temporal:
+  revision_policy: Annual releases; back data can be revised.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp; historical structural tests use a pseudo-real-time publication
+    lag.
+python_access: JSON-stat REST endpoint (default format).
+pitfalls:
+- All products (siec TOTAL), percent of gross available energy; above 100% possible with stock changes.
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: EU27_2020 and 27 member states, 1990-2024.'
+docs_urls:
+- https://ec.europa.eu/eurostat/web/main/data/database

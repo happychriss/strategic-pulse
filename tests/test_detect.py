@@ -1,6 +1,14 @@
 from datetime import UTC, date, datetime
 
-from srm.detect import Detection, SignalResult, evaluate_points, quantile, score_events
+from srm.detect import (
+    Detection,
+    SignalResult,
+    evaluate_points,
+    evaluate_turn,
+    mark_onsets,
+    quantile,
+    score_events,
+)
 
 
 def monthly(values, start=(2010, 1)):
@@ -41,17 +49,30 @@ def test_stale_data_is_not_evaluable():
     assert r.unusual is None and "stale" in r.note
 
 
-def test_event_scoring_counts_window_hits_and_false_alarms():
+def test_event_scoring_distinguishes_new_and_running_alarms():
     def det(y, m, level):
-        return Detection(
-            datetime(y, m + 1, 1, tzinfo=UTC) if m < 12 else datetime(y + 1, 1, 1, tzinfo=UTC),
-            level,
-            ["a", "b"] if level == 2 else [],
-        )
+        at = datetime(y, m + 1, 1, tzinfo=UTC) if m < 12 else datetime(y + 1, 1, 1, tzinfo=UTC)
+        return Detection(at, level, ["a", "b"] if level == 2 else [])
 
     dets = [det(2020, m, 0) for m in range(1, 13)]
-    dets[3] = det(2020, 4, 2)  # inside the window of a March event
-    dets[11] = det(2020, 12, 2)  # outside any window
+    dets[3] = det(2020, 4, 2)  # new alarm inside the window of a March event
+    dets[4] = det(2020, 5, 2)  # continuation, not a new alarm
+    dets[11] = det(2020, 12, 2)  # new alarm outside any window
+    mark_onsets(dets, 3)
+    assert [d.onset for d in dets].count(True) == 2
     s = score_events(dets, [{"month": "2020-03", "label": "x"}])
-    assert s["events"][0]["alarm_month"] == "2020-04" and s["events"][0]["lag_months"] == 1
+    assert s["events"][0]["status"] == "new alarm" and s["events"][0]["lag_months"] == 1
     assert s["false_alarms"] == ["2020-12"]
+
+
+def test_direction_change_after_a_consistent_run():
+    rising = [float(i) * 0.1 for i in range(40)]
+    pts = monthly(rising + [rising[-1] - 1.5])  # first month of a clear reversal
+    r = SignalResult("l", "i", "vintage", unusual=False)
+    evaluate_turn(pts, {"window_months": 6, "lookback_months": 12, "consistency": 0.75}, r)
+    assert r.turn is True
+    flat = SignalResult("l", "i", "vintage", unusual=False)
+    evaluate_turn(
+        monthly(rising), {"window_months": 6, "lookback_months": 12, "consistency": 0.75}, flat
+    )
+    assert flat.turn is False

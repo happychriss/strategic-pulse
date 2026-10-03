@@ -1,0 +1,37 @@
+id: eurostat_sdg_16_50
+provider: Eurostat
+name: Corruption Perceptions Index (Transparency International, via Eurostat)
+role: structural_indicator
+phase: 2
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: sdg_16_50
+  example_key: statistics/1.0/data/sdg_16_50
+datasets:
+- code: ESTAT:sdg_16_50
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EU27_2020 and all member states
+  frequency: annual
+  start: '2012'
+temporal:
+  revision_policy: Annual releases; back data can be revised.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp; historical structural tests use a pseudo-real-time publication
+    lag.
+python_access: JSON-stat REST endpoint (default format).
+pitfalls:
+- Score 0-100, higher means cleaner; short history from 2012.
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: EU27_2020 and 27 member states, 2012-2025.'
+docs_urls:
+- https://ec.europa.eu/eurostat/web/main/data/database

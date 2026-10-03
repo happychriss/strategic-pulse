@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_gov_10a_main",
+  "label": "eu_gov_expenditure",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main?na_item=TE&sector=S13&unit=PC_GDP&geo=AT&geo=BE&geo=BG&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IT&geo=LT&geo=LU&geo=LV&geo=MT&geo=NL&geo=PL&geo=PT&geo=RO&geo=SE&geo=SI&geo=SK&geo=EU27_2020&lang=en",
+  "retrieved_at_utc": "2026-10-03T20:59:58.106365+00:00",
+  "http_status": 200,
+  "bytes": 14685,
+  "sha256": "f1bbfd309b21a2c84ab3c8ed5c061ac4f5bfe356ea54339730c4cee3bc98db87",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 20:59:58 GMT",
+    "Content-Type": "application/json"
+  }
+}

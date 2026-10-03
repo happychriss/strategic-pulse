@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_sdg_13_40",
+  "label": "eu_climate_losses",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/sdg_13_40?geo=AT&geo=BE&geo=BG&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IT&geo=LT&geo=LU&geo=LV&geo=MT&geo=NL&geo=PL&geo=PT&geo=RO&geo=SE&geo=SI&geo=SK&geo=EU27_2020&lang=en",
+  "retrieved_at_utc": "2026-10-03T21:00:00.950786+00:00",
+  "http_status": 200,
+  "bytes": 44857,
+  "sha256": "b451963d733d3fd428955d254b0f893e778beca4715d377bbd6896ba8d77d77d",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 21:00:01 GMT",
+    "Content-Type": "application/json"
+  }
+}

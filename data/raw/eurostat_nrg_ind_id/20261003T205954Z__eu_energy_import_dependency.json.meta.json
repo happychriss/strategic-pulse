@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_nrg_ind_id",
+  "label": "eu_energy_import_dependency",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nrg_ind_id?siec=TOTAL&unit=PC&geo=AT&geo=BE&geo=BG&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IT&geo=LT&geo=LU&geo=LV&geo=MT&geo=NL&geo=PL&geo=PT&geo=RO&geo=SE&geo=SI&geo=SK&geo=EU27_2020&lang=en",
+  "retrieved_at_utc": "2026-10-03T20:59:54.361879+00:00",
+  "http_status": 200,
+  "bytes": 17251,
+  "sha256": "c02e71cc6069f0c17a166cf2c5378c28d04ceffbb0e46a2401cc48b627c12a2d",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 20:59:54 GMT",
+    "Content-Type": "application/json"
+  }
+}

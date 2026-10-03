@@ -21,6 +21,9 @@ OECD = (
 )
 ES_FMT = "lang=en"
 NATIONAL = "geo=EA&geo=DE&geo=FR&geo=IT&geo=ES&geo=EU27_2020"
+EU_GEO = "geo=AT&geo=BE&geo=BG&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IT&geo=LT&geo=LU&geo=LV&geo=MT&geo=NL&geo=PL&geo=PT&geo=RO&geo=SE&geo=SI&geo=SK&geo=EU27_2020"
+WB = "https://api.worldbank.org/v2"
+WB_EU = "AUT;BEL;BGR;CYP;CZE;DEU;DNK;EST;GRC;ESP;FIN;FRA;HRV;HUN;IRL;ITA;LTU;LUX;LVA;MLT;NLD;POL;PRT;ROU;SWE;SVN;SVK;EUU"
 
 # (card_id, label, url, kind)
 PULLS: list[tuple[str, str, str, str]] = [
@@ -199,6 +202,72 @@ PULLS: list[tuple[str, str, str, str]] = [
         "eurostat_ei_etea_m",
         "ea21_trade_volume_total",
         f"{ES}/ei_etea_m?geo=EA21&indic=ET-T&unit=IVOL-SA&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_demo_pjanind",
+        "eu_old_age_dependency",
+        f"{ES}/demo_pjanind?indic_de=OLDDEP1&{EU_GEO}&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_demo_find",
+        "eu_fertility",
+        f"{ES}/demo_find?indic_de=TOTFERRT&{EU_GEO}&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_rd_e_gerdtot",
+        "eu_rd_intensity",
+        f"{ES}/rd_e_gerdtot?sectperf=TOTAL&unit=PC_GDP&{EU_GEO}&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_nrg_ind_id",
+        "eu_energy_import_dependency",
+        f"{ES}/nrg_ind_id?siec=TOTAL&unit=PC&{EU_GEO}&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_ilc_di11",
+        "eu_income_s80s20",
+        f"{ES}/ilc_di11?age=TOTAL&sex=T&{EU_GEO}&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_gov_10a_main",
+        "eu_gov_expenditure",
+        f"{ES}/gov_10a_main?na_item=TE&sector=S13&unit=PC_GDP&{EU_GEO}&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_gov_10dd_edpt1",
+        "eu_gov_debt",
+        f"{ES}/gov_10dd_edpt1?na_item=GD&sector=S13&unit=PC_GDP&{EU_GEO}&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_sdg_13_40",
+        "eu_climate_losses",
+        f"{ES}/sdg_13_40?{EU_GEO}&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_sdg_16_50",
+        "eu_corruption_perceptions",
+        f"{ES}/sdg_16_50?{EU_GEO}&{ES_FMT}",
+        "json",
+    ),
+    (
+        "worldbank_wgi",
+        "eu_rule_of_law",
+        f"{WB}/country/{WB_EU}/indicator/GOV_WGI_RL.EST?source=3&format=json&per_page=5000&date=1996:2026",
+        "json",
+    ),
+    (
+        "worldbank_wgi",
+        "eu_voice_accountability",
+        f"{WB}/country/{WB_EU}/indicator/GOV_WGI_VA.EST?source=3&format=json&per_page=5000&date=1996:2026",
         "json",
     ),
     (

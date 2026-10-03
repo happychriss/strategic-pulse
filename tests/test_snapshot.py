@@ -17,6 +17,7 @@ def test_html_is_not_accepted_as_csv_or_json():
 def test_json_error_and_empty_payloads_are_rejected():
     assert not _looks_like("json", b'{"error": [{"status": 400, "label": "Invalid"}]}')
     assert not _looks_like("json", b'{"version":"2.0","class":"dataset","value":{},"id":["geo"]}')
+    assert not _looks_like("json", b'[{"message":[{"id":"175","key":"Invalid format"}]}]')
 
 
 def test_real_payloads_are_accepted():

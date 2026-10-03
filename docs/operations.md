@@ -85,3 +85,15 @@ under "Is something happening?". Settings live in the `detector` section of the 
 `sensitivity` (unusual = larger than this share of the signal's own past 3-month changes) and
 `alarm_layers` (layers needed for an alarm). Reference events for the test are in
 `model/events.yaml` and must be fixed before a run, never adjusted to results.
+
+### Model phase1-v0.5
+
+- **Direction lens:** a 6-month change that flips sign after at least 75% of the previous 12
+  months moved the other way, and exceeds the median of the signal's own 6-month moves.
+- **New versus ongoing alarms:** a new alarm needs `onset_quiet_months` (3) quiet months before.
+- **Yearly structural layer** (`srm.structural`): 11 indicators across all nine axes for the 27
+  member states. Five-year trend against the previous five years; a Europe-wide movement is
+  flagged when unusually many member states change trend the same way (at least three). The
+  EU aggregate alone is never tested against single countries, because averages move less.
+- `python -m srm.detect` writes `reports/detector/<version>.md` (test) and `.json` (page data);
+  the monthly run and `python -m srm.assess` both refresh them before writing the page.

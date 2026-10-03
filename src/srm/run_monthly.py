@@ -114,9 +114,11 @@ def main(argv: list[str]) -> int:
                 "evidence_strength": r.evidence_strength,
                 "model_confidence": r.model_confidence,
             }
-        pages = write_reports(conn, runs)
         from srm.detect import detect
+        from srm.detect import run as run_detector
 
+        run_detector(conn)  # historical test + page data for the "what is happening" view
+        pages = write_reports(conn, runs)
         detection = detect(conn, started)
         log = {
             "date": today,

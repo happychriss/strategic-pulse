@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_demo_find",
+  "label": "eu_fertility",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/demo_find?indic_de=TOTFERRT&geo=AT&geo=BE&geo=BG&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IT&geo=LT&geo=LU&geo=LV&geo=MT&geo=NL&geo=PL&geo=PT&geo=RO&geo=SE&geo=SI&geo=SK&geo=EU27_2020&lang=en",
+  "retrieved_at_utc": "2026-10-03T20:59:51.478901+00:00",
+  "http_status": 200,
+  "bytes": 22351,
+  "sha256": "1d953c17050c309dd845c3db664c55b1a8f5cdacd0c0517e149d7a67c9a52fdf",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 20:59:51 GMT",
+    "Content-Type": "application/json"
+  }
+}

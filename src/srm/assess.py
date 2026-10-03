@@ -553,6 +553,9 @@ def main(argv: list[str]) -> int:
                     f"{at:%Y-%m-%d} {r.code:<24} {r.position:<18} {r.direction:<20} "
                     f"dq={r.data_quality} ev={r.evidence_strength} conf={r.model_confidence}"
                 )
+        from srm.detect import run as run_detector
+
+        run_detector(conn)
         for path in write_reports(conn, runs):
             print("wrote", path)
     return 0

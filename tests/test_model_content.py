@@ -90,6 +90,7 @@ def test_every_regime_has_supporting_and_opposing_conditions():
 
 def test_every_axis_and_state_variable_has_an_indicator():
     covered = {i["node"] for i in M["indicators"]}
+    covered |= {i["axis"] for i in M.get("structural", {}).get("indicators", [])}
     for code, n in NODES.items():
         if n["kind"] in ("structural_axis", "state_variable"):
             assert code in covered, code

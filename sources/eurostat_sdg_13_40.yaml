@@ -1,0 +1,37 @@
+id: eurostat_sdg_13_40
+provider: Eurostat
+name: Economic losses from weather- and climate-related extremes
+role: structural_indicator
+phase: 2
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: sdg_13_40
+  example_key: statistics/1.0/data/sdg_13_40
+datasets:
+- code: ESTAT:sdg_13_40
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EU27_2020 and all member states
+  frequency: annual
+  start: '1980'
+temporal:
+  revision_policy: Annual releases; back data can be revised.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp; historical structural tests use a pseudo-real-time publication
+    lag.
+python_access: JSON-stat REST endpoint (default format).
+pitfalls:
+- Single extreme years dominate; compare multi-year trends only.
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: EU27_2020 and 27 member states, 1980-2024 (annual values and 30-year averages).'
+docs_urls:
+- https://ec.europa.eu/eurostat/web/main/data/database

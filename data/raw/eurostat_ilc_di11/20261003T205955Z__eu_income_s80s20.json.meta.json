@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_ilc_di11",
+  "label": "eu_income_s80s20",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ilc_di11?age=TOTAL&sex=T&geo=AT&geo=BE&geo=BG&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IT&geo=LT&geo=LU&geo=LV&geo=MT&geo=NL&geo=PL&geo=PT&geo=RO&geo=SE&geo=SI&geo=SK&geo=EU27_2020&lang=en",
+  "retrieved_at_utc": "2026-10-03T20:59:55.810841+00:00",
+  "http_status": 200,
+  "bytes": 11465,
+  "sha256": "0223357e986c8b57abd423fa6d4cacda61e84732a45ff167e93569ce403e244f",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 20:59:56 GMT",
+    "Content-Type": "application/json"
+  }
+}
