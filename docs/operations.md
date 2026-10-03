@@ -1,7 +1,8 @@
 # Operations: the monthly run
 
 The system refreshes itself once a month through a Claude Code routine: a scheduled job that
-starts a fresh cloud session on the default branch (`main`), runs the pipeline, and reports.
+starts a fresh cloud session, checks out `main`, runs the pipeline, and reports. The routine
+checks out `main` itself because the repository's default branch is set in GitHub settings.
 
 ## What one run does
 
@@ -37,10 +38,12 @@ Methodology stays a human decision: "the world changed" is automated, "our model
 ```text
 Monthly run of the Strategic Regime Monitor (repository happychriss/strategic-pulse).
 
-1. Read docs/operations.md. Work on the branch this session is assigned; if none, create
-   monthly/<YYYY-MM-DD> from main.
-2. Run: PYTHONPATH=src .venv/bin/python -m srm.run_monthly   (the session-start hook has already
-   installed dependencies, started PostgreSQL and built the database).
+1. Make sure you are on main: if the repository is not checked out, clone it; then
+   git fetch origin main && git checkout -B monthly/<YYYY-MM-DD> origin/main.
+   (The repository's default branch may not be main, so do not rely on the initial checkout.)
+   Then set up: CLAUDE_CODE_REMOTE=true CLAUDE_PROJECT_DIR=$PWD .claude/hooks/session-start.sh
+   This installs dependencies, starts PostgreSQL and builds the database. Read docs/operations.md.
+2. Run: PYTHONPATH=src .venv/bin/python -m srm.run_monthly
 3. If this message contains "DRY RUN": stop after step 2. Do not commit, push, open or merge pull
    requests, or publish. Report the run log (reports/runs/<date>.md), the exit code, which files
    would be committed, and anything that looked wrong.
