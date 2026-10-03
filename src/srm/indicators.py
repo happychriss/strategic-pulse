@@ -165,7 +165,17 @@ def indicator_series_with_inputs(
             for p in points
         }
         return points, inputs
-    return by_role.get("value", []), inputs_by_role.get("value", {})
+    points = list(by_role.get("value", []))
+    inputs = dict(inputs_by_role.get("value", {}))
+    # An extension appends only periods after the last value: fresher but non-vintage sources
+    # can extend a vintage-safe series without replacing any of its history.
+    if "extension" in by_role:
+        last = points[-1][0] if points else None
+        for p in by_role["extension"]:
+            if last is None or p[0] > last:
+                points.append(p)
+                inputs[p[0]] = inputs_by_role["extension"][p[0]]
+    return points, inputs
 
 
 def indicator_series(

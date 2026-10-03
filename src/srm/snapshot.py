@@ -19,7 +19,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 RAW_DIR = Path(__file__).resolve().parents[2] / "data" / "raw"
-COMPRESS_ABOVE = 5_000_000  # bytes; larger payloads are stored gzip-compressed, losslessly
+COMPRESS_ABOVE = 1_000_000  # bytes; larger payloads are stored gzip-compressed, losslessly
 USER_AGENT = "strategic-regime-monitor/0.0.1 (research; contact via repository)"
 
 
@@ -33,6 +33,7 @@ class Snapshot:
     meta_path: Path
     sha256: str
     size: int
+    unchanged: bool = False  # True when identical to the latest archived snapshot (nothing written)
 
 
 def _ssl_context() -> ssl.SSLContext:
@@ -62,6 +63,7 @@ def fetch(
     retries: int = 3,
     timeout: int = 180,
     raw_dir: Path = RAW_DIR,
+    skip_unchanged: bool = True,
 ) -> Snapshot:
     """Download `url` and archive it under data/raw/<card_id>/. `kind` is csv, json or xml.
 
@@ -85,8 +87,14 @@ def fetch(
             last_error = f"attempt {attempt}: response is not {kind} (first bytes {body[:60]!r})"
             continue
         digest = hashlib.sha256(body).hexdigest()
-        stamp = retrieved.strftime("%Y%m%dT%H%M%SZ")
         folder = raw_dir / card_id
+        if skip_unchanged:
+            previous = latest_snapshot(card_id, label, raw_dir)
+            if previous and previous[1] == digest:
+                meta = previous[0]
+                data_path = meta.with_name(meta.name.removesuffix(".meta.json"))
+                return Snapshot(data_path, meta, digest, len(body), unchanged=True)
+        stamp = retrieved.strftime("%Y%m%dT%H%M%SZ")
         folder.mkdir(parents=True, exist_ok=True)
         compressed = len(body) > COMPRESS_ABOVE
         path = folder / f"{stamp}__{label}.{kind}{'.gz' if compressed else ''}"
@@ -116,6 +124,14 @@ def fetch(
         )
         return Snapshot(path=path, meta_path=meta_path, sha256=digest, size=len(body))
     raise SnapshotError(f"{card_id}/{label}: {last_error}")
+
+
+def latest_snapshot(card_id: str, label: str, raw_dir: Path = RAW_DIR) -> tuple[Path, str] | None:
+    """(meta path, sha256) of the most recent archived snapshot for a card and label."""
+    metas = sorted((raw_dir / card_id).glob(f"*__{label}.*.meta.json"))
+    if not metas:
+        return None
+    return metas[-1], json.loads(metas[-1].read_text(encoding="utf-8"))["sha256"]
 
 
 def _redact(url: str) -> str:

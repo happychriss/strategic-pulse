@@ -91,3 +91,17 @@ Each run is stored in `model.assessment_run`; every judgement links to its obser
 and driving relationships in `model.assessment_input`. Pages are written to
 `reports/assessments/<version>/`: one Markdown file per cutoff and `index.html` for all cutoffs.
 The rules are documented at the top of `src/srm/assess.py` (`ENGINE_VERSION`).
+
+## phase1-v0.3: fresh components
+
+Regime conditions are unchanged from v0.2. Three indicators gain sources for recent months:
+
+| Indicator | History (vintage-safe) | Recent months (retrieval-time knowledge) |
+|---|---|---|
+| Headline inflation | ECB RTD | ECB HICP dataset, including the flash estimate, for months after the latest RTD vintage |
+| Unemployment | Eurostat vintage tables | Eurostat main table (EA21) for months after the latest vintage |
+| Unit labour costs | OECD revisions (ends 2024-Q1) | Eurostat nominal ULC per person, for knowledge after 2026-10-03 |
+
+An `extension` component only appends periods after the last vintage-safe value, so it never
+rewrites history. Because fresh sources carry retrieval-time knowledge, they cannot affect past
+cutoffs; from now on each monthly pull adds one vintage of them.

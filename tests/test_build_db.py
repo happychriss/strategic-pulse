@@ -246,3 +246,17 @@ def test_both_model_versions_stay_reproducible(conn):
     v2 = {r.code: r.position for r in assess(conn, at, ids["phase1-v0.2"])["regimes"]}
     assert v1["higher_for_longer"] == "strongly supported"
     assert v2["higher_for_longer"] == "supported"  # the 2024 easing now counts against it
+
+
+def test_fresh_components_extend_recent_months_without_touching_the_past(conn):
+    from datetime import UTC, datetime
+
+    from srm.indicators import indicator_series, metric
+
+    past = datetime(2024, 12, 31, 23, tzinfo=UTC)
+    now = datetime.now(UTC)
+    assert metric(indicator_series(conn, "ea_hicp_headline_yoy", past), "level")[1] == "2024-11"
+    latest_now = metric(indicator_series(conn, "ea_hicp_headline_yoy", now), "level")[1]
+    assert latest_now >= "2026-09"  # RTD ends 2026-08; the HICP extension adds later months
+    assert metric(indicator_series(conn, "ea_ulc_yoy", past), "level")[1] == "2024-Q1"
+    assert metric(indicator_series(conn, "ea_ulc_yoy", now), "level")[1] >= "2026-Q2"

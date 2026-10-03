@@ -1,0 +1,373 @@
+# Strategic Regime Monitor: model definitions.
+# Frozen once released: any change needs a new file and label (enforced by the build):
+# "the world changed" must stay distinguishable from "our model changed".
+#
+# Phase 1 scope: euro area; axes Resources/Energy and Fiscal Capacity; regime pair
+# higher-for-longer vs recession/disinflation. Thresholds are explicit model judgements.
+
+model_version:
+  label: phase1-v0.3
+  notes: >
+    Changes from phase1-v0.2: fresh components for recent months. Headline inflation is
+    extended by the ECB HICP dataset (flash) and unemployment by Eurostat's main table, for
+    periods after the vintage series end. Unit labour costs switch from the OECD feed (ends
+    2024-Q1) to Eurostat for knowledge after the first Eurostat download. Fresh components have
+    retrieval-time knowledge only, so they never affect past cutoffs. Regime conditions unchanged.
+
+nodes:
+  # ---- structural axes (slow-moving)
+  - code: resources_energy
+    kind: structural_axis
+    label: Resources / Energy
+    low_pole: abundance / resilience
+    high_pole: scarcity / vulnerability
+    definition: >
+      Availability and cost of energy and strategic resources for the region. Phase 1 proxy:
+      consumer energy price inflation.
+  - code: fiscal_capacity
+    kind: structural_axis
+    label: Fiscal Capacity
+    low_pole: fiscal room
+    high_pole: fiscal stress
+    definition: >
+      Room for public budgets to absorb shocks given deficits and debt service. Phase 1
+      proxies: general government balance and interest expenditure, both in % of GDP.
+  # ---- state variables (fast-moving transmission layer)
+  - code: headline_inflation
+    kind: state_variable
+    label: Headline inflation
+    low_pole: below target
+    high_pole: above target
+    definition: Annual rate of change of the euro area HICP.
+  - code: core_inflation
+    kind: state_variable
+    label: Underlying inflation
+    low_pole: below target
+    high_pole: above target
+    definition: HICP inflation excluding energy and food components; persistence signal.
+  - code: unit_labour_costs
+    kind: state_variable
+    label: Unit labour costs
+    low_pole: subdued cost growth
+    high_pole: strong cost growth
+    definition: Labour cost per unit of output; wage growth net of productivity.
+  - code: policy_rate
+    kind: state_variable
+    label: Monetary policy rate
+    low_pole: accommodative
+    high_pole: restrictive
+    definition: ECB deposit facility rate, the operative policy rate since 2022.
+  - code: financing_costs
+    kind: state_variable
+    label: Long-term financing costs
+    low_pole: low
+    high_pole: high
+    definition: Euro area 10-year government yield (AAA curve), anchor for long-term borrowing costs.
+  - code: unemployment
+    kind: state_variable
+    label: Unemployment
+    low_pole: tight labour market
+    high_pole: slack
+    definition: Euro area unemployment rate, seasonally adjusted.
+  - code: output_growth
+    kind: state_variable
+    label: Output growth
+    low_pole: contraction
+    high_pole: expansion
+    definition: Quarter-on-quarter growth of real GDP.
+  # ---- regimes
+  - code: higher_for_longer
+    kind: regime
+    label: Higher for longer
+    definition: >
+      Underlying inflation stays above target long enough that policy rates remain at or
+      above neutral and long-term financing costs stay elevated. Transition away requires
+      underlying inflation falling clearly toward 2% or a material weakening of the labour market.
+  - code: recession_disinflation
+    kind: regime
+    label: Recession / disinflation
+    definition: >
+      Activity contracts and unemployment rises while inflation falls toward or below target,
+      and policy is eased. Transition away requires stabilising unemployment and inflation
+      settling at or above target.
+
+indicators:
+  - code: ea_hicp_headline_yoy
+    label: HICP headline, annual % change
+    node: headline_inflation
+    region: EA
+    unit: "%"
+    semantics: higher_is_toward_high_pole
+    definition: ECB Real-Time Database vintages of headline HICP inflation.
+    components:
+      - {family: "ECB:RTD", series_key: RTD.M.S0.N.P_C_OV.A, transform: identity}
+      - {family: "ECB:HICP", series_key: HICP.M.U2.N.000000.4D0.ANR, transform: identity, role: extension,
+         note: "Months after the latest RTD vintage, including the flash estimate"}
+  - code: ea_hicp_energy_yoy
+    label: HICP energy, annual % change
+    node: resources_energy
+    region: EA
+    unit: "%"
+    semantics: higher_is_toward_high_pole
+    definition: Annual change of the RTD energy price index; consumer-facing energy stress.
+    components:
+      - {family: "ECB:RTD", series_key: RTD.M.S0.N.P_C_NRGY.X, transform: yoy_pct}
+  - code: ea_hicp_core_yoy
+    label: HICP excluding energy and food, annual % change
+    node: core_inflation
+    region: EA
+    unit: "%"
+    semantics: higher_is_toward_high_pole
+    definition: >
+      Splice: RTD index excluding energy and unprocessed food (vintage-safe, ends 2025-05)
+      until July 2025; afterwards the ECB HICP dataset excluding energy, food, alcohol and
+      tobacco (ingestion knowledge only). The two measures differ slightly in coverage.
+    components:
+      - {family: "ECB:RTD", series_key: RTD.M.S0.N.P_C_XEFUN.X, transform: yoy_pct,
+         serves_to: "2025-07-01T00:00:00Z", note: "RTD core series discontinued after 2025-05"}
+      - {family: "ECB:HICP", series_key: HICP.M.U2.N.XEF000.4D0.ANR, transform: identity,
+         serves_from: "2025-07-01T00:00:00Z", note: "New HICP dataset; ingestion knowledge only"}
+  - code: ea_ulc_yoy
+    label: Unit labour costs, annual % change (compounded from quarterly)
+    node: unit_labour_costs
+    region: EA
+    unit: "%"
+    semantics: higher_is_toward_high_pole
+    definition: >
+      OECD revisions database, quarterly % change compounded over four quarters. Splice by
+      edition: EA19 for editions to 2023-03, EA20 from 2023-04. The source unit code reads
+      'percentage of production costs' but values behave as quarter-on-quarter % changes.
+      From the first Eurostat download (2026-10-03) Eurostat annual growth replaces the OECD feed,
+      which ended at 2024-Q1.
+    components:
+      - {family: "OECD:DSD_STES_REVISIONS@DF_STES_REVISIONS",
+         series_key: "REF_AREA=EA19|FREQ=Q|MEASURE=ULC|UNIT_MEASURE=PT_PCOS|ACTIVITY=_T",
+         transform: compound_4q, serves_to: "2023-05-01T00:00:00Z"}
+      - {family: "OECD:DSD_STES_REVISIONS@DF_STES_REVISIONS",
+         series_key: "REF_AREA=EA20|FREQ=Q|MEASURE=ULC|UNIT_MEASURE=PT_PCOS|ACTIVITY=_T",
+         transform: compound_4q, serves_from: "2023-05-01T00:00:00Z", serves_to: "2026-10-03T15:54:46Z"}
+      - {family: "ESTAT:namq_10_lp_ulc", series_key: "freq=Q|unit=PCH_SM|s_adj=SCA|na_item=NULC_PER|geo=EA",
+         transform: identity, serves_from: "2026-10-03T15:54:46Z",
+         note: "Eurostat nominal ULC per person, annual % change; retrieval-time knowledge; definition differs from OECD"}
+  - code: ea_policy_rate
+    label: ECB deposit facility rate
+    node: policy_rate
+    region: EA
+    unit: "% p.a."
+    semantics: higher_is_toward_high_pole
+    definition: Rate in effect at each month end, from the series of rate changes.
+    components:
+      - {family: "ECB:FM", series_key: FM.B.U2.EUR.4F.KR.DFR.LEV, transform: step_monthly}
+  - code: ea_10y_yield
+    label: Euro area 10-year AAA government yield, monthly mean
+    node: financing_costs
+    region: EA
+    unit: "% p.a."
+    semantics: higher_is_toward_high_pole
+    definition: Monthly mean of the ECB daily AAA spot curve at 10 years.
+    components:
+      - {family: "ECB:YC", series_key: YC.B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y, transform: monthly_mean}
+  - code: ea_unemployment_rate
+    label: Unemployment rate
+    node: unemployment
+    region: EA
+    unit: "% of labour force"
+    semantics: higher_is_toward_high_pole
+    definition: Eurostat vintage tables (revision date precision).
+    components:
+      - {family: "ESTAT:ei_lm_m_vintages", series_key: "freq=M|unit=PC_ACT|s_adj=SA|sex=T|age=TOTAL|geo=EA",
+         transform: identity}
+      - {family: "ESTAT:une_rt_m", series_key: "freq=M|s_adj=SA|age=TOTAL|unit=PC_ACT|sex=T|geo=EA21",
+         transform: identity, role: extension,
+         note: "Main table, months after the latest vintage; EA21 equals the euro area composition from 2026"}
+  - code: ea_gdp_qoq
+    label: Real GDP, quarter-on-quarter % change
+    node: output_growth
+    region: EA
+    unit: "%"
+    semantics: higher_is_toward_high_pole
+    definition: Computed from Eurostat chain-linked volume vintages (available from October 2014).
+    components:
+      - {family: "ESTAT:ei_na_q_vintages", series_key: "freq=Q|s_adj=SCA|unit=CLV05_MEUR|geo=EA",
+         transform: qoq_pct}
+  - code: ea_gov_balance
+    label: General government balance, % of GDP
+    node: fiscal_capacity
+    region: EA
+    unit: "% of GDP"
+    semantics: higher_is_toward_low_pole
+    definition: ECB RTD vintages of the general government deficit (-) or surplus (+).
+    components:
+      - {family: "ECB:RTD", series_key: RTD.A.S0.N.F_UMD_CGG_D0.F, transform: identity}
+  - code: ea_gov_interest_burden
+    label: Government interest expenditure, % of GDP
+    node: fiscal_capacity
+    region: EA
+    unit: "% of GDP"
+    semantics: higher_is_toward_high_pole
+    definition: Primary balance minus total balance, both from RTD vintages of the same date.
+    components:
+      - {family: "ECB:RTD", series_key: RTD.A.S0.N.F_UMS_CGG_D0.F, transform: identity, role: minuend}
+      - {family: "ECB:RTD", series_key: RTD.A.S0.N.F_UMD_CGG_D0.F, transform: identity, role: subtrahend}
+
+# Relationships between nodes. status is what the database holds now; proposed_status is
+# what the cited evidence would support once reviewed (see model/claims.yaml).
+edges:
+  - key: energy_to_headline
+    src: resources_energy
+    dst: headline_inflation
+    rel_type: contributes_to
+    sign: 1
+    lag: [P0M, P3M]
+    region: EA
+    status: hypothesis
+    proposed_status: supported_mechanism
+    note: Direct effect of energy prices on the HICP energy component.
+  - key: energy_to_core
+    src: resources_energy
+    dst: core_inflation
+    rel_type: transmits_to
+    sign: 1
+    lag: [P3M, P18M]
+    region: EA
+    status: hypothesis
+    proposed_status: supported_mechanism
+    note: Indirect effects via production costs; strength appears state-dependent (larger after 2021).
+  - key: ulc_to_core
+    src: unit_labour_costs
+    dst: core_inflation
+    rel_type: contributes_to
+    sign: 1
+    lag: [P0M, P12M]
+    region: EA
+    status: hypothesis
+    proposed_status: supported_mechanism
+    note: Labour costs feed services inflation; profit margins can buffer.
+  - key: core_to_policy
+    src: core_inflation
+    dst: policy_rate
+    rel_type: contributes_to
+    sign: 1
+    lag: [P0M, P6M]
+    region: EA
+    status: hypothesis
+    proposed_status: supported_mechanism
+    note: Reaction function; the ECB responds to the medium-term inflation outlook.
+  - key: policy_to_financing
+    src: policy_rate
+    dst: financing_costs
+    rel_type: transmits_to
+    sign: 1
+    lag: [P0M, P12M]
+    region: EA
+    status: hypothesis
+    proposed_status: supported_mechanism
+    note: Pass-through to market and bank lending rates.
+  - key: financing_to_fiscal
+    src: financing_costs
+    dst: fiscal_capacity
+    rel_type: contributes_to
+    sign: 1
+    lag: [P2Y, P8Y]
+    region: EA
+    status: hypothesis
+    proposed_status: supported_mechanism
+    note: Higher yields reach interest expenditure gradually as debt is refinanced (toward fiscal stress).
+  - key: energy_to_output
+    src: resources_energy
+    dst: output_growth
+    rel_type: weakens
+    sign: -1
+    lag: [P0M, P12M]
+    region: EA
+    status: hypothesis
+    proposed_status: supported_mechanism
+    note: Energy shocks raise costs and cut real incomes; energy-intensive output falls.
+  - key: financing_to_output
+    src: financing_costs
+    dst: output_growth
+    rel_type: weakens
+    sign: -1
+    lag: [P6M, P24M]
+    region: EA
+    status: hypothesis
+    proposed_status: supported_mechanism
+    note: Tighter financing conditions reduce demand; amplified when the economy is weak.
+  # ---- links to regimes (how state variables bear on each regime)
+  - key: core_supports_hfl
+    src: core_inflation
+    dst: higher_for_longer
+    rel_type: supports
+    sign: 1
+    region: EA
+    status: hypothesis
+    proposed_status: supported_mechanism
+  - key: policy_supports_hfl
+    src: policy_rate
+    dst: higher_for_longer
+    rel_type: supports
+    sign: 1
+    region: EA
+    status: hypothesis
+    proposed_status: supported_mechanism
+  - key: unemployment_supports_rd
+    src: unemployment
+    dst: recession_disinflation
+    rel_type: supports
+    sign: 1
+    region: EA
+    status: hypothesis
+    proposed_status: hypothesis
+    note: No mechanism evidence cited yet; stays a hypothesis.
+  - key: output_counteracts_rd
+    src: output_growth
+    dst: recession_disinflation
+    rel_type: counteracts
+    sign: -1
+    region: EA
+    status: hypothesis
+    proposed_status: hypothesis
+    note: Definitional link; no evidence cited yet.
+
+# Observable signature of each regime. Metrics: level = latest value; change_Nm = latest
+# minus the value N months earlier. Thresholds are model judgements, versioned here.
+regime_conditions:
+  - {key: hfl_core_above_target, regime: higher_for_longer, indicator: ea_hicp_core_yoy,
+     metric: level, op: ">", threshold: 2.5, role: supporting,
+     rationale: Underlying inflation clearly above the 2% target.}
+  - {key: hfl_core_not_falling, regime: higher_for_longer, indicator: ea_hicp_core_yoy,
+     metric: change_6m, op: ">=", threshold: -0.2, role: supporting,
+     rationale: Underlying inflation persistent rather than falling.}
+  - {key: hfl_policy_at_or_above_neutral, regime: higher_for_longer, indicator: ea_policy_rate,
+     metric: level, op: ">=", threshold: 2.0, role: supporting,
+     rationale: "Model judgement: about 2% treated as a neutral policy rate."}
+  - {key: hfl_yields_rising, regime: higher_for_longer, indicator: ea_10y_yield,
+     metric: change_12m, op: ">", threshold: 0.0, role: supporting,
+     rationale: Long-term financing costs higher than a year earlier.}
+  - {key: hfl_core_falling_fast, regime: higher_for_longer, indicator: ea_hicp_core_yoy,
+     metric: change_6m, op: "<", threshold: -0.5, role: opposing,
+     rationale: Rapid disinflation in underlying prices argues against higher for longer.}
+  - {key: hfl_unemployment_rising, regime: higher_for_longer, indicator: ea_unemployment_rate,
+     metric: change_6m, op: ">=", threshold: 0.3, role: opposing,
+     rationale: A weakening labour market lowers persistence and invites easing.}
+  - {key: hfl_policy_easing, regime: higher_for_longer, indicator: ea_policy_rate,
+     metric: change_6m, op: "<", threshold: 0.0, role: opposing,
+     rationale: "Policy rate lower than six months earlier: the central bank has started to ease."}
+  - {key: rd_unemployment_rising, regime: recession_disinflation, indicator: ea_unemployment_rate,
+     metric: change_6m, op: ">=", threshold: 0.3, role: supporting,
+     rationale: Unemployment up by at least 0.3 points in six months.}
+  - {key: rd_output_contracting, regime: recession_disinflation, indicator: ea_gdp_qoq,
+     metric: level, op: "<", threshold: 0.0, role: supporting,
+     rationale: Latest quarter of real GDP contracted.}
+  - {key: rd_headline_falling_fast, regime: recession_disinflation, indicator: ea_hicp_headline_yoy,
+     metric: change_6m, op: "<", threshold: -1.0, role: supporting,
+     rationale: Headline inflation down more than one point in six months.}
+  - {key: rd_policy_easing, regime: recession_disinflation, indicator: ea_policy_rate,
+     metric: change_6m, op: "<", threshold: 0.0, role: supporting,
+     rationale: Policy rate lower than six months earlier.}
+  - {key: rd_core_above_target, regime: recession_disinflation, indicator: ea_hicp_core_yoy,
+     metric: level, op: ">", threshold: 2.5, role: opposing,
+     rationale: Underlying inflation well above target is inconsistent with disinflation.}
+  - {key: rd_unemployment_stable, regime: recession_disinflation, indicator: ea_unemployment_rate,
+     metric: change_6m, op: "<=", threshold: 0.0, role: opposing,
+     rationale: Unemployment stable or falling.}
