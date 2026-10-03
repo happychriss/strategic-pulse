@@ -119,18 +119,16 @@ def trend_at(series: dict[int, float], year: int, n: int) -> float | None:
     return None if any(v is None for v in vals) else slope(vals)
 
 
-def assess_indicator(
-    panel: dict[str, dict[int, float]], ind: dict, cfg: dict, at: datetime, aggregate: str
-) -> StructuralResult:
-    n = cfg["trend_years"]
-    r = StructuralResult(ind["axis"], ind["key"], ind["label"])
-    cutoff_year = known_year(at, ind.get("lag_months", 9))
+def eu_series(
+    panel: dict[str, dict[int, float]], ind: dict, aggregate: str, cutoff_year: int
+) -> tuple[dict[str, dict[int, float]], dict[int, float], str]:
+    """Member-state series and the EU series up to `cutoff_year`, plus a note on how the EU
+    value was formed (the published aggregate, or the unweighted mean of members)."""
     members = {
         g: {y: v for y, v in s.items() if y <= cutoff_year}
         for g, s in panel.items()
         if g in EU_MEMBERS
     }
-    r.members = len(members)
     if ind.get("aggregate") == "mean_of_members" or aggregate not in panel:
         years = sorted({y for s in members.values() for y in s})
         agg = {
@@ -138,9 +136,19 @@ def assess_indicator(
             for y in years
             if sum(y in s for s in members.values()) >= max(1, int(0.8 * len(members)))
         }
-        r.note = "EU value = unweighted mean of member states"
-    else:
-        agg = {y: v for y, v in panel[aggregate].items() if y <= cutoff_year}
+        return members, agg, "EU value = unweighted mean of member states"
+    return members, {y: v for y, v in panel[aggregate].items() if y <= cutoff_year}, ""
+
+
+def assess_indicator(
+    panel: dict[str, dict[int, float]], ind: dict, cfg: dict, at: datetime, aggregate: str
+) -> StructuralResult:
+    n = cfg["trend_years"]
+    r = StructuralResult(ind["axis"], ind["key"], ind["label"])
+    members, agg, r.note = eu_series(
+        panel, ind, aggregate, known_year(at, ind.get("lag_months", 9))
+    )
+    r.members = len(members)
     if not agg:
         r.note = "no data known at this date"
         return r
@@ -226,4 +234,14 @@ def history(
     return out
 
 
-__all__ = ["StructuralResult", "asdict", "assess_structural", "date", "history", "slope"]
+__all__ = [
+    "StructuralResult",
+    "asdict",
+    "assess_structural",
+    "date",
+    "eu_series",
+    "history",
+    "known_year",
+    "load_panel",
+    "slope",
+]

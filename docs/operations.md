@@ -18,8 +18,9 @@ python -m srm.run_monthly
 2. **Build** the database from cards, snapshots and model files (`srm.build`).
 3. **Test** (`pytest`). On failure the run stops: no pages, no run log.
 4. **Assess** the four Phase 1 cutoffs and now with the current model version (`srm.assess`).
-5. **Write** pages to `reports/assessments/<version>/` and a run log to `reports/runs/<date>.md`
-   and `.json`. The log lists what changed since the previous run log.
+5. **Write** pages to `reports/assessments/<version>/`, the newsletter dashboard to
+   `reports/dashboard/index.html` (with its data in `data.json`), and a run log to
+   `reports/runs/<date>.md` and `.json`. The log lists what changed since the previous run log.
 
 Exit codes: `0` all good, `2` some pulls failed (everything else ran), `1` tests failed or the
 pipeline broke.
@@ -59,7 +60,9 @@ Monthly run of the Strategic Regime Monitor (repository happychriss/strategic-pu
    proposed fix and leave it for human review.
 7. After a merge, republish the assessment page: Artifact read
    https://claude.ai/artifact/5pxWmri8Cw7mgwnPV4TzoV, then publish
-   reports/assessments/<current version>/index.html to that url.
+   reports/assessments/<current version>/index.html to that url. Then Artifact read
+   https://claude.ai/artifact/RRKNrEVKPnb3oqzxoaWqvQ and publish reports/dashboard/index.html
+   to that url (the newsletter dashboard "Lagebild Europa").
 8. Finish with a short summary: what changed (from the run log), regime positions, failures,
    and links to the pull request and the page.
 ```
@@ -99,3 +102,25 @@ under "Is something happening?". Settings live in the `detector` section of the 
   EU aggregate alone is never tested against single countries, because averages move less.
 - `python -m srm.detect` writes `reports/detector/<version>.md` (test) and `.json` (page data);
   the monthly run and `python -m srm.assess` both refresh them before writing the page.
+
+## Newsletter dashboard ("Lagebild Europa")
+
+`python -m srm.dashboard` writes `reports/dashboard/index.html`, a German one-page view of the
+current situation, meant to accompany the strategic newsletter. It is built only from the
+detector result (`reports/detector/<version>.json`) and the database, and it adds nothing of its
+own: no thresholds, no wording that the data does not support.
+
+- **Top:** the status sentence (quiet, one layer moving, several layers moving), the signals
+  behind it, and the last four months.
+- **Monthly:** each of the six layers with its signals, five years of history on display (all measures use the full history), a level
+  context (where the latest value stands in its whole history), and a bar that
+  measures the latest three-month move against the signal's own past moves (the tick is the 95th
+  percentile).
+- **Record since 2008:** the monthly level with the reference events and the back-test score.
+- **Slow trends:** the eleven yearly indicators, EU value with the fitted trend of the last five
+  years against the five before, and the breadth of member states with unusual trend changes.
+- **Sources:** every card used, dataset codes that delivered data, licence and retrieval date.
+  Each number on the page carries its own source line.
+
+The published page is private until shared from the page's Share menu. Readers outside the
+account need a public link.

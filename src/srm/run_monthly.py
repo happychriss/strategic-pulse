@@ -119,6 +119,9 @@ def main(argv: list[str]) -> int:
 
         run_detector(conn)  # historical test + page data for the "what is happening" view
         pages = write_reports(conn, runs)
+        from srm.dashboard import write as write_dashboard
+
+        pages.append(write_dashboard(conn))  # newsletter dashboard, from the same detector data
         detection = detect(conn, started)
         log = {
             "date": today,

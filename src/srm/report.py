@@ -493,9 +493,11 @@ def render_happening(p: dict) -> str:
         f'<div class="status"><span class="big lv{lvl}">{LEVEL_TEXT[lvl]}</span>'
         + ('<span class="badge">new alarm</span>' if now["onset"] else "")
         + f'<span class="muted mono">as of {_e(now["month"])} · model {_e(p["model_version"])}</span></div>',
-        ('<p class="muted">Each signal is compared with its own history: a 3-month move larger than 95% of its past '
-        "moves is unusual speed; a 6-month move against a consistent earlier run is a direction change. "
-        "When at least two layers move, something is happening. No fixed levels are used.</p>"),
+        (
+            '<p class="muted">Each signal is compared with its own history: a 3-month move larger than 95% of its past '
+            "moves is unusual speed; a 6-month move against a consistent earlier run is a direction change. "
+            "When at least two layers move, something is happening. No fixed levels are used.</p>"
+        ),
         '<div class="layers">',
     ]
     for layer in p["layers"]:
@@ -510,12 +512,14 @@ def render_happening(p: dict) -> str:
     ts = p.get("test_summary", {})
     out += [
         '<div class="timeline"><h3>Detector history, monthly since 2008</h3>',
-        ('<div class="legend"><span><span class="lg" style="background:var(--chip)"></span>quiet</span>'
-        f'<span><span class="lg" style="background:{LEVEL_FILL[1]}"></span>one layer moving</span>'
-        '<span><span class="lg" style="background:var(--accent)"></span>something is happening</span>'
-        '<span><span class="lg" style="background:var(--ink);height:.3em"></span>new alarm</span>'
-        '<span>▲ reference event: <span style="color:var(--accent)">new alarm</span>, '
-        '<span class="muted">alarm already running</span>, <span style="color:var(--neg)">missed</span></span></div>'),
+        (
+            '<div class="legend"><span><span class="lg" style="background:var(--chip)"></span>quiet</span>'
+            f'<span><span class="lg" style="background:{LEVEL_FILL[1]}"></span>one layer moving</span>'
+            '<span><span class="lg" style="background:var(--accent)"></span>something is happening</span>'
+            '<span><span class="lg" style="background:var(--ink);height:.3em"></span>new alarm</span>'
+            '<span>▲ reference event: <span style="color:var(--accent)">new alarm</span>, '
+            '<span class="muted">alarm already running</span>, <span style="color:var(--neg)">missed</span></span></div>'
+        ),
         f'<div class="scroll">{_timeline_svg(p["timeline"], p["events"])}</div>',
     ]
     if ts:
@@ -548,12 +552,16 @@ def render_happening(p: dict) -> str:
     yrs = sorted(hist)[-12:]
     out += [
         "<h3>Structural axes, yearly</h3>",
-        ('<p class="muted">Five-year trend against the previous five years, for the EU and each member state. A '
-        "Europe-wide movement is flagged when unusually many member states change trend in the same direction. "
-        f"History columns {yrs[0] if yrs else ''}–{yrs[-1] if yrs else ''}: E = Europe-wide movement, "
-        "D = EU trend changed direction, · = nothing unusual, – = not assessable.</p>"),
-        ('<div class="scroll"><table class="struct"><thead><tr><th>Axis</th><th>Indicator</th><th>Latest</th>'
-        "<th>EU value</th><th>Trend per year (before → now)</th><th>Now</th><th>History</th></tr></thead><tbody>"),
+        (
+            '<p class="muted">Five-year trend against the previous five years, for the EU and each member state. A '
+            "Europe-wide movement is flagged when unusually many member states change trend in the same direction. "
+            f"History columns {yrs[0] if yrs else ''}–{yrs[-1] if yrs else ''}: E = Europe-wide movement, "
+            "D = EU trend changed direction, · = nothing unusual, – = not assessable.</p>"
+        ),
+        (
+            '<div class="scroll"><table class="struct"><thead><tr><th>Axis</th><th>Indicator</th><th>Latest</th>'
+            "<th>EU value</th><th>Trend per year (before → now)</th><th>Now</th><th>History</th></tr></thead><tbody>"
+        ),
     ]
     for s_ in p.get("structural_now", []):
         now_flags = []
