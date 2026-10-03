@@ -1,0 +1,32 @@
+id: ecb_icp
+provider: ECB
+name: HICP inflation, euro area
+role: state_variable
+phase: 1
+endpoint:
+  protocol: sdmx-rest-2.1
+  base_url: https://data-api.ecb.europa.eu/service/data
+  dataset_id: ICP
+  example_key: "M.U2.N.000000.4.ANR"
+access:
+  auth: none
+  licence: ECB reuse policy (reuse with attribution)
+  terms_url: https://www.ecb.europa.eu/services/disclaimer/html/index.en.html
+coverage:
+  geography: Euro area (U2) and member states
+  frequency: monthly
+  start: "1997"
+temporal:
+  revision_policy: Headline HICP is rarely revised; flash estimate is replaced by the final release.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp. Flash vs final distinction is not exposed in the series; capture each pull as a snapshot.
+python_access: "sdmx1 source ECB."
+pitfalls:
+  - Key structure must be confirmed on first pull (item 000000 = all items, 4D0 vs 4 codes differ).
+  - Core inflation uses a different item code; define it explicitly in the indicator card, not in code.
+verification:
+  status: unverified
+  date: null
+  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+docs_urls:
+  - https://data.ecb.europa.eu/data/datasets/ICP

@@ -1,0 +1,33 @@
+id: eurostat_namq_10_lp_ulc
+provider: Eurostat
+name: Labour productivity and unit labour costs, quarterly
+role: state_variable
+phase: 1
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: namq_10_lp_ulc
+  example_key: "sdmx/2.1/data/namq_10_lp_ulc"
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EU, euro area, member states
+  frequency: quarterly
+  start: "1995"
+temporal:
+  revision_policy: Follows national accounts revisions of GDP and employment.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp. No vintage table known; derive an approximate vintage from GDP and employment vintages if needed.
+python_access: "sdmx1 source ESTAT, or the JSON-stat REST endpoint."
+pitfalls:
+  - Derived from GDP and employment, so it inherits both revision patterns.
+  - Dimension filters must be set explicitly (seasonal adjustment, unit, geography); defaults return very large cubes.
+verification:
+  status: unverified
+  date: null
+  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+docs_urls:
+  - https://ec.europa.eu/eurostat/web/main/data/web-services
+  - https://ec.europa.eu/eurostat/data/data-revision-policy

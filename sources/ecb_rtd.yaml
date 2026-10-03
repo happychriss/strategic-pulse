@@ -1,0 +1,34 @@
+id: ecb_rtd
+provider: ECB
+name: Euro Area Real-Time Database (vintages of euro area macro series)
+role: state_variable
+phase: 1
+endpoint:
+  protocol: sdmx-rest-2.1
+  base_url: https://data-api.ecb.europa.eu/service/data
+  dataset_id: RTD
+  example_key: "A.S0.N.F_CEC_CGG_D0.F?includeHistory=true&format=csvdata"
+access:
+  auth: none
+  licence: ECB reuse policy (reuse with attribution)
+  terms_url: https://www.ecb.europa.eu/services/disclaimer/html/index.en.html
+coverage:
+  geography: Euro area
+  frequency: monthly, quarterly, annual
+  start: "2001 (vintages from January 2001)"
+temporal:
+  revision_policy: Snapshots of series as published in the ECB Economic Bulletin, updated semi-annually (January and July).
+  vintage_support: release_snapshots
+  knowledge_time_basis: Vintage date of the bulletin snapshot. Vintages 2001-2014 are bulk files, 2015 onward via includeHistory in the API.
+python_access: "sdmx1 source ECB, or plain HTTP CSV (format=csvdata)."
+pitfalls:
+  - Experimental dataset per the ECB; coverage of variables changed over time.
+  - Vintages before 2015 are separate bulk downloads, not in the API history.
+  - Semi-annual cadence means knowledge time is coarse (about 6 months), not exact publication date.
+verification:
+  status: unverified
+  date: null
+  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+docs_urls:
+  - https://data.ecb.europa.eu/data/datasets/RTD/data-information
+  - https://eabcn.org/data/eabcn-real-time-database

@@ -1,0 +1,32 @@
+id: epu_europe
+provider: Baker, Bloom and Davis
+name: Economic Policy Uncertainty index for Europe
+role: structural_indicator
+phase: 3
+endpoint:
+  protocol: file-download
+  base_url: https://www.policyuncertainty.com
+  dataset_id: europe_monthly
+  example_key: null
+access:
+  auth: none
+  licence: Free for research use; cite Baker, Bloom and Davis
+  terms_url: https://www.policyuncertainty.com/
+coverage:
+  geography: Germany, UK, France, Italy, Spain and a European aggregate
+  frequency: monthly
+  start: "1987"
+temporal:
+  revision_policy: News-based; recent months are revised as the article archive fills in.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp; snapshot each pull. FRED series EUEPUINDXM mirrors it.
+python_access: "Excel download, pandas; or FRED."
+pitfalls:
+  - Covers five economies only, not the euro area.
+  - Most recent months are provisional.
+verification:
+  status: unverified
+  date: null
+  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+docs_urls:
+  - https://fred.stlouisfed.org/series/EUEPUINDXM/

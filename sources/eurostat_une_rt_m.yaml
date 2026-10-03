@@ -1,0 +1,33 @@
+id: eurostat_une_rt_m
+provider: Eurostat
+name: Unemployment rate, monthly
+role: state_variable
+phase: 1
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: une_rt_m
+  example_key: "sdmx/2.1/data/une_rt_m"
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EU, euro area, member states
+  frequency: monthly
+  start: "1983"
+temporal:
+  revision_policy: Revised with benchmarking and seasonal re-estimation; Eurostat publishes vintage tables for this indicator.
+  vintage_support: release_snapshots
+  knowledge_time_basis: Vintage tables (published about 2 months after first release of a vintage) give knowledge time; confirm the vintage dataset code on first pull.
+python_access: "sdmx1 source ESTAT, or the JSON-stat REST endpoint."
+pitfalls:
+  - Main database holds latest values only; do not treat a fresh pull as historical knowledge.
+  - Dimension filters must be set explicitly (seasonal adjustment, unit, geography); defaults return very large cubes.
+verification:
+  status: unverified
+  date: null
+  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+docs_urls:
+  - https://ec.europa.eu/eurostat/web/main/data/web-services
+  - https://ec.europa.eu/eurostat/data/data-revision-policy

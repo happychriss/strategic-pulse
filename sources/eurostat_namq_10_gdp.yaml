@@ -1,0 +1,33 @@
+id: eurostat_namq_10_gdp
+provider: Eurostat
+name: GDP and main components, quarterly
+role: state_variable
+phase: 1
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: namq_10_gdp
+  example_key: "sdmx/2.1/data/namq_10_gdp"
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EU, euro area, member states
+  frequency: quarterly
+  start: "1975"
+temporal:
+  revision_policy: Revised through flash, preliminary and later estimates, plus annual benchmark revisions.
+  vintage_support: release_snapshots
+  knowledge_time_basis: Vintage tables for GDP; confirm vintage dataset code on first pull.
+python_access: "sdmx1 source ESTAT, or the JSON-stat REST endpoint."
+pitfalls:
+  - Large revisions around benchmark updates; backtests must use vintages.
+  - Dimension filters must be set explicitly (seasonal adjustment, unit, geography); defaults return very large cubes.
+verification:
+  status: unverified
+  date: null
+  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+docs_urls:
+  - https://ec.europa.eu/eurostat/web/main/data/web-services
+  - https://ec.europa.eu/eurostat/data/data-revision-policy

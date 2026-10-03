@@ -1,0 +1,31 @@
+id: gpr_country
+provider: Caldara and Iacoviello
+name: Geopolitical Risk index, country level
+role: structural_indicator
+phase: 3
+endpoint:
+  protocol: file-download
+  base_url: https://www.matteoiacoviello.com
+  dataset_id: gpr_country
+  example_key: null
+access:
+  auth: none
+  licence: Free for research use; cite Caldara and Iacoviello (AER 2022)
+  terms_url: https://www.matteoiacoviello.com/gpr.htm
+coverage:
+  geography: 44 countries
+  frequency: monthly
+  start: "1985"
+temporal:
+  revision_policy: Text-search based index; values change if the newspaper archive or search terms are updated.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp; snapshot each pull.
+python_access: "CSV or Excel download, pandas."
+pitfalls:
+  - Measures newspaper attention, not events; treat as context, not as a regime driver by itself.
+verification:
+  status: unverified
+  date: null
+  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+docs_urls:
+  - https://www.matteoiacoviello.com/gpr_country.htm

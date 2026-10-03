@@ -1,0 +1,32 @@
+id: vdem
+provider: V-Dem Institute
+name: Varieties of Democracy dataset
+role: structural_indicator
+phase: 3
+endpoint:
+  protocol: file-download
+  base_url: https://www.v-dem.net/data/the-v-dem-dataset/
+  dataset_id: V-Dem Country-Year Full+Others
+  example_key: null
+access:
+  auth: none
+  licence: CC BY-SA 4.0 (confirm on download page)
+  terms_url: https://www.v-dem.net/data/reference-documents/
+coverage:
+  geography: 200+ countries and territories
+  frequency: annual
+  start: "1789"
+temporal:
+  revision_policy: Each release can recode history; v11.1 corrected aggregation errors across several indices.
+  vintage_support: release_snapshots
+  knowledge_time_basis: Release version (v1 to v16). Archive of previous versions is published.
+python_access: "CSV download via HTTP, pandas."
+pitfalls:
+  - Whole history changes between versions; never mix versions in one assessment.
+  - Posterior distributions and measurement-model uncertainty are available; use them for the uncertainty fields.
+verification:
+  status: unverified
+  date: null
+  note: "Written from documentation. First pull blocked by network policy on 2026-10-03; verify code, key and licence on first successful pull."
+docs_urls:
+  - https://www.v-dem.net/en/data/archive/previous-data/v-dem-dataset
