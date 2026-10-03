@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_ei_bsco_m",
+  "label": "ea20_sa_confidence_expectations",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ei_bsco_m?geo=EA20&s_adj=SA&indic=BS-CSMCI&indic=BS-UE-NY&indic=BS-PT-NY&lang=en",
+  "retrieved_at_utc": "2026-10-03T20:48:44.270712+00:00",
+  "http_status": 200,
+  "bytes": 39639,
+  "sha256": "6cf700d54a34fb3fa067b038adabf4a0cc9ab74b59f1da3f916578da859456ee",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 20:48:44 GMT",
+    "Content-Type": "application/json"
+  }
+}

@@ -46,7 +46,15 @@ def _looks_like(kind: str, body: bytes) -> bool:
     if kind == "csv":
         return not head.startswith((b"<", b"{")) and b"," in head
     if kind == "json":
-        return head.startswith((b"{", b"["))
+        # Providers such as Eurostat return error messages as valid JSON with HTTP 200.
+        compact = head.replace(b" ", b"")
+        # Error messages arrive as valid JSON with HTTP 200, and an empty JSON-stat dataset
+        # ("value":{}) means the filter matched nothing; neither is worth archiving.
+        return (
+            head.startswith((b"{", b"["))
+            and not compact.startswith(b'{"error"')
+            and b'"value":{}' not in compact
+        )
     if kind == "html":
         return b"<html" in head or b"<!doctype html" in head
     if kind == "xml":

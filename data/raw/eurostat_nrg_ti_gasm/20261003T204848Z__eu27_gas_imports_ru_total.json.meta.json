@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_nrg_ti_gasm",
+  "label": "eu27_gas_imports_ru_total",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nrg_ti_gasm?geo=EU27_2020&partner=RU&partner=TOTAL&siec=G3000&unit=MIO_M3&lang=en",
+  "retrieved_at_utc": "2026-10-03T20:48:48.805546+00:00",
+  "http_status": 200,
+  "bytes": 15211,
+  "sha256": "74c5ae04d825f5f52e0e51f07ced1ef1e815891b0e97127c584255fb60e2f7f3",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 20:48:49 GMT",
+    "Content-Type": "application/json"
+  }
+}

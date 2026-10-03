@@ -115,6 +115,9 @@ def main(argv: list[str]) -> int:
                 "model_confidence": r.model_confidence,
             }
         pages = write_reports(conn, runs)
+        from srm.detect import detect
+
+        detection = detect(conn, started)
         log = {
             "date": today,
             "started_utc": started.isoformat(),
@@ -125,6 +128,22 @@ def main(argv: list[str]) -> int:
             "indicators": indicator_snapshot(conn, started),
             "regimes": regimes,
             "pages": [str(p.relative_to(REPO)) for p in pages],
+            "detector": {
+                "level": detection.level,
+                "unusual_layers": detection.unusual_layers,
+                "unusual_signals": [
+                    {
+                        "layer": x.layer,
+                        "indicator": x.indicator,
+                        "period": x.latest_period,
+                        "change_3m": x.change,
+                        "threshold": x.threshold,
+                    }
+                    for x in detection.signals
+                    if x.unusual
+                ],
+                "not_evaluable": [x.indicator for x in detection.signals if x.unusual is None],
+            },
         }
     log["changes"] = diff_runs(previous_log(today), log)
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
@@ -142,6 +161,10 @@ def render_log(log: dict) -> str:
         f"# Monthly run {log['date']}",
         "",
         f"Model version `{log['model_version']}`. Tests: {log['tests'] or 'not run'}.",
+        "",
+        "## Is something happening?",
+        "",
+        *_detector_lines(log.get("detector")),
         "",
         "## What changed",
         "",
@@ -177,6 +200,25 @@ def render_log(log: dict) -> str:
         ],
     ]
     return "\n".join(lines) + "\n"
+
+
+def _detector_lines(d: dict | None) -> list[str]:
+    if not d:
+        return ["Detector not run."]
+    text = {
+        0: "Quiet: no unusual moves in any layer.",
+        1: "Unusual move in one layer.",
+        2: "Something is happening: unusual moves in several layers.",
+    }[d["level"]]
+    lines = [f"Level {d['level']}. {text}"]
+    lines += [
+        f"- {u['layer']}: {u['indicator']} {u['period']}, 3-month change {u['change_3m']} "
+        f"(usual range up to {u['threshold']})"
+        for u in d["unusual_signals"]
+    ]
+    if d["not_evaluable"]:
+        lines.append(f"Not evaluable this month: {', '.join(d['not_evaluable'])}.")
+    return lines
 
 
 if __name__ == "__main__":

@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_ei_bssi_m_r2",
+  "label": "ea20_sa_sentiment_confidence",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ei_bssi_m_r2?geo=EA20&s_adj=SA&lang=en",
+  "retrieved_at_utc": "2026-10-03T20:48:42.591618+00:00",
+  "http_status": 200,
+  "bytes": 58397,
+  "sha256": "bef992895827c02b1b7c3c5fcd834e711070ebe21968258f1f6c7cf2f630d5c8",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 20:48:43 GMT",
+    "Content-Type": "application/json"
+  }
+}

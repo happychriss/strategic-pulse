@@ -1,0 +1,38 @@
+id: eurostat_nrg_ti_gasm
+provider: Eurostat
+name: Natural gas imports by partner country, monthly
+role: structural_indicator
+phase: 1
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: nrg_ti_gasm
+  example_key: statistics/1.0/data/nrg_ti_gasm
+datasets:
+- code: ESTAT:nrg_ti_gasm
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EU27_2020, member states
+  frequency: monthly
+  start: '2008'
+temporal:
+  revision_policy: Revised as energy statistics are finalised.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp. For historical detector tests a pseudo-real-time rule (period
+    end plus publication lag, latest values) is used and labelled as an approximation.
+python_access: JSON-stat REST endpoint (default format).
+pitfalls:
+- Russia share = imports from RU / total imports; pipeline and LNG combined in G3000.
+- 'Very large table: always filter geo, partner, siec and unit.'
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: EU27_2020 imports from Russia and total, 2014-01 to 2026-07.'
+docs_urls:
+- https://ec.europa.eu/eurostat/web/energy/database

@@ -166,6 +166,42 @@ PULLS: list[tuple[str, str, str, str]] = [
         "json",
     ),
     (
+        "eurostat_une_rt_m",
+        "ea21_sa_youth_pc_act",
+        f"{ES}/une_rt_m?geo=EA21&s_adj=SA&age=Y_LT25&unit=PC_ACT&sex=T&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_ei_bssi_m_r2",
+        "ea21_sa_sentiment_confidence",
+        f"{ES}/ei_bssi_m_r2?geo=EA21&s_adj=SA&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_ei_bsco_m",
+        "ea21_sa_confidence_expectations",
+        f"{ES}/ei_bsco_m?geo=EA21&s_adj=SA&indic=BS-CSMCI&indic=BS-UE-NY&indic=BS-PT-NY&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_migr_asyapp1mpm",
+        "eu27_first_time_applicants",
+        f"{ES}/migr_asyapp1mpm?geo=EU27_2020&statinfo=VAL&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_nrg_ti_gasm",
+        "eu27_gas_imports_ru_total",
+        f"{ES}/nrg_ti_gasm?geo=EU27_2020&partner=RU&partner=TOTAL&siec=G3000&unit=MIO_M3&{ES_FMT}",
+        "json",
+    ),
+    (
+        "eurostat_ei_etea_m",
+        "ea21_trade_volume_total",
+        f"{ES}/ei_etea_m?geo=EA21&indic=ET-T&unit=IVOL-SA&{ES_FMT}",
+        "json",
+    ),
+    (
         "oecd_mei_revisions",
         "ea20_monthly_cpi_since_2018",
         f"{OECD}/EA20.M.CP....?startPeriod=2018-01&format=csv",

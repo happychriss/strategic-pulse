@@ -76,3 +76,12 @@ PYTHONPATH=src .venv/bin/python -m srm.pull --missing-only    # fetch never-arch
   not in the manifest until chunked requests exist.
 - ECB RTD industrial production history times out; removed from the manifest.
 - ENTSO-E needs an API token (`ENTSOE_API_TOKEN`); not in the manifest.
+
+## Change detector
+
+`python -m srm.detect` runs the detector for now and the historical test 2008 to today, writing
+`reports/detector/<version>.md`. The monthly run includes the current detection in its run log
+under "Is something happening?". Settings live in the `detector` section of the model version:
+`sensitivity` (unusual = larger than this share of the signal's own past 3-month changes) and
+`alarm_layers` (layers needed for an alarm). Reference events for the test are in
+`model/events.yaml` and must be fixed before a run, never adjusted to results.

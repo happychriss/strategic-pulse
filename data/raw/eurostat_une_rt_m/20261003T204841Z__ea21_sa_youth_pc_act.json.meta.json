@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_une_rt_m",
+  "label": "ea21_sa_youth_pc_act",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/une_rt_m?geo=EA21&s_adj=SA&age=Y_LT25&unit=PC_ACT&sex=T&lang=en",
+  "retrieved_at_utc": "2026-10-03T20:48:41.075176+00:00",
+  "http_status": 200,
+  "bytes": 25545,
+  "sha256": "b4a28d75e20cdbcb1c36da6453bf62d8212906d302dea19d2bfdc1c84a642d90",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 20:48:41 GMT",
+    "Content-Type": "application/json"
+  }
+}

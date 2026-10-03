@@ -1,0 +1,14 @@
+{
+  "card_id": "eurostat_ei_etea_m",
+  "label": "ea21_trade_volume_total",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ei_etea_m?geo=EA21&indic=ET-T&unit=IVOL-SA&lang=en",
+  "retrieved_at_utc": "2026-10-03T20:49:47.281585+00:00",
+  "http_status": 200,
+  "bytes": 24314,
+  "sha256": "8a8a533015e135586567c0452ca2d927be4741737b1ff06b38f43775874ef5b3",
+  "stored_compression": null,
+  "response_headers": {
+    "Date": "Sat, 03 Oct 2026 20:49:47 GMT",
+    "Content-Type": "application/json"
+  }
+}

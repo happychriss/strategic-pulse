@@ -1,0 +1,39 @@
+id: eurostat_migr_asyapp1mpm
+provider: Eurostat
+name: First-time asylum applicants per 100,000 persons, monthly
+role: structural_indicator
+phase: 1
+endpoint:
+  protocol: eurostat-rest-sdmx-2.1
+  base_url: https://ec.europa.eu/eurostat/api/dissemination
+  dataset_id: migr_asyapp1mpm
+  example_key: statistics/1.0/data/migr_asyapp1mpm
+datasets:
+- code: ESTAT:migr_asyapp1mpm
+  parser: eurostat_jsonstat
+  knowledge_rule: ingestion
+  revision_class: revised
+access:
+  auth: none
+  licence: CC BY 4.0 (Eurostat reuse policy)
+  terms_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
+coverage:
+  geography: EU27_2020, member states
+  frequency: monthly
+  start: '2008'
+temporal:
+  revision_policy: Revised as national authorities update counts.
+  vintage_support: none
+  knowledge_time_basis: Ingestion timestamp. For historical detector tests a pseudo-real-time rule (period
+    end plus publication lag, latest values) is used and labelled as an approximation.
+python_access: JSON-stat REST endpoint (default format).
+pitfalls:
+- Strong seasonality and one-off waves (2015-16, 2022 Ukraine handled under temporary protection, not
+  asylum).
+- Ukrainian refugees under temporary protection are not in this series.
+verification:
+  status: verified
+  date: '2026-10-03'
+  note: 'Pulled 2026-10-03: EU27_2020 from 2014-01 (not 2008 as listed) to 2026-06.'
+docs_urls:
+- https://ec.europa.eu/eurostat/web/migration-asylum/asylum/database

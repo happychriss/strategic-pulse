@@ -82,6 +82,17 @@ def monthly_mean(points: list[Point], at: datetime | None = None) -> list[Point]
     return [(m, m.strftime("%Y-%m"), round(fmean(vs), 4)) for m, vs in sorted(groups.items())]
 
 
+def mean_12m(points: list[Point], at: datetime | None = None) -> list[Point]:
+    """12-month moving average; removes strong seasonality in monthly counts."""
+    idx = _by_start(points)
+    out = []
+    for start, label, _ in points:
+        window = [idx.get(_add_months(start, -k)) for k in range(12)]
+        if all(window):
+            out.append((start, label, round(fmean(w[2] for w in window), 4)))
+    return out
+
+
 TRANSFORM_FUNCS = {
     "identity": identity,
     "yoy_pct": yoy_pct,
@@ -89,6 +100,7 @@ TRANSFORM_FUNCS = {
     "compound_4q": compound_4q,
     "step_monthly": step_monthly,
     "monthly_mean": monthly_mean,
+    "mean_12m": mean_12m,
 }
 
 
@@ -110,6 +122,8 @@ def _inputs_for(transform: str, start: date, raw: list[tuple[date, ObsKey]]) -> 
     elif transform == "monthly_mean":
         nxt = _add_months(start, 1)
         return [k for s, k in raw if start <= s < nxt]
+    elif transform == "mean_12m":
+        wanted = [_add_months(start, -k) for k in range(12)]
     elif transform == "step_monthly":
         nxt = _add_months(start, 1)
         before = [k for s, k in raw if s < nxt]
@@ -157,6 +171,18 @@ def indicator_series_with_inputs(
         derived = TRANSFORM_FUNCS[transform](pts, at)
         by_role[role] = derived
         inputs_by_role[role] = {p[0]: _inputs_for(transform, p[0], raw) for p in derived}
+    if {"numerator", "denominator"} <= set(by_role):
+        den = _by_start(by_role["denominator"])
+        points = [
+            (s, lab, round(100 * v / den[s][2], 4))
+            for s, lab, v in by_role["numerator"]
+            if s in den and den[s][2] != 0
+        ]
+        inputs = {
+            p[0]: inputs_by_role["numerator"][p[0]] + inputs_by_role["denominator"][p[0]]
+            for p in points
+        }
+        return points, inputs
     if {"minuend", "subtrahend"} <= set(by_role):
         sub = _by_start(by_role["subtrahend"])
         points = [(s, lab, round(v - sub[s][2], 4)) for s, lab, v in by_role["minuend"] if s in sub]
