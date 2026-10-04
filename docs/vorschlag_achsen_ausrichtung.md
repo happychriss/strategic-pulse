@@ -115,3 +115,27 @@ Lagekarte bekommen sie zwei eigene Blöcke mit Polen:
 3. Exporte und Importe vorerst bei Verflechtung lassen, bis die Unsicherheits-Indizes geladen
    sind?
 4. Saldo und Zinslast bei den Staatsfinanzen ins Dashboard aufnehmen?
+
+## Arbeitsentscheidungen (4. Oktober 2026, vorläufig)
+
+Getroffen als beste Einschätzung, um das Bild zu sehen. Bestätigung nach Durchsicht der
+Werkstattseite „Hauptachsen“. Maschinenlesbar in `model/drafts/main_axes_draft.yaml`.
+
+1. **Asylanträge** bleiben bei Demografie mit − (Zuwanderung wirkt der Schrumpfung entgegen),
+   wie bisher im Modell.
+2. **EZB-Zins** beim Preisdruck (+), **Anleiherendite** bei den Staatsfinanzen (+). Es gibt keinen
+   eigenen Block „Finanzierungsbedingungen“.
+3. **Exporte und Importe** bleiben vorerst bei der Verflechtung und sind als schwache Stellvertreter
+   markiert, bis die Unsicherheits-Indizes geladen sind.
+4. **Haushaltssaldo und Zinslast** kommen zu den Staatsfinanzen. Beide Reihen liegen schon im Modell,
+   als Jahresdaten bis 2025.
+
+Messung im Entwurf:
+
+- **Niveau:** Anteil der früheren Werte, die niedriger lagen, gedreht nach Ausrichtung.
+- **Dynamik monatlich:** die letzte Drei-Monats-Bewegung, eingeordnet nach Größe unter allen früheren
+  Bewegungen.
+- **Dynamik jährlich:** der Fünf-Jahres-Trend, eingeordnet unter allen früheren Fünf-Jahres-Trends.
+
+Beide Dynamik-Werte tragen ein Vorzeichen und werden nach der Ausrichtung gedreht. Das Kreuz zeigt
+den Median und die Spannweite der Signale.

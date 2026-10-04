@@ -1,0 +1,119 @@
+# DRAFT, not a model version. Main axes ("Hauptachsen") driven by signals, with orientation.
+# Read by the axis mock-up only; the build ignores model/drafts/. After review this becomes part
+# of model version phase1-v0.6 and is frozen there.
+#
+# orientation +1: a higher value pulls toward the axis' high pole; -1: toward the low pole.
+# The high poles are chosen so that "up" means "more strain" wherever the concept allows it.
+#
+# Working decisions taken on 2026-10-04 as best guesses, to be confirmed after seeing the picture
+# (see docs/vorschlag_achsen_ausrichtung.md, section "Arbeitsentscheidungen"):
+#   1. Asylum applicants stay on Demography with -1 (immigration counters contraction), as in v0.5.
+#   2. ECB rate on "Preisdruck" (+1), 10-year yield on "Staatsfinanzen" (+1); no separate block.
+#   3. Export and import volumes stay on International integration until the uncertainty
+#      indices are loaded; flagged as weak proxies.
+#   4. Government balance and interest burden (already model indicators) join Staatsfinanzen.
+
+axes:
+  - key: resources_energy
+    label: Ressourcen / Energie
+    low_pole: Fülle, Widerstandskraft
+    high_pole: Knappheit, Verwundbarkeit
+    signals:
+      - {id: ea_hicp_energy_yoy, kind: monthly, orientation: 1}
+      - {id: eu_gas_imports_russia_share, kind: monthly, orientation: 1}
+      - {id: energy_import_dependency, kind: structural, orientation: 1}
+  - key: fiscal_capacity
+    label: Staatsfinanzen
+    low_pole: Spielraum
+    high_pole: Stress
+    signals:
+      - {id: ea_10y_yield, kind: monthly, orientation: 1}
+      - {id: gov_debt, kind: structural, orientation: 1}
+      - {id: ea_gov_balance, kind: yearly_indicator, orientation: -1}
+      - {id: ea_gov_interest_burden, kind: yearly_indicator, orientation: 1}
+  - key: international_integration
+    label: Internationale Verflechtung
+    low_pole: Integration
+    high_pole: Fragmentierung, Blockbildung
+    note: Export- und Importvolumen messen stark die Konjunktur; Unsicherheits-Indizes folgen.
+    signals:
+      - {id: ea_export_volume_yoy, kind: monthly, orientation: -1}
+      - {id: ea_import_volume_yoy, kind: monthly, orientation: -1}
+  - key: societal_cohesion
+    label: Gesellschaftlicher Zusammenhalt
+    low_pole: Vertrauen
+    high_pole: Spaltung
+    signals:
+      - {id: ea_consumer_confidence, kind: monthly, orientation: -1}
+      - {id: ea_unemployment_fears, kind: monthly, orientation: 1}
+      - {id: ea_youth_unemployment, kind: monthly, orientation: 1}
+      - {id: income_inequality, kind: structural, orientation: 1}
+  - key: demography_migration
+    label: Demografie und Migration
+    low_pole: Wachstum
+    high_pole: Alterung, Schrumpfung
+    signals:
+      - {id: eu_asylum_applicants, kind: monthly, orientation: -1}
+      - {id: old_age_dependency, kind: structural, orientation: 1}
+      - {id: fertility, kind: structural, orientation: -1}
+  - key: governance
+    label: Regierungsführung
+    low_pole: Pluralismus, Kontrolle der Macht
+    high_pole: Machtkonzentration
+    signals:
+      - {id: rule_of_law, kind: structural, orientation: -1}
+      - {id: voice_accountability, kind: structural, orientation: -1}
+      - {id: corruption_perceptions, kind: structural, orientation: -1}
+  - key: economic_order
+    label: Wirtschaftsordnung
+    low_pole: Markt
+    high_pole: staatliche Lenkung
+    signals:
+      - {id: gov_expenditure, kind: structural, orientation: 1}
+  - key: technology
+    label: Technologie
+    low_pole: langsamer Wandel
+    high_pole: schneller Wandel
+    signals:
+      - {id: rd_intensity, kind: structural, orientation: 1}
+  - key: climate_environment
+    label: Klima / Umwelt
+    low_pole: Stabilität
+    high_pole: physische Belastung
+    signals:
+      - {id: climate_losses, kind: structural, orientation: 1}
+
+fast_blocks:
+  - key: price_pressure
+    label: Preisdruck
+    low_pole: gering
+    high_pole: hoch
+    signals:
+      - {id: ea_hicp_headline_yoy, kind: monthly, orientation: 1}
+      - {id: ea_hicp_core_yoy, kind: monthly, orientation: 1}
+      - {id: ea_household_price_expectations, kind: monthly, orientation: 1}
+      - {id: ea_policy_rate, kind: monthly, orientation: 1}
+  - key: business_cycle
+    label: Konjunktur
+    low_pole: Aufschwung
+    high_pole: Abschwung
+    signals:
+      - {id: ea_unemployment_rate, kind: monthly, orientation: 1}
+      - {id: ea_gdp_qoq, kind: monthly, orientation: -1}
+      - {id: ea_economic_sentiment, kind: monthly, orientation: -1}
+      - {id: ea_industry_confidence, kind: monthly, orientation: -1}
+
+measures:
+  level: >
+    Share of all earlier values of the signal lower than the latest one, turned by orientation
+    (0 = low pole, 1 = high pole).
+  dynamics_monthly: >
+    Latest three-month move (one quarter for GDP), ranked by size against all earlier moves of
+    the signal, signed by direction and turned by orientation (-1 toward the low pole, +1 toward
+    the high pole).
+  dynamics_yearly: >
+    Latest five-year trend (OLS slope of the EU value), ranked by size against all earlier
+    five-year trends of the same series, signed and turned by orientation.
+  axis: >
+    No axis score. The axis shows its signals individually; the cross marks the median of level
+    and dynamics, its arms run from the lowest to the highest signal.
